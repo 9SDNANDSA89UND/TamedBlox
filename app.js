@@ -1,4 +1,4 @@
-const API = "https://website-5eml.onrender.com/";
+const API = "https://website-5eml.onrender.com";
 
 async function loadProducts() {
     const res = await fetch(API + "/products");
