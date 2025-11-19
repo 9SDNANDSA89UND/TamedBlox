@@ -1,25 +1,34 @@
 const API = "https://website-5eml.onrender.com";
-
-// Placeholder image for all products for now
-const PLACEHOLDER_IMG = "https://dummyimage.com/400x300/eae2ff/7b2cbf&text=TamedBlox+Item";
+const IMG = "https://dummyimage.com/400x280/2a2d44/ffffff&text=TamedBlox+Item";
 
 async function loadProducts() {
     const res = await fetch(`${API}/products`);
     const products = await res.json();
 
-    const container = document.getElementById("product-list");
-    if (!container) return;
-
+    let container = document.getElementById("product-list");
     container.innerHTML = "";
 
     products.forEach(p => {
         container.innerHTML += `
             <div class="product-card">
-                <img src="${PLACEHOLDER_IMG}" class="product-img">
+
+                <div class="badges">
+                    <div class="badge purple">Popular</div>
+                    <div class="badge blue">Deal</div>
+                </div>
+
+                <img src="${IMG}" class="product-img" />
+
                 <h3>${p.name}</h3>
                 <p>${p.description}</p>
-                <p><strong>£${p.price}</strong></p>
-                <button class="add-btn" onclick="addToCart('${p.id}', '${p.name}', ${p.price})">Add to Cart</button>
+
+                <div class="add-bar">
+                    <strong>£${p.price}</strong>
+                    <button class="add-btn" onclick="addToCart('${p.id}', '${p.name}', ${p.price})">
+                        Add
+                    </button>
+                </div>
+
             </div>
         `;
     });
@@ -33,12 +42,12 @@ function addToCart(id, name, price) {
 }
 
 function loadCart() {
-    const tbody = document.getElementById("cart-items");
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let tbody = document.getElementById("cart-items");
+
     if (!tbody) return;
 
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
     let total = 0;
-
     tbody.innerHTML = "";
 
     cart.forEach(item => {
@@ -52,10 +61,6 @@ function loadCart() {
     });
 
     document.getElementById("total").innerText = total;
-}
-
-function checkout() {
-    alert("Checkout coming soon!");
 }
 
 loadProducts();
