@@ -3,51 +3,63 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TamedBlox Store — Home</title>
+  <title>TamedBlox Store</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<header class="nav fade-in-up">
-  <div class="nav-left">
-    <div class="logo">TAMEDBLOX</div>
-    <div class="balance">Balance: £0.00</div>
+<!-- NAVBAR -->
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <div class="logo">TAMEDBLOX</div>
+      <div class="balance">Balance: £0.00</div>
+    </div>
   </div>
 </header>
 
-<!-- Sliding Banners -->
+<!-- TOP BANNER SLIDER -->
 <div class="banner-slider scroll-fade">
-  <div class="banner">🔥 Winter Sale — Up to 40% OFF!</div>
   <div class="banner">⚡ Instant Delivery Under 30 Seconds</div>
   <div class="banner">⭐ Trusted Sellers • Secure Checkout</div>
+  <div class="banner">🛒 Over 52,000+ Orders Delivered</div>
 </div>
 
-<section class="hero scroll-fade">
-  <h1>Buy Premium Items <br>With <span>Instant Delivery.</span></h1>
-
-  <div class="search-box glow-box">
-    <input type="text" placeholder="Search items, rarities, upgrades..." />
-  </div>
-
-  <div class="filters scroll-fade">
-    <button class="filter active">All</button>
-    <button class="filter">Special</button>
-    <button class="filter">Rare</button>
-    <button class="filter">Exclusive</button>
-  </div>
-
-  <div class="stats scroll-fade">
-    <span>Active listings: 1,248</span>
-    <span>Orders delivered: 52,031+</span>
-    <span>Delivery speed: < 30s</span>
-  </div>
+<!-- HERO -->
+<section class="hero fade-in-up">
+  <h1>
+    Buy Premium Items<br>
+    With <span>Instant Delivery.</span>
+  </h1>
 </section>
 
-<section class="products scroll-fade">
+<!-- SEARCH -->
+<div class="search-box glow-box fade-in-up">
+  <input type="text" placeholder="Search items, rarities, upgrades..." />
+</div>
+
+<!-- FILTERS -->
+<div class="filters fade-in-up">
+  <div class="filter active">All</div>
+  <div class="filter">Special</div>
+  <div class="filter">Rare</div>
+  <div class="filter">Exclusive</div>
+</div>
+
+<!-- STATS -->
+<div class="stats fade-in-up">
+  <div>Active listings: 1,248</div>
+  <div>Orders delivered: 52,031+</div>
+  <div>Delivery speed: < 30s</div>
+</div>
+
+<!-- PRODUCTS GRID -->
+<section class="products fade-in-up">
   <div class="product-grid" id="productGrid"></div>
 </section>
 
-<footer class="scroll-fade" style="margin-top:60px;">
+<!-- FOOTER -->
+<footer class="scroll-fade">
   © 2025 TamedBlox Store — All Rights Reserved.
 </footer>
 
