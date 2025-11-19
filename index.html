@@ -1,92 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>TamedBlox – Premium Digital Items</title>
-
-    <meta name="description" content="TamedBlox offers premium digital items with instant delivery and a modern neon shop interface." />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TamedBlox Styled Store</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
+  <header class="nav">
+    <div class="nav-left">
+      <div class="logo">TAMEDBLOX</div>
+      <div class="balance">Balance: £0.00</div>
+    </div>
+    <div class="nav-right">
+      <button class="btn login">Log in</button>
+      <button class="btn signup">Sign up</button>
+    </div>
+  </header>
 
-    <!-- NAVBAR -->
-    <header class="navbar glass">
-        <div class="logo">TamedBlox</div>
+  <section class="hero">
+    <h1>Buy Premium Items Instantly <br>With <span>Zero Wait Time.</span></h1>
 
-        <div class="search-bar">
-            <input type="text" placeholder="Search items..." id="searchInput">
-        </div>
-
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-
-            <a href="cart.html" class="nav-cart">
-                <img src="https://img.icons8.com/ios-filled/20/ffffff/shopping-cart.png" />
-                Cart
-            </a>
-        </div>
-
-    </header>
-
-    <!-- FLOATING CART BUTTON -->
-    <div class="cart-float" onclick="window.location='cart.html'">
-        <img src="https://img.icons8.com/ios-filled/50/ffffff/shopping-cart.png">
+    <div class="search-box">
+      <input type="text" placeholder="Search items or rarities..." />
     </div>
 
-    <!-- MAIN LAYOUT -->
-    <div class="main-layout">
-
-        <!-- SIDEBAR FILTERS -->
-        <aside class="sidebar glass">
-            <h3>Filters</h3>
-
-            <div class="filter-block">
-                <label>Price Range</label>
-                <input type="range" min="1" max="100" value="50" id="priceSlider">
-            </div>
-
-            <div class="filter-block">
-                <label>Categories</label>
-
-                <div class="checkbox">
-                    <input type="checkbox" checked> Featured
-                </div>
-
-                <div class="checkbox">
-                    <input type="checkbox" checked> Popular
-                </div>
-
-                <div class="checkbox">
-                    <input type="checkbox" checked> Discounted
-                </div>
-
-            </div>
-
-            <button class="reset-btn">Reset Filters</button>
-        </aside>
-
-        <!-- MAIN SHOP CONTENT -->
-        <main class="content">
-
-            <!-- TABS -->
-            <div class="tabs">
-                <button class="tab active">Popular</button>
-                <button class="tab">Deals</button>
-                <button class="tab">Units</button>
-                <button class="tab">Gear</button>
-            </div>
-
-            <!-- PRODUCT GRID -->
-            <div id="product-list" class="product-grid"></div>
-
-        </main>
-
+    <div class="filters">
+      <button class="filter active">All</button>
+      <button class="filter">Special</button>
+      <button class="filter">Rare</button>
+      <button class="filter">Exclusive</button>
     </div>
 
-    <script src="app.js"></script>
+    <div class="stats">
+      <span>Active listings: 1,248</span>
+      <span>Orders delivered: 52,031+</span>
+      <span>Delivery speed: < 30s</span>
+    </div>
+  </section>
 
+  <section class="products">
+    <div class="product-grid" id="productGrid">
+      <!-- Products injected by app.js -->
+    </div>
+  </section>
+
+  <footer>
+    © 2025 TamedBlox Styled Store — All Rights Reserved.
+  </footer>
+
+  <script src="app.js"></script>
 </body>
 </html>
