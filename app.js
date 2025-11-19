@@ -1,32 +1,63 @@
 const API = "https://website-5eml.onrender.com";
 
+// Load products on homepage
 async function loadProducts() {
-    const res = await fetch(API + "/products");
-    const data = await res.json();
+    const res = await fetch(`${API}/products`);
+    const products = await res.json();
 
-    const list = document.getElementById("product-list");
-    list.innerHTML = "";
+    const container = document.getElementById("product-list");
 
-    data.forEach(p => {
-        list.innerHTML += `
-            <div class="product">
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    products.forEach(p => {
+        container.innerHTML += `
+            <div class="product-card">
                 <h3>${p.name}</h3>
                 <p>${p.description}</p>
-                <p>£${p.price}</p>
-                <button onclick="addToCart('${p.id}')">Add to Cart</button>
+                <p><strong>£${p.price}</strong></p>
+                <button class="add-btn" onclick="addToCart('${p.id}', '${p.name}', ${p.price})">Add to Cart</button>
             </div>
         `;
     });
 }
 
-async function addToCart(id) {
-    await fetch(API + "/cart/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: id })
-    });
-    alert("Added!");
+function addToCart(id, name, price) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.push({ id, name, price });
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Added to cart!");
 }
 
-loadProducts();
+// Load cart page
+function loadCart() {
+    const tbody = document.getElementById("cart-items");
+    if (!tbody) return;
 
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let total = 0;
+
+    tbody.innerHTML = "";
+
+    cart.forEach(item => {
+        total += item.price;
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.name}</td>
+                <td>£${item.price}</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById("total").innerText = total;
+}
+
+// Checkout (example)
+async function checkout() {
+    alert("Checkout coming soon!");
+}
+
+// Initialize pages
+loadProducts();
+loadCart();
