@@ -17,15 +17,25 @@
 </header>
 
 <section class="hero">
-    <h1 class="fade-in">Welcome to TamedBlox</h1>
-    <p class="fade-in delay-1">Premium Digital Items. Smooth Experience.</p>
+    <div class="hero-inner">
+        <h1>Premium Digital Items</h1>
+        <p>Beautiful experiences. Seamless shopping.</p>
+        <button class="shop-btn" onclick="scrollToProducts()">Browse Products</button>
+    </div>
 </section>
 
-<section class="products-section fade-in delay-2">
+<section id="products" class="products-section fade-in">
     <h2>Our Products</h2>
     <div id="product-list" class="product-grid"></div>
 </section>
 
 <script src="app.js"></script>
+
+<script>
+function scrollToProducts() {
+    document.getElementById("products").scrollIntoView({ behavior: "smooth" });
+}
+</script>
+
 </body>
 </html>
