@@ -1,11 +1,7 @@
-/* ---------------------------------
-   FONTS
------------------------------------ */
+/* FONTS */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap');
 
-/* ---------------------------------
-   GLOBAL RESET
------------------------------------ */
+/* RESET */
 * {
   margin: 0;
   padding: 0;
@@ -23,6 +19,7 @@ html, body {
 /* ---------------------------------
    NAVBAR
 ----------------------------------- */
+
 .nav {
   width: 100%;
   padding: 18px 40px;
@@ -44,55 +41,56 @@ html, body {
   gap: 20px;
 }
 
+/* New logo styling */
 .logo {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
+}
+
+.logo-white {
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(255,255,255,0.4);
+}
+
+.logo-green {
   color: #4ef58a;
   text-shadow: 0 0 10px #4ef58a, 0 0 18px #4ef58a;
 }
 
+/* Hide balance everywhere */
 .balance {
-  font-size: 14px;
-  padding: 6px 14px;
-  background: #0e131a;
-  border-radius: 12px;
-  color: #b3bac8;
-  border: 1px solid rgba(255,255,255,0.06);
-  backdrop-filter: blur(6px);
+  display: none !important;
 }
 
 /* ---------------------------------
-   BANNER SLIDER
+   ANNOUNCEMENT BAR
 ----------------------------------- */
-.banner-slider {
+
+.announcement-section {
   width: 100%;
   display: flex;
   justify-content: center;
-  overflow: hidden;
-  height: 30px;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
-.banner {
+.announcement {
+  font-size: 18px;
+  font-weight: 700;
   color: #4ef58a;
-  font-weight: 600;
-  text-shadow: 0 0 10px #4ef58a;
-  animation: slideBanner 12s infinite;
-}
-
-@keyframes slideBanner {
-  0% { transform: translateY(0); }
-  33% { transform: translateY(-30px); }
-  66% { transform: translateY(-60px); }
-  100% { transform: translateY(0); }
+  background: rgba(78,245,138,0.07);
+  padding: 10px 22px;
+  border-radius: 14px;
+  border: 1px solid rgba(78,245,138,0.35);
+  backdrop-filter: blur(8px);
+  text-shadow: 0 0 12px #4ef58a;
 }
 
 /* ---------------------------------
    HERO
 ----------------------------------- */
+
 .hero {
   padding: 40px 60px;
-  padding-bottom: 10px;
 }
 
 .hero h1 {
@@ -109,6 +107,7 @@ html, body {
 /* ---------------------------------
    SEARCH BOX
 ----------------------------------- */
+
 .search-box {
   margin: 0 auto;
   margin-top: 20px;
@@ -117,7 +116,7 @@ html, body {
   padding: 14px 20px;
   border-radius: 14px;
   border: 1px solid rgba(255,255,255,0.06);
-  transition: 0.2s;
+  transition: 0.2s ease;
 }
 
 .search-box input {
@@ -136,6 +135,7 @@ html, body {
 /* ---------------------------------
    FILTERS
 ----------------------------------- */
+
 .filters {
   margin: 20px 60px;
   display: flex;
@@ -148,7 +148,7 @@ html, body {
   border-radius: 50px;
   border: 1px solid rgba(255,255,255,0.06);
   cursor: pointer;
-  transition: 0.15s;
+  transition: 0.15s ease;
 }
 
 .filter.active,
@@ -161,6 +161,7 @@ html, body {
 /* ---------------------------------
    STATS
 ----------------------------------- */
+
 .stats {
   margin: 10px 60px;
   display: flex;
@@ -170,21 +171,20 @@ html, body {
 }
 
 /* ---------------------------------
-   PRODUCTS GRID
+   PRODUCTS
 ----------------------------------- */
+
 .products {
   padding: 40px 60px;
 }
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px,1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 28px;
 }
 
-/* ---------------------------------
-   PRODUCT CARD
------------------------------------ */
+/* PRODUCT CARD */
 .card {
   background: #0d1117;
   padding: 20px;
@@ -228,7 +228,6 @@ html, body {
   border: 1px solid rgba(78,245,138,0.4);
   display: inline-block;
   margin-bottom: 10px;
-  text-transform: capitalize;
 }
 
 /* PRICE */
@@ -247,27 +246,27 @@ html, body {
   text-decoration: line-through;
 }
 
-/* STOCK */
 .stock {
-  margin-top: 2px;
   color: #8b92a1;
   font-size: 14px;
+  margin-top: 3px;
 }
 
 /* BUY BUTTON */
+
 .buy-btn {
   width: 100%;
-  margin-top: 14px;
   background: #4ef58a;
   border: none;
   padding: 12px;
+  margin-top: 14px;
   border-radius: 25px;
-  color: #000;
-  font-weight: 700;
   font-size: 16px;
+  font-weight: 700;
+  color: #000;
   cursor: pointer;
-  box-shadow: 0 0 15px rgba(78,245,138,0.5);
   transition: 0.15s ease;
+  box-shadow: 0 0 15px rgba(78,245,138,0.5);
 }
 
 .buy-btn:hover {
@@ -280,19 +279,9 @@ footer {
   text-align: center;
   margin: 40px 0;
   color: #8b92a1;
-  font-size: 14px;
 }
 
-/* ANIMATIONS */
-.fade-in-up {
-  animation: fadeUp 0.7s ease forwards;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* SCROLL ANIMATION */
 .scroll-fade {
   opacity: 0;
   transform: translateY(20px);
@@ -302,4 +291,13 @@ footer {
 .scroll-fade.visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.7s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
