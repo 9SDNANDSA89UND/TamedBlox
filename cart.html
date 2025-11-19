@@ -6,34 +6,46 @@
     <title>Your Cart - TamedBlox</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-<header class="header">
-    <div class="logo">TamedBlox</div>
+<header class="header glass">
+    <div class="logo">
+        <img src="https://img.icons8.com/fluency-systems-filled/48/7b2cbf/shop.png" class="logo-icon">
+        TamedBlox
+    </div>
     <nav>
         <a href="index.html">Home</a>
-        <a href="cart.html">Cart</a>
+        <a href="cart.html">
+            <img src="https://img.icons8.com/ios-filled/24/7b2cbf/shopping-cart.png" class="icon">
+            Cart
+        </a>
     </nav>
 </header>
 
 <section class="cart-section fade-in">
-    <h2>Your Cart</h2>
+    <h2>
+        <img src="https://img.icons8.com/ios-filled/28/7b2cbf/shopping-basket.png" class="icon">
+        Your Cart
+    </h2>
 
-    <table class="cart-table">
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Price</th>
-            </tr>
-        </thead>
-        <tbody id="cart-items"></tbody>
-    </table>
+    <div class="cart-box glass">
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price (£)</th>
+                </tr>
+            </thead>
+            <tbody id="cart-items"></tbody>
+        </table>
 
-    <div class="cart-total">
-        <strong>Total:</strong> £<span id="total">0</span>
+        <div class="cart-total">
+            <strong>Total:</strong> £<span id="total">0</span>
+        </div>
+
+        <button class="checkout-btn">Checkout</button>
     </div>
-
-    <button class="checkout-btn" onclick="checkout()">Checkout</button>
 </section>
 
 <script src="app.js"></script>
