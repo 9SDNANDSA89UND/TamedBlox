@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cart — TamedBlox Store</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<header class="nav">
+<header class="nav fade-in-up">
   <div class="nav-left">
     <div class="logo">TAMEDBLOX</div>
     <div class="balance">Balance: £0.00</div>
@@ -19,25 +19,45 @@
   </div>
 </header>
 
-<section class="hero" style="padding-bottom:10px;">
-  <h1>Your Cart</h1>
-  <p style="color:#8b92a1;margin-top:10px;">Review your items before checkout.</p>
+<section class="hero fade-in-up" style="padding-bottom:0;">
+  <h1>Your <span>Cart</span></h1>
+  <p style="color:#8b92a1;margin-top:10px;">Instant delivery • Safe checkout • Trusted sellers</p>
 </section>
 
-<section class="products" style="max-width:900px;">
-  <div id="cartItems">
-    <!-- Cart items loaded via cart.js or app.js -->
+<section class="products fade-in" style="max-width:900px;">
+
+  <div id="cartItems" style="margin-bottom:30px;">
+    <!-- Cart items inserted by cart.js -->
   </div>
 
-  <div id="cartSummary" style="margin-top:30px;background:#121722;padding:20px;border-radius:14px;border:1px solid rgba(255,255,255,0.05);">
-    <h2 style="font-size:22px;font-weight:700;">Summary</h2>
-    <p id="totalCost" style="margin-top:10px;color:#4ef58a;font-size:20px;font-weight:700;">Total: £0.00</p>
-    <button class="buy-btn" style="margin-top:20px;">Checkout</button>
+  <div id="cartSummary" class="fade-in-up" style="
+    background:#121722;
+    padding:25px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.05);
+    box-shadow:0 0 25px rgba(78,245,138,0.15);
+  ">
+    <h2 style="font-size:24px;font-weight:700;color:white;">
+      Order <span style="color:#4ef58a;text-shadow:0 0 12px #4ef58a;">Summary</span>
+    </h2>
+
+    <p id="totalCost" style="
+      margin-top:14px;
+      font-size:22px;
+      font-weight:700;
+      color:#4ef58a;
+      text-shadow:0 0 10px #4ef58a;
+    ">
+      Total: £0.00
+    </p>
+
+    <button class="buy-btn" style="margin-top:22px;">Checkout</button>
   </div>
+
 </section>
 
-<footer>
-  © 2025 TamedBlox Styled Store — All Rights Reserved.
+<footer class="fade-in" style="margin-top:60px;">
+  © 2025 TamedBlox Store — All Rights Reserved.
 </footer>
 
 <script src="cart.js"></script>
