@@ -1,52 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TamedBlox Store</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8" />
+
+    <!-- SEO Meta Tags -->
+    <title>TamedBlox – Premium Digital Items</title>
+    <meta name="description" content="TamedBlox offers premium digital items with instant delivery and a modern neon-styled shop interface." />
+    <meta name="keywords" content="TamedBlox, digital items, online store, neon shop, bloxboom style, gaming shop" />
+
+    <!-- Social OpenGraph -->
+    <meta property="og:title" content="TamedBlox Store" />
+    <meta property="og:description" content="Premium digital items with a beautiful neon interface." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tamedblox.com" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TamedBlox Store" />
+    <meta name="twitter:description" content="Premium digital items with a beautiful neon interface." />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
 
-<header class="header glass">
-    <div class="logo">
-        <img src="https://img.icons8.com/fluency-systems-filled/48/7b2cbf/shop.png" class="logo-icon">
-        TamedBlox
+    <!-- NAVBAR -->
+    <header class="navbar glass">
+        <div class="logo">TamedBlox</div>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Search items..." id="searchInput">
+        </div>
+
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="cart.html">Cart</a>
+        </div>
+
+        <!-- FLOATING CART ICON -->
+        <div class="cart-float" onclick="window.location='cart.html'">
+            🛒
+        </div>
+    </header>
+
+    <!-- MAIN GRID LAYOUT -->
+    <div class="main-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar glass">
+            <h3>Filters</h3>
+
+            <div class="filter-block">
+                <label>Price Range</label>
+                <input type="range" min="1" max="100" value="50" id="priceSlider">
+            </div>
+
+            <div class="filter-block">
+                <label>Categories</label>
+                <div class="checkbox">
+                    <input type="checkbox" checked> Featured
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" checked> Popular
+                </div>
+                <div class="checkbox">
+                    <input type="checkbox" checked> Discounted
+                </div>
+            </div>
+
+            <button class="reset-btn">Reset Filters</button>
+        </aside>
+
+        <!-- CONTENT PANEL -->
+        <main class="content">
+
+            <!-- TABS -->
+            <div class="tabs">
+                <button class="tab active">Popular</button>
+                <button class="tab">Deals</button>
+                <button class="tab">Units</button>
+                <button class="tab">Gear</button>
+            </div>
+
+            <!-- PRODUCT GRID -->
+            <div id="product-list" class="product-grid"></div>
+
+        </main>
     </div>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="cart.html">
-            <img src="https://img.icons8.com/ios-filled/24/7b2cbf/shopping-cart.png" class="icon">
-            Cart
-        </a>
-    </nav>
-</header>
 
-<section class="hero animated">
-    <div class="hero-inner">
-        <h1>Premium Digital Items</h1>
-        <p>Smooth shopping. Beautiful design. Instant delivery.</p>
-        <button class="shop-btn" onclick="scrollToProducts()">Browse Products</button>
-    </div>
-</section>
-
-<section id="products" class="products-section fade-in">
-    <h2>
-        <img src="https://img.icons8.com/ios-filled/28/7b2cbf/product.png" class="icon">
-        Our Products
-    </h2>
-
-    <div id="product-list" class="product-grid"></div>
-</section>
-
-<script src="app.js"></script>
-
-<script>
-function scrollToProducts() {
-    document.getElementById("products").scrollIntoView({ behavior: "smooth" });
-}
-</script>
+    <script src="app.js"></script>
 
 </body>
 </html>
