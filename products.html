@@ -1,30 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Products — TamedBlox Store</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<header class="nav fade-in-up">
-  <div class="nav-left">
-    <div class="logo">TAMEDBLOX</div>
-    <div class="balance">Balance: £0.00</div>
+<!-- NAVBAR -->
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-left">
+      <div class="logo">
+        <span class="logo-white">TAMED</span><span class="logo-green">BLOX</span>
+      </div>
+    </div>
   </div>
 </header>
 
-<section class="hero scroll-fade" style="padding-bottom:0;">
-  <h1>All <span>Available Items</span></h1>
-  <p style="color:#8b92a1;margin-top:10px;">Browse the entire catalog.</p>
+<!-- ANNOUNCEMENT BAR -->
+<div class="announcement-section scroll-fade">
+  <div class="announcement">
+    ⚡ Instant Delivery • Secure Checkout • 500+ Orders Delivered
+  </div>
+</div>
+
+<!-- HERO TITLE -->
+<section class="hero fade-in-up">
+  <h1>
+    Browse All<br>
+    <span>Available Items</span>
+  </h1>
 </section>
 
-<section class="products scroll-fade">
-  <div class="product-grid" id="productGrid"></div>
+<!-- SEARCH BOX -->
+<div class="search-box glow-box fade-in-up">
+  <input type="text" placeholder="Search items, rarities, upgrades..." />
+</div>
+
+<!-- FILTERS -->
+<div class="filters fade-in-up">
+  <div class="filter active">All</div>
+  <div class="filter">God</div>
+  <div class="filter">Secret</div>
+  <div class="filter">OG</div>
+</div>
+
+<!-- STATS -->
+<div class="stats fade-in-up">
+  <div>Active listings: 0</div>
+  <div>Orders delivered: 500+</div>
+  <div>Delivery speed: < 30s</div>
+</div>
+
+<!-- PRODUCT GRID (EMPTY — YOU WILL ADD ITEMS LATER) -->
+<section class="products fade-in-up">
+  <div class="product-grid" id="productGrid">
+    <!-- Real items will be added here later -->
+  </div>
 </section>
 
-<footer class="scroll-fade" style="margin-top:60px;">
+<!-- FOOTER -->
+<footer class="scroll-fade">
   © 2025 TamedBlox Store — All Rights Reserved.
 </footer>
 
