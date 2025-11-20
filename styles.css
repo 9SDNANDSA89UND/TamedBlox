@@ -28,7 +28,7 @@ body {
   position:relative;
 }
 
-/* LEFT BACK ICON BUTTON */
+/* LEFT BACK ICON BUTTON — CLEAN VERSION */
 .nav-left {
   position:absolute;
   left:40px;
@@ -48,7 +48,7 @@ body {
   background:#0d1117;
   border:1px solid rgba(78,245,138,0.25);
   text-decoration:none;
-  transition:0.2s ease;
+  transition:none;
 }
 
 .back-btn svg {
@@ -61,8 +61,8 @@ body {
 }
 
 .back-btn:hover {
-  transform:translateY(-50%) translateX(-2px);
   box-shadow:0 0 10px rgba(78,245,138,0.4);
+  transform:translateY(-50%); /* NO sideways animation */
 }
 
 /* CENTER LOGO */
@@ -77,16 +77,9 @@ body {
   font-size:44px;
   font-weight:900;
   letter-spacing:1.5px;
-  transform:translateY(3px);
 }
-.logo-white {
-  color:#fff;
-  text-shadow:0 0 12px rgba(255,255,255,0.45);
-}
-.logo-green {
-  color:#4ef58a;
-  text-shadow:0 0 18px #4ef58a;
-}
+.logo-white { color:#fff; text-shadow:0 0 12px rgba(255,255,255,0.45); }
+.logo-green { color:#4ef58a; text-shadow:0 0 18px #4ef58a; }
 
 /* RIGHT MENU */
 .nav-right {
@@ -126,7 +119,7 @@ body {
   filter:drop-shadow(0 0 8px #4ef58a);
 }
 
-/* Mobile */
+/* MOBILE */
 @media (max-width:700px) {
   .nav-inner { padding:26px 28px; }
   .logo { font-size:34px; }
@@ -136,7 +129,9 @@ body {
   .back-btn { width:28px; height:28px; }
 }
 
-/* ANNOUNCEMENT */
+/* ---------------------------------------------------
+   ANNOUNCEMENT
+--------------------------------------------------- */
 .announcement-section { display:flex; justify-content:center; margin-top:10px; }
 .announcement {
   font-size:18px;
@@ -195,7 +190,7 @@ body {
   gap:28px;
 }
 
-/* CART SUMMARY BUTTON */
+/* CART BUTTON */
 .buy-btn {
   background:#4ef58a;
   border:none;
@@ -219,6 +214,7 @@ footer { text-align:center; margin:40px 0; color:#8b92a1; }
 /* ANIMATION */
 .scroll-fade { opacity:0; transform:translateY(20px); transition:0.7s ease; }
 .scroll-fade.visible { opacity:1; transform:translateY(0); }
+
 .fade-in-up { animation:fadeInUp 0.7s ease forwards; }
 
 @keyframes fadeInUp {
