@@ -10,34 +10,26 @@ body {
 /* NAVBAR */
 .nav {
   width: 100%;
-  display: flex;
-  justify-content: center;
   position: sticky;
   top: 0;
   background: rgba(5, 8, 10, 0.8);
   backdrop-filter: blur(12px);
   z-index: 50;
 }
-
 .nav-inner {
-  width: 100%;
   max-width: 1400px;
-  padding: 24px 60px;
-  display: flex;
+  margin: 0 auto;
+  padding: 22px 60px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
-  position: relative;
 }
 
-/* LOGO CENTER */
+/* LOGO CENTERED */
 .nav-center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
+  justify-self: center;
   text-align: center;
 }
-
 .logo {
   font-size: 42px;
   font-weight: 900;
@@ -46,13 +38,13 @@ body {
 .logo-white { color: #fff; text-shadow: 0 0 12px rgba(255,255,255,0.45); }
 .logo-green { color: #4ef58a; text-shadow: 0 0 18px #4ef58a; }
 
-/* RIGHT MENU */
+/* RIGHT SIDE */
 .nav-right {
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: 22px;
 }
-
 .balance-pill {
   background: #0d1117;
   padding: 8px 20px;
@@ -63,9 +55,7 @@ body {
   font-size: 15px;
   text-shadow: 0 0 6px #4ef58a;
   box-shadow: 0 0 8px rgba(78,245,138,0.2);
-  margin-right: 8px;
 }
-
 .icon-btn svg {
   width: 26px;
   height: 26px;
@@ -75,7 +65,17 @@ body {
   opacity: 0.85;
   transition: 0.2s ease;
 }
-.icon-btn:hover svg { opacity: 1; filter: drop-shadow(0 0 8px #4ef58a); }
+.icon-btn:hover svg {
+  opacity: 1;
+  filter: drop-shadow(0 0 8px #4ef58a);
+}
+
+/* LEFT SIDE */
+.nav-left {
+  justify-self: start;
+  display: flex;
+  align-items: center;
+}
 
 /* ANNOUNCEMENT */
 .announcement-section {
