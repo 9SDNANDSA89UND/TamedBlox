@@ -6,64 +6,98 @@ body {
   font-family:"Inter",sans-serif;
 }
 
-/* NAVBAR */
+/* NAVBAR — POLISHED VERSION */
 .nav {
-  width:100%;
-  display:flex;
-  justify-content:center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 20;
 }
 
 .nav-inner {
-  width:100%;
-  max-width:1400px;
-  padding:20px 40px;
-  position:relative;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  width: 100%;
+  max-width: 1400px;
+  padding: 22px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
-/* LOGO */
+/* Center logo perfectly */
+.nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .logo {
-  font-size:32px;
-  font-weight:800;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 1px;
 }
-.logo-white { color:#fff; text-shadow:0 0 8px rgba(255,255,255,0.4); }
-.logo-green { color:#4ef58a; text-shadow:0 0 12px #4ef58a; }
-
-/* RIGHT SIDE USER MENU */
-.user-menu {
-  position:absolute;
-  right:40px;
-  top:50%;
-  transform:translateY(-50%);
-  display:flex;
-  align-items:center;
-  gap:22px;
+.logo-white {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255,255,255,0.45);
+}
+.logo-green {
+  color: #4ef58a;
+  text-shadow: 0 0 15px #4ef58a;
 }
 
-/* BALANCE BOX */
-.balance-box {
-  padding:6px 16px;
-  background:#0d1117;
-  border:1px solid rgba(255,255,255,0.06);
-  border-radius:12px;
-  color:#4ef58a;
-  font-weight:600;
-  text-shadow:0 0 8px #4ef58a;
-  font-size:15px;
+/* Right-side menu */
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 22px;
 }
 
-/* PROFILE */
-.profile-btn svg,
-.cart-btn svg {
-  transition:0.2s ease;
-  opacity:0.85;
+/* Balance pill */
+.balance-pill {
+  background: #0d1117;
+  padding: 7px 18px;
+  border-radius: 50px;
+  border: 1px solid rgba(78,245,138,0.35);
+  color: #4ef58a;
+  font-weight: 600;
+  font-size: 15px;
+  text-shadow: 0 0 10px #4ef58a;
+  box-shadow: 0 0 12px rgba(78,245,138,0.25);
 }
-.profile-btn:hover svg,
-.cart-btn:hover svg {
-  opacity:1;
-  filter:drop-shadow(0 0 6px #4ef58a);
+
+/* Icon buttons */
+.icon-btn svg {
+  width: 26px;
+  height: 26px;
+  stroke: #4ef58a;
+  stroke-width: 2;
+  fill: none;
+  opacity: 0.85;
+  transition: 0.2s ease;
+}
+
+.icon-btn:hover svg {
+  opacity: 1;
+  filter: drop-shadow(0 0 8px #4ef58a);
+}
+
+/* Responsive navbar */
+@media (max-width: 700px) {
+  .logo {
+    font-size: 28px;
+  }
+
+  .balance-pill {
+    padding: 6px 14px;
+    font-size: 14px;
+  }
+
+  .icon-btn svg {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 /* ANNOUNCEMENT */
@@ -125,7 +159,7 @@ body {
   gap:28px;
 }
 
-/* REVIEWS */
+/* REVIEWS CARDS */
 .review-card:hover {
   transform:translateY(-4px);
   box-shadow:0 0 20px rgba(78,245,138,0.3);
