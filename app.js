@@ -53,6 +53,7 @@ function renderProducts(list) {
   list.forEach(product => {
     const card = document.createElement("div");
     card.className = "card scroll-fade";
+    card.setAttribute("data-rarity", product.rarity.toLowerCase()); // 🎨 rarity class
 
     card.innerHTML = `
       <span class="tag">${product.rarity}</span>
