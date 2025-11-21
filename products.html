@@ -8,12 +8,15 @@
 </head>
 <body>
 
+<!-- NAVBAR -->
 <header class="nav">
   <div class="nav-inner">
 
     <div class="nav-left">
       <a href="index.html" class="back-btn">
-        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+        <svg viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
       </a>
     </div>
 
@@ -41,16 +44,19 @@
           <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
         </svg>
       </button>
-
     </div>
 
   </div>
 </header>
 
+<!-- ANNOUNCEMENT -->
 <div class="announcement-section scroll-fade">
-  <div class="announcement">⚡ Instant Delivery • Secure Checkout • 500+ Orders Delivered</div>
+  <div class="announcement">
+    ⚡ Instant Delivery • Secure Checkout • 500+ Orders Delivered
+  </div>
 </div>
 
+<!-- HERO -->
 <section class="hero fade-in-up">
   <h1>
     Browse All<br>
@@ -58,10 +64,12 @@
   </h1>
 </section>
 
+<!-- SEARCH -->
 <div class="search-box glow-box fade-in-up">
   <input type="text" placeholder="Search items, rarities, upgrades..." />
 </div>
 
+<!-- FILTERS -->
 <div class="filters fade-in-up">
   <div class="filter active">All</div>
   <div class="filter">God</div>
@@ -69,34 +77,13 @@
   <div class="filter">OG</div>
 </div>
 
+<!-- STATS -->
 <div class="stats fade-in-up">
   <div>Active listings: 0</div>
   <div>Orders delivered: 500+</div>
   <div>Delivery speed: < 30s</div>
 </div>
 
-<section class="products fade-in-up">
-  <div class="product-grid" id="productGrid"></div>
-</section>
+<!-- PRODUCT GRID -->
+<section class="products fade
 
-<footer class="scroll-fade">
-  © 2025 TamedBlox Store — All Rights Reserved.
-</footer>
-
-<!-- CART DRAWER -->
-<div id="cartDrawer" class="cart-drawer">
-  <div class="drawer-header">
-    <h2>Your Cart</h2>
-    <button id="closeDrawer">✕</button>
-  </div>
-  <div id="drawerContent">
-    <p style="color:#8b92a1;">Your cart is empty.</p>
-  </div>
-</div>
-
-<div id="cartOverlay" class="cart-overlay"></div>
-
-<script src="app.js"></script>
-<script src="drawer.js"></script>
-</body>
-</html>
