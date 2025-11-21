@@ -12,18 +12,18 @@ body {
   width: 100%;
   position: sticky;
   top: 0;
-  background: rgba(5, 8, 10, 0.60); /* more transparent */
+  background: rgba(5, 8, 10, 0.60);
   backdrop-filter: blur(14px);
   z-index: 50;
   display: flex;
   justify-content: center;
-  padding: 6px 0; /* slightly thicker */
+  padding: 6px 0;
 }
 
 .nav-inner {
   width: 100%;
   max-width: 1400px;
-  padding: 14px 28px; /* thicker navbar interior */
+  padding: 14px 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -104,7 +104,7 @@ body {
    ANNOUNCEMENT BAR – SHORTER WIDTH
 ================================= */
 .announcement-section {
-  max-width: 750px; /* shorter bar width */
+  max-width: 750px;
   margin: 12px auto 0;
   display: flex;
   justify-content: center;
@@ -125,11 +125,10 @@ body {
   overflow: hidden;
 }
 
-/* Shorter scrolling text */
 .marquee span {
   display: inline-block;
   white-space: nowrap;
-  padding-left: 80%; /* shorter movement */
+  padding-left: 80%;
   animation: marqueeScroll 13s linear infinite;
   line-height: 26px;
 }
@@ -199,7 +198,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow: hidden; /* REMOVE WHITE LINE */
+  overflow: hidden; /* fixes white line */
   transition: 0.25s ease;
 }
 
@@ -207,8 +206,8 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block; /* remove gaps */
-  border: none;   /* remove white edge */
+  display: block;
+  border: none;
 }
 
 /* BADGES */
@@ -221,7 +220,6 @@ body {
   z-index: 5;
 }
 
-/* RARITY TAGS */
 .tag {
   padding: 4px 10px;
   font-size: 11px;
@@ -229,6 +227,7 @@ body {
   border-radius: 8px;
   text-transform: uppercase;
 }
+
 .tag-god { background: #f6d66a; color: black; }
 .tag-secret { background: #b56cff; color: black; }
 .tag-og { background: #4ef5d8; color: black; }
@@ -246,12 +245,35 @@ body {
 .discount-orange { background: #ffb856; }
 .discount-red { background: #ff5e5e; }
 
-/* PRICE TEXT */
-.card h3 {
-  font-size: 16px;
-  font-weight: 800;
-  margin-top: 12px;
+/* CLEAN PRODUCT SUBTEXT */
+.card p {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #9ca4b1;
+  font-weight: 500;
   text-align: center;
+}
+
+/* PRICE AREA */
+.price-box {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.price {
+  color: #4ef58a;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.old-price {
+  color: #888;
+  font-size: 14px;
+  text-decoration: line-through;
+  opacity: 0.7;
+  margin-left: 2px;
 }
 
 /* BUY BUTTON */
@@ -284,6 +306,27 @@ body {
 
 .cart-drawer.open {
   right: 0;
+}
+
+/* FIXED CLEAN CLOSE BUTTON */
+.close-drawer {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.close-drawer:hover {
+  background: rgba(255,255,255,0.15);
+  transform: scale(1.05);
 }
 
 /* OVERLAY */
