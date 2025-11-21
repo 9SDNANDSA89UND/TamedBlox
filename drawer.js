@@ -1,51 +1,38 @@
 /* ============================
-   CART DRAWER CONTROLS (FINAL)
-   Works with updated styles + app.js
+   CART DRAWER TOGGLE SYSTEM
 ============================ */
 
-// OPEN CART
-export function openCart() {
-  const drawer = document.getElementById("cartDrawer");
-  const overlay = document.getElementById("cartOverlay");
+const cartBtn = document.getElementById("cartBtn");
+const cartDrawer = document.getElementById("cartDrawer");
+const cartOverlay = document.getElementById("cartOverlay");
+const closeDrawerBtn = document.getElementById("closeDrawer");
 
-  if (drawer && overlay) {
-    drawer.classList.add("open");
-    overlay.classList.add("show");
-  }
+/* Open Drawer */
+function openDrawer() {
+  cartDrawer.classList.add("open");
+  cartOverlay.style.display = "block";
+
+  // Disable background scroll
+  document.body.style.overflow = "hidden";
 }
 
-// CLOSE CART
-export function closeCart() {
-  const drawer = document.getElementById("cartDrawer");
-  const overlay = document.getElementById("cartOverlay");
+/* Close Drawer */
+function closeDrawer() {
+  cartDrawer.classList.remove("open");
+  cartOverlay.style.display = "none";
 
-  if (drawer && overlay) {
-    drawer.classList.remove("open");
-    overlay.classList.remove("show");
-  }
+  // Restore scroll
+  document.body.style.overflow = "";
 }
 
-// EVENT LISTENERS
-document.addEventListener("DOMContentLoaded", () => {
-  const cartBtn = document.getElementById("cartBtn");
-  const closeBtn = document.getElementById("closeDrawer");
-  const overlay = document.getElementById("cartOverlay");
+/* Button listeners */
+cartBtn?.addEventListener("click", openDrawer);
+closeDrawerBtn?.addEventListener("click", closeDrawer);
 
-  if (cartBtn) {
-    cartBtn.addEventListener("click", () => {
-      openCart();
-    });
-  }
+/* Click outside to close */
+cartOverlay?.addEventListener("click", closeDrawer);
 
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      closeCart();
-    });
-  }
-
-  if (overlay) {
-    overlay.addEventListener("click", () => {
-      closeCart();
-    });
-  }
+/* ESC key closes drawer */
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeDrawer();
 });
