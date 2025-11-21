@@ -12,8 +12,9 @@
   <!-- NAVBAR -->
   <nav class="nav">
     <div class="nav-inner">
+
       <div class="nav-left">
-        <button class="icon-btn">
+        <button class="icon-btn" id="profileBtn">
           <svg viewBox="0 0 24 24">
             <circle cx="12" cy="7" r="4"></circle>
             <path d="M4 22c0-4 4-7 8-7s8 3 8 7"></path>
@@ -28,7 +29,8 @@
       </div>
 
       <div class="nav-right">
-        <div class="balance-pill">Balance: £0.00</div>
+        <div class="balance-pill" id="balanceDisplay">Balance: £0.00</div>
+
         <button id="cartBtn" class="icon-btn">
           <svg viewBox="0 0 24 24">
             <path d="M3 3h2l3 12h11l3-8H6"
@@ -39,22 +41,23 @@
           <div id="cartDot" class="cart-dot"></div>
         </button>
       </div>
+
     </div>
   </nav>
 
   <!-- ANNOUNCEMENT -->
   <div class="announcement-section">
     <div class="announcement marquee">
-      <span>Instant Delivery • Secure Checkout • Trusted by 100+ Players • 24/7 Support</span>
+      <span>Instant Delivery • Trusted Seller • 100% Secure Checkout • 24/7 Support</span>
     </div>
   </div>
 
-  <!-- MINIMAL CLEAN CHECKOUT -->
-  <section class="checkout-card premium-checkout">
+  <!-- CLEAN MINIMAL CHECKOUT CARD -->
+  <section class="premium-checkout">
 
     <h2 class="checkout-title">Checkout</h2>
 
-    <!-- PRODUCT -->
+    <!-- PRODUCT PREVIEW -->
     <div class="checkout-product-box">
       <img id="checkoutItemImage" class="checkout-product-img" alt="">
       <div class="checkout-product-info">
@@ -62,7 +65,7 @@
       </div>
     </div>
 
-    <!-- SUMMARY -->
+    <!-- SUMMARY TABLE -->
     <div class="checkout-summary-table">
       <div class="checkout-row">
         <span id="checkoutItemName2"></span>
@@ -81,7 +84,7 @@
     </div>
 
     <!-- SECURE PAYMENT BUTTON -->
-    <button onclick="startPayment()" class="checkout-main-btn secure-btn">
+    <button onclick="startPayment()" class="secure-btn">
       <svg width="20" height="20" viewBox="0 0 24 24" style="margin-right:8px;">
         <path fill="#000" d="M12 1a5 5 0 0 1 5 5v3h1a2 2 0 0 1 
         2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V11a2 2 0 0 1 
@@ -100,15 +103,17 @@
     </div>
     <div id="drawerContent"></div>
   </div>
+
   <div id="cartOverlay" class="cart-overlay"></div>
 
+  <!-- SCRIPTS -->
   <script src="app.js"></script>
   <script src="drawer.js" type="module"></script>
 
   <script>
     function loadCheckoutCart() {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      if (cart.length === 0) return;
+      if (!cart.length) return;
 
       const item = cart[0];
 
@@ -126,7 +131,10 @@
 
     async function startPayment() {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      if (cart.length === 0) return alert("Your cart is empty.");
+      if (!cart.length) {
+        alert("Your cart is empty.");
+        return;
+      }
 
       try {
         const res = await fetch("https://website-5eml.onrender.com/pay/create-checkout-session", {
@@ -135,13 +143,18 @@
           body: JSON.stringify({ cart })
         });
 
+        if (!res.ok) {
+          alert("Payment error. Please try again.");
+          return;
+        }
+
         const data = await res.json();
         if (data.url) {
           localStorage.removeItem("cart");
           window.location.href = data.url;
         }
-      } catch {
-        alert("Network error.");
+      } catch (e) {
+        alert("Network error. Please try again.");
       }
     }
   </script>
