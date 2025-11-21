@@ -29,14 +29,12 @@ body {
   position: relative;
 }
 
-/* LEFT SIDE (for balance symmetry) */
 .nav-left {
-  width: 200px; /* fixed width for symmetry */
+  width: 200px;
   display: flex;
   align-items: center;
 }
 
-/* LOGO perfectly centered */
 .nav-center {
   position: absolute;
   left: 50%;
@@ -52,9 +50,8 @@ body {
 .logo-white { color: #fff; text-shadow: 0 0 12px rgba(255,255,255,0.45); }
 .logo-green { color: #4ef58a; text-shadow: 0 0 18px #4ef58a; }
 
-/* RIGHT SIDE */
 .nav-right {
-  width: 200px; /* same fixed width as left */
+  width: 200px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -72,6 +69,13 @@ body {
   text-shadow: 0 0 6px #4ef58a;
   box-shadow: 0 0 8px rgba(78,245,138,0.2);
 }
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
 .icon-btn svg {
   width: 26px;
   height: 26px;
@@ -81,6 +85,7 @@ body {
   opacity: 0.85;
   transition: 0.2s ease;
 }
+
 .icon-btn:hover svg {
   opacity: 1;
   filter: drop-shadow(0 0 8px #4ef58a);
@@ -286,4 +291,57 @@ footer { text-align:center; margin:40px 0; color:#8b92a1; }
 @keyframes fadeInUp {
   from { opacity:0; transform:translateY(20px); }
   to { opacity:1; transform:translateY(0); }
+}
+
+/* =============================== */
+/* CART DRAWER (NEW) */
+/* =============================== */
+
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: -380px;
+  width: 360px;
+  height: 100%;
+  background: #0d1117;
+  border-left: 1px solid rgba(255,255,255,0.08);
+  box-shadow: -4px 0 25px rgba(0,0,0,0.4);
+  transition: right .35s ease;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.cart-drawer.open {
+  right: 0;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+#closeDrawer {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+}
+
+/* BACKDROP */
+.cart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  z-index: 9998;
+}
+
+.cart-overlay.show {
+  display: block;
 }
