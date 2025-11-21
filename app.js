@@ -1,3 +1,7 @@
+/* ============================
+   PRODUCT LIST (FRONT-END DATA)
+   Add oldPrice to trigger discount badge
+============================ */
 const products = [
   {
     name: "Mystic Blade",
@@ -10,17 +14,60 @@ const products = [
     name: "Shadow Cloak",
     rarity: "Secret",
     price: 8.49,
-    oldPrice: 12.0,
+    oldPrice: 12.00,
     image: "https://via.placeholder.com/300"
   },
   {
     name: "OG Emblem",
     rarity: "OG",
-    price: 4.2,
+    price: 4.20,
     image: "https://via.placeholder.com/300"
   }
 ];
 
+/* ============================
+   DISCOUNT CALCULATION
+============================ */
+function getDiscountPercent(price, oldPrice) {
+  if (!oldPrice || oldPrice <= price) return 0;
+  return Math.round(((oldPrice - price) / oldPrice) * 100);
+}
+
+function getDiscountClass(percent) {
+  if (percent > 90) return "discount-red";
+  if (percent > 50) return "discount-orange";
+  if (percent > 20) return "discount-yellow";
+  return "discount-green";
+}
+
+/* ============================
+   TOAST NOTIFICATIONS
+============================ */
+let toastContainer = document.querySelector(".toast-container");
+
+if (!toastContainer) {
+  toastContainer = document.createElement("div");
+  toastContainer.className = "toast-container";
+  document.body.appendChild(toastContainer);
+}
+
+function showToast(message) {
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.innerText = message;
+
+  toastContainer.appendChild(toast);
+
+  setTimeout(() => toast.classList.add("show"), 20);
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+/* ============================
+   CART SYSTEM
+============================ */
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 function saveCart() {
@@ -29,17 +76,25 @@ function saveCart() {
   updateCartDot();
 }
 
+/* ADD TO CART */
 function addToCart(name) {
-  const p = products.find(x => x.name === name);
-  if (!p) return;
+  const product = products.find(p => p.name === name);
+  if (!product) return;
 
   const existing = cart.find(i => i.name === name);
 
-  if (existing) existing.qty++;
-  else cart.push({ name: p.name, price: p.price, qty: 1 });
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({
+      name: product.name,
+      price: product.price,
+      qty: 1
+    });
+  }
 
   saveCart();
-  showToast(`${p.name} added to cart`);
+  showToast(`${product.name} added to cart`);
 }
 
 function updateCartDot() {
@@ -48,12 +103,16 @@ function updateCartDot() {
   dot.style.display = cart.length > 0 ? "block" : "none";
 }
 
-function changeQty(name, amt) {
+/* CHANGE / REMOVE QTY */
+function changeQty(name, amount) {
   const item = cart.find(i => i.name === name);
   if (!item) return;
 
-  item.qty += amt;
-  if (item.qty <= 0) cart = cart.filter(i => i.name !== name);
+  item.qty += amount;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.name !== name);
+  }
 
   saveCart();
 }
@@ -63,6 +122,7 @@ function removeItem(name) {
   saveCart();
 }
 
+/* CART DRAWER */
 function openCart() {
   document.getElementById("cartDrawer").classList.add("open");
   document.getElementById("cartOverlay").classList.add("show");
@@ -73,25 +133,14 @@ function closeCart() {
   document.getElementById("cartOverlay").classList.remove("show");
 }
 
-function showToast(msg) {
-  const box = document.querySelector(".toast-container");
-  const t = document.createElement("div");
-  t.className = "toast";
-  t.innerText = msg;
-  box.appendChild(t);
-  setTimeout(() => t.classList.add("show"), 20);
-  setTimeout(() => { t.classList.remove("show"); t.remove(); }, 2500);
-}
-
-function goToCheckout() {
-  window.location.href = "checkout.html";
-}
-
+/* ============================
+   UPDATE CART DRAWER CONTENT
+============================ */
 function updateCartDrawer() {
-  const box = document.getElementById("drawerContent");
+  const drawer = document.getElementById("drawerContent");
 
   if (cart.length === 0) {
-    box.innerHTML = `<p style="color:#8b92a1;">Your cart is empty.</p>`;
+    drawer.innerHTML = `<p style="color:#8b92a1;">Your cart is empty.</p>`;
     return;
   }
 
@@ -99,12 +148,13 @@ function updateCartDrawer() {
   let total = 0;
 
   cart.forEach(item => {
-    total += item.qty * item.price;
+    total += item.price * item.qty;
 
     html += `
       <div style="margin-bottom:18px;">
-        <div style="font-weight:600">${item.name}</div>
-        <div style="color:#4ef58a;font-weight:700">£${item.price}</div>
+        <div style="font-weight:600; margin-bottom:3px">${item.name}</div>
+        <div style="color:#4ef58a; font-weight:700">£${item.price}</div>
+
         <div style="margin-top:10px; display:flex; gap:8px;">
           <button class="qty-btn" onclick="changeQty('${item.name}', -1)">−</button>
           <button class="qty-btn" onclick="changeQty('${item.name}', 1)">+</button>
@@ -119,22 +169,40 @@ function updateCartDrawer() {
     <div style="font-size:18px;font-weight:700;color:#4ef58a;margin-bottom:12px;">
       Total: £${total.toFixed(2)}
     </div>
+
     <button class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout</button>
   `;
 
-  box.innerHTML = html;
+  drawer.innerHTML = html;
 }
 
+function goToCheckout() {
+  window.location.href = "checkout.html";
+}
+
+/* ============================
+   RENDER PRODUCT CARDS
+============================ */
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
   grid.innerHTML = "";
 
   list.forEach(p => {
     const rarityClass = `tag-${p.rarity.toLowerCase()}`;
+    const discountPercent = getDiscountPercent(p.price, p.oldPrice);
+
+    const discountTag = discountPercent > 0
+      ? `<span class="discount-tag ${getDiscountClass(discountPercent)}">Save ${discountPercent}%</span>`
+      : "";
 
     grid.innerHTML += `
       <div class="card scroll-fade">
-        <span class="tag ${rarityClass}">${p.rarity}</span>
+
+        <div class="card-badges">
+          <span class="tag ${rarityClass}">${p.rarity}</span>
+          ${discountTag}
+        </div>
+
         <img src="${p.image}">
         <h3>${p.name}</h3>
         <p>Instant delivery • Trusted seller</p>
@@ -150,15 +218,22 @@ function renderProducts(list) {
   });
 
   setTimeout(() => {
-    document.querySelectorAll(".scroll-fade").forEach(el => el.classList.add("visible"));
-  }, 50);
+    document.querySelectorAll(".scroll-fade").forEach(el => {
+      el.classList.add("visible");
+    });
+  }, 80);
 }
 
-document.getElementById("searchInput")?.addEventListener("input", e => {
-  const q = e.target.value.toLowerCase();
-  renderProducts(products.filter(p => p.name.toLowerCase().includes(q)));
+/* ============================
+   SEARCH
+============================ */
+document.getElementById("searchInput")?.addEventListener("input", (e) => {
+  const value = e.target.value.toLowerCase();
+  const filtered = products.filter(p => p.name.toLowerCase().includes(value));
+  renderProducts(filtered);
 });
 
+/* INITIALIZE */
 renderProducts(products);
 updateCartDrawer();
 updateCartDot();
