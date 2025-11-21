@@ -9,18 +9,30 @@
 
 <body>
 
-  <!-- NAV -->
+  <!-- NAVBAR -->
   <nav class="nav">
     <div class="nav-inner">
 
       <div class="nav-left">
+        <button class="icon-btn">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="7" r="4"></circle>
+            <path d="M4 22c0-4 4-7 8-7s8 3 8 7"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="nav-center">
         <div class="logo">
           <span class="logo-white">TAMED</span><span class="logo-green">BLOX</span>
         </div>
       </div>
 
       <div class="nav-right">
-        <button class="icon-btn" onclick="openCart()">
+        <div class="balance-pill">Balance: £0.00</div>
+
+        <!-- CART BUTTON MUST BE ID=cartBtn -->
+        <button id="cartBtn" class="icon-btn">
           <svg viewBox="0 0 24 24">
             <path d="M6 6h15l-2 12H8L6 6z"></path>
             <circle cx="9" cy="20" r="1"></circle>
@@ -34,18 +46,21 @@
   </nav>
 
   <!-- ANNOUNCEMENT MARQUEE -->
-  <div class="announcement-section scroll-fade">
+  <div class="announcement-section">
     <div class="announcement marquee">
-      <span>
-        ⚡ Instant Delivery • Secure Checkout • 500+ Orders Delivered • Trusted by 100+ Players • 24/7 Support •
-      </span>
+      <span>⚡ Instant Delivery • Secure Checkout • 500+ Orders Delivered • Trusted by 100+ Players • 24/7 Support •</span>
     </div>
   </div>
 
-  <!-- HERO -->
+  <!-- HERO SECTION -->
   <section class="hero scroll-fade">
     <h1>Premium <span>Game Items</span> Delivered Instantly</h1>
   </section>
+
+  <!-- SEARCH BAR -->
+  <div class="search-box scroll-fade">
+    <input id="searchInput" type="text" placeholder="Search items..." />
+  </div>
 
   <!-- PRODUCTS -->
   <section class="products">
@@ -56,14 +71,15 @@
   <div id="cartDrawer" class="cart-drawer">
     <div class="drawer-header">
       <h2>Your Cart</h2>
-      <button id="closeDrawer" onclick="closeCart()">×</button>
+      <button id="closeDrawer" class="close-drawer">×</button>
     </div>
 
     <div id="drawerContent"></div>
   </div>
 
-  <div id="cartOverlay" class="cart-overlay" onclick="closeCart()"></div>
+  <div id="cartOverlay" class="cart-overlay"></div>
 
   <script src="app.js"></script>
+  <script src="drawer.js"></script>
 </body>
 </html>
