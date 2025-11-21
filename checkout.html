@@ -49,21 +49,20 @@
     </div>
   </div>
 
-  <!-- PREMIUM CHECKOUT CARD -->
+  <!-- MINIMAL CLEAN CHECKOUT -->
   <section class="checkout-card premium-checkout">
 
-    <h2 class="checkout-title">Your Order</h2>
+    <h2 class="checkout-title">Checkout</h2>
 
-    <!-- PRODUCT PREVIEW -->
+    <!-- PRODUCT -->
     <div class="checkout-product-box">
-      <img id="checkoutItemImage" class="checkout-product-img" src="" alt="">
+      <img id="checkoutItemImage" class="checkout-product-img" alt="">
       <div class="checkout-product-info">
         <h3 id="checkoutItemName"></h3>
-        <p class="checkout-description">Digital in-game item delivered instantly. No Roblox password required.</p>
       </div>
     </div>
 
-    <!-- SUMMARY TABLE -->
+    <!-- SUMMARY -->
     <div class="checkout-summary-table">
       <div class="checkout-row">
         <span id="checkoutItemName2"></span>
@@ -71,7 +70,7 @@
       </div>
 
       <div class="checkout-row">
-        <span>Quantity</span>
+        <span>Qty</span>
         <span id="checkoutItemQty"></span>
       </div>
 
@@ -83,62 +82,17 @@
 
     <!-- SECURE PAYMENT BUTTON -->
     <button onclick="startPayment()" class="checkout-main-btn secure-btn">
-      <svg style="width:20px;height:20px;margin-right:6px;" viewBox="0 0 24 24">
-        <path fill="#000" d="M12 1a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v10a2 
-        2 0 0 1-2 2H6a2 2 0 0 1-2-2V11a2 2 0 0 1 2-2h1V6a5 
-        5 0 0 1 5-5m3 8V6a3 3 0 0 0-6 0v3h6Z" />
+      <svg width="20" height="20" viewBox="0 0 24 24" style="margin-right:8px;">
+        <path fill="#000" d="M12 1a5 5 0 0 1 5 5v3h1a2 2 0 0 1 
+        2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V11a2 2 0 0 1 
+        2-2h1V6a5 5 0 0 1 5-5m3 8V6a3 3 0 0 0-6 0v3h6Z"/>
       </svg>
-      Pay Securely with Stripe
+      Pay with Stripe
     </button>
-
-    <!-- TRUST BADGES -->
-    <div class="trust-badges">
-
-      <div class="trust-badge">
-        <svg viewBox="0 0 24 24" width="18" height="18">
-          <path fill="#4ef58a" d="M12 1l9 4v6c0 5.55-3.84 10.74-9 
-          12-5.16-1.26-9-6.45-9-12V5l9-4m0 2.18L5 6.09v4.91c0 
-          4.42 2.86 8.65 7 9.72 4.14-1.07 7-5.3 
-          7-9.72V6.09l-7-2.91M12 7a3 3 0 0 1 3 3c0 
-          1.31-.84 2.42-2 2.83V16h-2v-3.17A3 3 0 0 1 9 10a3 
-          3 0 0 1 3-3Z"/>
-        </svg>
-        SSL Encrypted
-      </div>
-
-      <div class="trust-badge">
-        <svg width="18" height="18" viewBox="0 0 24 24">
-          <path fill="#4ef58a" d="M21 8V7l-3-3h-1l2 
-          3h-4l2-3h-1l-3 3v1h8M3 21V3h18v18H3m16-2V5H5v14h14Z" />
-        </svg>
-        Verified Seller
-      </div>
-
-      <div class="trust-badge">
-        <svg width="22" height="22" viewBox="0 0 24 24">
-          <rect fill="#4ef58a" x="3" y="4" width="18" height="16" rx="2"/>
-          <path fill="#000" d="M7 12h10v2H7z"/>
-        </svg>
-        Stripe Secure
-      </div>
-
-    </div>
-
-    <!-- EXTRA INFO -->
-    <div class="delivery-guarantee">
-      <svg width="18" height="18" viewBox="0 0 24 24" style="margin-right:6px;">
-        <path fill="#4ef58a" d="M3 12h13l6-8v16l-6-8H3Z" />
-      </svg>
-      Instant delivery after payment.
-    </div>
-
-    <div class="support-line">
-      Questions? Contact us at <span>support@tamedblox.com</span>
-    </div>
 
   </section>
 
-  <!-- CART DRAWER (unchanged) -->
+  <!-- CART DRAWER -->
   <div id="cartDrawer" class="cart-drawer">
     <div class="drawer-header">
       <h2>Your Cart</h2>
@@ -146,7 +100,6 @@
     </div>
     <div id="drawerContent"></div>
   </div>
-
   <div id="cartOverlay" class="cart-overlay"></div>
 
   <script src="app.js"></script>
