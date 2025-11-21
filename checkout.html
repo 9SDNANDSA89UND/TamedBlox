@@ -12,7 +12,6 @@
   <!-- NAVBAR -->
   <nav class="nav">
     <div class="nav-inner">
-
       <div class="nav-left">
         <button class="icon-btn">
           <svg viewBox="0 0 24 24">
@@ -30,55 +29,121 @@
 
       <div class="nav-right">
         <div class="balance-pill">Balance: £0.00</div>
-
         <button id="cartBtn" class="icon-btn">
           <svg viewBox="0 0 24 24">
-            <path d="M3 3h2l3 12h11l3-8H6" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round"></path>
+            <path d="M3 3h2l3 12h11l3-8H6"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
             <circle cx="9" cy="20" r="2"></circle>
             <circle cx="18" cy="20" r="2"></circle>
           </svg>
           <div id="cartDot" class="cart-dot"></div>
         </button>
       </div>
-
     </div>
   </nav>
 
   <!-- ANNOUNCEMENT -->
   <div class="announcement-section">
     <div class="announcement marquee">
-      <span>
-        ⚡ Instant Delivery • Secure Checkout • 500+ Orders Delivered • Trusted by 100+ Players • 24/7 Support •
-      </span>
+      <span>Instant Delivery • Secure Checkout • Trusted by 100+ Players • 24/7 Support</span>
     </div>
   </div>
 
-  <!-- CHECKOUT CARD -->
-  <section class="checkout-card">
+  <!-- PREMIUM CHECKOUT CARD -->
+  <section class="checkout-card premium-checkout">
 
-    <h2>Your Order</h2>
+    <h2 class="checkout-title">Your Order</h2>
 
-    <div id="cartItems" class="checkout-items"></div>
-
-    <div class="checkout-total">
-      <span>Total:</span>
-      <span id="totalPrice" class="checkout-total-amount"></span>
+    <!-- PRODUCT PREVIEW -->
+    <div class="checkout-product-box">
+      <img id="checkoutItemImage" class="checkout-product-img" src="" alt="">
+      <div class="checkout-product-info">
+        <h3 id="checkoutItemName"></h3>
+        <p class="checkout-description">Digital in-game item delivered instantly. No Roblox password required.</p>
+      </div>
     </div>
 
-    <button onclick="startPayment()" class="checkout-main-btn">
-      Pay with Stripe
+    <!-- SUMMARY TABLE -->
+    <div class="checkout-summary-table">
+      <div class="checkout-row">
+        <span id="checkoutItemName2"></span>
+        <span id="checkoutItemPrice"></span>
+      </div>
+
+      <div class="checkout-row">
+        <span>Quantity</span>
+        <span id="checkoutItemQty"></span>
+      </div>
+
+      <div class="checkout-row total-row">
+        <span>Total</span>
+        <span id="totalPrice" class="checkout-total-amount"></span>
+      </div>
+    </div>
+
+    <!-- SECURE PAYMENT BUTTON -->
+    <button onclick="startPayment()" class="checkout-main-btn secure-btn">
+      <svg style="width:20px;height:20px;margin-right:6px;" viewBox="0 0 24 24">
+        <path fill="#000" d="M12 1a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v10a2 
+        2 0 0 1-2 2H6a2 2 0 0 1-2-2V11a2 2 0 0 1 2-2h1V6a5 
+        5 0 0 1 5-5m3 8V6a3 3 0 0 0-6 0v3h6Z" />
+      </svg>
+      Pay Securely with Stripe
     </button>
+
+    <!-- TRUST BADGES -->
+    <div class="trust-badges">
+
+      <div class="trust-badge">
+        <svg viewBox="0 0 24 24" width="18" height="18">
+          <path fill="#4ef58a" d="M12 1l9 4v6c0 5.55-3.84 10.74-9 
+          12-5.16-1.26-9-6.45-9-12V5l9-4m0 2.18L5 6.09v4.91c0 
+          4.42 2.86 8.65 7 9.72 4.14-1.07 7-5.3 
+          7-9.72V6.09l-7-2.91M12 7a3 3 0 0 1 3 3c0 
+          1.31-.84 2.42-2 2.83V16h-2v-3.17A3 3 0 0 1 9 10a3 
+          3 0 0 1 3-3Z"/>
+        </svg>
+        SSL Encrypted
+      </div>
+
+      <div class="trust-badge">
+        <svg width="18" height="18" viewBox="0 0 24 24">
+          <path fill="#4ef58a" d="M21 8V7l-3-3h-1l2 
+          3h-4l2-3h-1l-3 3v1h8M3 21V3h18v18H3m16-2V5H5v14h14Z" />
+        </svg>
+        Verified Seller
+      </div>
+
+      <div class="trust-badge">
+        <svg width="22" height="22" viewBox="0 0 24 24">
+          <rect fill="#4ef58a" x="3" y="4" width="18" height="16" rx="2"/>
+          <path fill="#000" d="M7 12h10v2H7z"/>
+        </svg>
+        Stripe Secure
+      </div>
+
+    </div>
+
+    <!-- EXTRA INFO -->
+    <div class="delivery-guarantee">
+      <svg width="18" height="18" viewBox="0 0 24 24" style="margin-right:6px;">
+        <path fill="#4ef58a" d="M3 12h13l6-8v16l-6-8H3Z" />
+      </svg>
+      Instant delivery after payment.
+    </div>
+
+    <div class="support-line">
+      Questions? Contact us at <span>support@tamedblox.com</span>
+    </div>
 
   </section>
 
-  <!-- CART DRAWER -->
+  <!-- CART DRAWER (unchanged) -->
   <div id="cartDrawer" class="cart-drawer">
     <div class="drawer-header">
       <h2>Your Cart</h2>
       <button id="closeDrawer" class="close-drawer">×</button>
     </div>
-
     <div id="drawerContent"></div>
   </div>
 
@@ -90,41 +155,25 @@
   <script>
     function loadCheckoutCart() {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
-      const cartDiv = document.getElementById("cartItems");
+      if (cart.length === 0) return;
 
-      if (cart.length === 0) {
-        cartDiv.innerHTML = "<p>Your cart is empty.</p>";
-        document.getElementById("totalPrice").innerText = "";
-        return;
-      }
+      const item = cart[0];
 
-      let html = "";
-      let total = 0;
+      document.getElementById("checkoutItemName").innerText = item.name;
+      document.getElementById("checkoutItemName2").innerText = item.name;
+      document.getElementById("checkoutItemQty").innerText = item.qty;
+      document.getElementById("checkoutItemPrice").innerText = "£" + item.price.toFixed(2);
+      document.getElementById("totalPrice").innerText = "£" + (item.price * item.qty).toFixed(2);
 
-      cart.forEach(item => {
-        total += item.price * item.qty;
-
-        html += `
-          <div>
-            <span>${item.name} × ${item.qty}</span>
-            <span>£${(item.price * item.qty).toFixed(2)}</span>
-          </div>
-        `;
-      });
-
-      cartDiv.innerHTML = html;
-      document.getElementById("totalPrice").innerText = "£" + total.toFixed(2);
+      document.getElementById("checkoutItemImage").src =
+        item.image || "https://via.placeholder.com/120";
     }
 
     loadCheckoutCart();
 
     async function startPayment() {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-      if (cart.length === 0) {
-        alert("Your cart is empty.");
-        return;
-      }
+      if (cart.length === 0) return alert("Your cart is empty.");
 
       try {
         const res = await fetch("https://website-5eml.onrender.com/pay/create-checkout-session", {
@@ -138,7 +187,7 @@
           localStorage.removeItem("cart");
           window.location.href = data.url;
         }
-      } catch (err) {
+      } catch {
         alert("Network error.");
       }
     }
