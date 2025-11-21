@@ -1,5 +1,5 @@
 /* ============================
-   PRODUCT LIST (FRONT-END DATA)
+   PRODUCT LIST
 ============================ */
 const products = [
   {
@@ -13,13 +13,14 @@ const products = [
     name: "Shadow Cloak",
     rarity: "Secret",
     price: 8.49,
-    oldPrice: 12.00,
+    oldPrice: 12.0,
     image: "https://via.placeholder.com/300"
   },
   {
     name: "OG Emblem",
     rarity: "OG",
-    price: 4.20,
+    price: 4.2,
+    oldPrice: null,
     image: "https://via.placeholder.com/300"
   }
 ];
@@ -43,18 +44,16 @@ function getDiscountClass(percent) {
    TOAST NOTIFICATIONS
 ============================ */
 let toastContainer = document.querySelector(".toast-container");
-
 if (!toastContainer) {
   toastContainer = document.createElement("div");
   toastContainer.className = "toast-container";
   document.body.appendChild(toastContainer);
 }
 
-function showToast(message) {
+function showToast(msg) {
   const toast = document.createElement("div");
   toast.className = "toast";
-  toast.innerText = message;
-
+  toast.innerText = msg;
   toastContainer.appendChild(toast);
 
   setTimeout(() => toast.classList.add("show"), 20);
@@ -80,14 +79,14 @@ function addToCart(name) {
   const product = products.find(p => p.name === name);
   if (!product) return;
 
-  const existing = cart.find(i => i.name === name);
-
+  let existing = cart.find(i => i.name === name);
   if (existing) {
     existing.qty++;
   } else {
     cart.push({
       name: product.name,
       price: product.price,
+      image: product.image,
       qty: 1
     });
   }
@@ -96,19 +95,19 @@ function addToCart(name) {
   showToast(`${product.name} added to cart`);
 }
 
+/* CART DOT */
 function updateCartDot() {
   const dot = document.getElementById("cartDot");
   if (!dot) return;
   dot.style.display = cart.length > 0 ? "block" : "none";
 }
 
-/* CHANGE / REMOVE QTY */
+/* CHANGE QTY */
 function changeQty(name, amount) {
   const item = cart.find(i => i.name === name);
   if (!item) return;
 
   item.qty += amount;
-
   if (item.qty <= 0) {
     cart = cart.filter(i => i.name !== name);
   }
@@ -116,13 +115,14 @@ function changeQty(name, amount) {
   saveCart();
 }
 
+/* REMOVE ITEM */
 function removeItem(name) {
   cart = cart.filter(i => i.name !== name);
   saveCart();
 }
 
 /* ============================
-   UPDATE CART DRAWER CONTENT
+   RENDER CART DRAWER
 ============================ */
 function updateCartDrawer() {
   const drawer = document.getElementById("drawerContent");
@@ -140,7 +140,7 @@ function updateCartDrawer() {
 
     html += `
       <div style="margin-bottom:22px;">
-        <div style="font-weight:700; font-size:16px; color:#fff;">${item.name}</div>
+        <div style="font-weight:700; font-size:16px;">${item.name}</div>
         <div style="color:#4ef58a; font-size:17px; font-weight:900;">£${item.price}</div>
 
         <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
@@ -161,7 +161,6 @@ function updateCartDrawer() {
     <div style="font-size:20px;font-weight:900;color:#4ef58a;margin-bottom:12px;">
       Total: £${total.toFixed(2)}
     </div>
-
     <button class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout</button>
   `;
 
@@ -180,22 +179,24 @@ function renderProducts(list) {
   grid.innerHTML = "";
 
   list.forEach(p => {
-    const rarityClass = `tag-${p.rarity.toLowerCase()}`;
     const discountPercent = getDiscountPercent(p.price, p.oldPrice);
 
-    const discountTag = discountPercent > 0
-      ? `<span class="discount-tag ${getDiscountClass(discountPercent)}">Save ${discountPercent}%</span>`
+    const discountHTML = discountPercent
+      ? `<span class="discount-tag ${getDiscountClass(discountPercent)}">-${discountPercent}%</span>`
       : "";
 
+    const rarityClass = `tag-${p.rarity.toLowerCase()}`;
+
     grid.innerHTML += `
-      <div class="card scroll-fade">
+      <div class="card">
 
         <div class="card-badges">
           <span class="tag ${rarityClass}">${p.rarity}</span>
-          ${discountTag}
+          ${discountHTML}
         </div>
 
-        <img src="${p.image}">
+        <img src="${p.image}" alt="${p.name}">
+
         <h3>${p.name}</h3>
         <p>Instant delivery • Trusted seller</p>
 
@@ -205,19 +206,14 @@ function renderProducts(list) {
         </div>
 
         <button class="buy-btn" onclick="addToCart('${p.name}')">Buy</button>
+
       </div>
     `;
   });
-
-  setTimeout(() => {
-    document.querySelectorAll(".scroll-fade").forEach(el => {
-      el.classList.add("visible");
-    });
-  }, 80);
 }
 
 /* ============================
-   SEARCH
+   SEARCH FILTER
 ============================ */
 document.getElementById("searchInput")?.addEventListener("input", (e) => {
   const value = e.target.value.toLowerCase();
@@ -225,7 +221,9 @@ document.getElementById("searchInput")?.addEventListener("input", (e) => {
   renderProducts(filtered);
 });
 
-/* INITIALIZE */
+/* ============================
+   INITIALIZE
+============================ */
 renderProducts(products);
 updateCartDrawer();
 updateCartDot();
