@@ -28,7 +28,7 @@ const products = [
 ];
 
 /* ============================
-   NEW STACKING TOAST SYSTEM
+   TOAST NOTIFICATIONS
 ============================ */
 let toastContainer = document.querySelector(".toast-container");
 
@@ -190,11 +190,13 @@ function renderProducts(list) {
   grid.innerHTML = "";
 
   list.forEach(product => {
+    const rarityClass = `tag-${product.rarity.toLowerCase()}`;
+
     const card = document.createElement("div");
     card.className = "card scroll-fade";
 
     card.innerHTML = `
-      <span class="tag">${product.rarity}</span>
+      <span class="tag ${rarityClass}">${product.rarity}</span>
       <img src="${product.image}">
       <h3>${product.name}</h3>
       <p>Instant delivery • Trusted seller</p>
