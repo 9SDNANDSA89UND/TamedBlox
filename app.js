@@ -1,64 +1,26 @@
-/* ============================
-   PRODUCT LIST (front-end only)
-============================ */
 const products = [
   {
     name: "Mystic Blade",
     rarity: "God",
     price: 12.99,
     oldPrice: 19.99,
-    stock: 3,
-    image: "https://via.placeholder.com/300x200"
+    image: "https://via.placeholder.com/300"
   },
   {
     name: "Shadow Cloak",
     rarity: "Secret",
     price: 8.49,
     oldPrice: 12.0,
-    stock: 5,
-    image: "https://via.placeholder.com/300x200"
+    image: "https://via.placeholder.com/300"
   },
   {
     name: "OG Emblem",
     rarity: "OG",
     price: 4.2,
-    stock: 9,
-    image: "https://via.placeholder.com/300x200"
+    image: "https://via.placeholder.com/300"
   }
 ];
 
-/* ============================
-   TOAST NOTIFICATIONS
-============================ */
-let toastContainer = document.querySelector(".toast-container");
-
-if (!toastContainer) {
-  toastContainer = document.createElement("div");
-  toastContainer.className = "toast-container";
-  document.body.appendChild(toastContainer);
-}
-
-function showToast(message) {
-  const toast = document.createElement("div");
-  toast.className = "toast";
-  toast.innerText = message;
-
-  toastContainer.appendChild(toast);
-
-  setTimeout(() => {
-    toast.classList.add("show");
-  }, 20);
-
-  setTimeout(() => {
-    toast.classList.remove("show");
-    toast.classList.add("hide");
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
-}
-
-/* ============================
-   CART SYSTEM
-============================ */
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 function saveCart() {
@@ -67,49 +29,69 @@ function saveCart() {
   updateCartDot();
 }
 
-/* ADD TO CART */
 function addToCart(name) {
-  const product = products.find(p => p.name === name);
-  if (!product) return;
+  const p = products.find(x => x.name === name);
+  if (!p) return;
 
-  const existing = cart.find(item => item.name === name);
+  const existing = cart.find(i => i.name === name);
 
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    cart.push({
-      name: product.name,
-      price: product.price,
-      qty: 1
-    });
-  }
+  if (existing) existing.qty++;
+  else cart.push({ name: p.name, price: p.price, qty: 1 });
 
   saveCart();
-  showToast(`${product.name} added to cart`);
+  showToast(`${p.name} added to cart`);
 }
 
-/* CART DOT */
 function updateCartDot() {
   const dot = document.getElementById("cartDot");
   if (!dot) return;
-
-  if (cart.length > 0) {
-    dot.style.display = "block";
-    dot.classList.add("show");
-    setTimeout(() => dot.classList.remove("show"), 200);
-  } else {
-    dot.style.display = "none";
-  }
+  dot.style.display = cart.length > 0 ? "block" : "none";
 }
 
-/* ============================
-   CART DRAWER FUNCTIONS
-============================ */
+function changeQty(name, amt) {
+  const item = cart.find(i => i.name === name);
+  if (!item) return;
+
+  item.qty += amt;
+  if (item.qty <= 0) cart = cart.filter(i => i.name !== name);
+
+  saveCart();
+}
+
+function removeItem(name) {
+  cart = cart.filter(i => i.name !== name);
+  saveCart();
+}
+
+function openCart() {
+  document.getElementById("cartDrawer").classList.add("open");
+  document.getElementById("cartOverlay").classList.add("show");
+}
+
+function closeCart() {
+  document.getElementById("cartDrawer").classList.remove("open");
+  document.getElementById("cartOverlay").classList.remove("show");
+}
+
+function showToast(msg) {
+  const box = document.querySelector(".toast-container");
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.innerText = msg;
+  box.appendChild(t);
+  setTimeout(() => t.classList.add("show"), 20);
+  setTimeout(() => { t.classList.remove("show"); t.remove(); }, 2500);
+}
+
+function goToCheckout() {
+  window.location.href = "checkout.html";
+}
+
 function updateCartDrawer() {
-  const drawer = document.getElementById("drawerContent");
+  const box = document.getElementById("drawerContent");
 
   if (cart.length === 0) {
-    drawer.innerHTML = `<p style="color:#8b92a1;">Your cart is empty.</p>`;
+    box.innerHTML = `<p style="color:#8b92a1;">Your cart is empty.</p>`;
     return;
   }
 
@@ -117,13 +99,12 @@ function updateCartDrawer() {
   let total = 0;
 
   cart.forEach(item => {
-    total += item.price * item.qty;
+    total += item.qty * item.price;
 
     html += `
       <div style="margin-bottom:18px;">
-        <div style="font-weight:600; margin-bottom:3px">${item.name}</div>
-        <div style="color:#4ef58a; font-weight:700">£${item.price}</div>
-
+        <div style="font-weight:600">${item.name}</div>
+        <div style="color:#4ef58a;font-weight:700">£${item.price}</div>
         <div style="margin-top:10px; display:flex; gap:8px;">
           <button class="qty-btn" onclick="changeQty('${item.name}', -1)">−</button>
           <button class="qty-btn" onclick="changeQty('${item.name}', 1)">+</button>
@@ -138,101 +119,46 @@ function updateCartDrawer() {
     <div style="font-size:18px;font-weight:700;color:#4ef58a;margin-bottom:12px;">
       Total: £${total.toFixed(2)}
     </div>
-
     <button class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout</button>
   `;
 
-  drawer.innerHTML = html;
+  box.innerHTML = html;
 }
 
-/* CHANGE QTY */
-function changeQty(name, amount) {
-  const item = cart.find(i => i.name === name);
-  if (!item) return;
-
-  item.qty += amount;
-
-  if (item.qty <= 0) {
-    cart = cart.filter(i => i.name !== name);
-  }
-
-  saveCart();
-}
-
-/* REMOVE ITEM */
-function removeItem(name) {
-  cart = cart.filter(i => i.name !== name);
-  saveCart();
-}
-
-/* OPEN CART */
-function openCart() {
-  document.getElementById("cartDrawer").classList.add("open");
-  document.getElementById("cartOverlay").classList.add("show");
-}
-
-/* CLOSE CART */
-function closeCart() {
-  document.getElementById("cartDrawer").classList.remove("open");
-  document.getElementById("cartOverlay").classList.remove("show");
-}
-
-/* GO TO CHECKOUT */
-function goToCheckout() {
-  window.location.href = "checkout.html";
-}
-
-/* ============================
-   RENDER PRODUCTS
-============================ */
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
   grid.innerHTML = "";
 
-  list.forEach(product => {
-    const rarityClass = `tag-${product.rarity.toLowerCase()}`;
+  list.forEach(p => {
+    const rarityClass = `tag-${p.rarity.toLowerCase()}`;
 
-    const card = document.createElement("div");
-    card.className = "card scroll-fade";
+    grid.innerHTML += `
+      <div class="card scroll-fade">
+        <span class="tag ${rarityClass}">${p.rarity}</span>
+        <img src="${p.image}">
+        <h3>${p.name}</h3>
+        <p>Instant delivery • Trusted seller</p>
 
-    card.innerHTML = `
-      <span class="tag ${rarityClass}">${product.rarity}</span>
-      <img src="${product.image}">
-      <h3>${product.name}</h3>
-      <p>Instant delivery • Trusted seller</p>
+        <div class="price-box">
+          <span class="price">£${p.price}</span>
+          ${p.oldPrice ? `<span class="old-price">£${p.oldPrice}</span>` : ""}
+        </div>
 
-      <div class="price-box">
-        <span class="price">£${product.price}</span>
-        ${product.oldPrice ? `<span class="old-price">£${product.oldPrice}</span>` : ""}
+        <button class="buy-btn" onclick="addToCart('${p.name}')">Buy</button>
       </div>
-
-      <div class="stock">${product.stock} left</div>
-
-      <button class="buy-btn" onclick="addToCart('${product.name}')">Buy</button>
     `;
-
-    grid.appendChild(card);
   });
 
   setTimeout(() => {
-    document.querySelectorAll(".scroll-fade").forEach(el => {
-      el.classList.add("visible");
-    });
-  }, 100);
+    document.querySelectorAll(".scroll-fade").forEach(el => el.classList.add("visible"));
+  }, 50);
 }
 
-/* ============================
-   SEARCH FUNCTIONALITY
-============================ */
-document.getElementById("searchInput")?.addEventListener("input", (e) => {
-  const value = e.target.value.toLowerCase();
-  const filtered = products.filter(p => p.name.toLowerCase().includes(value));
-  renderProducts(filtered);
+document.getElementById("searchInput")?.addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  renderProducts(products.filter(p => p.name.toLowerCase().includes(q)));
 });
 
-/* ============================
-   INITIAL LOAD
-============================ */
 renderProducts(products);
 updateCartDrawer();
 updateCartDot();
