@@ -128,7 +128,7 @@ function updateCartDrawer() {
   const drawer = document.getElementById("drawerContent");
 
   if (cart.length === 0) {
-    drawer.innerHTML = `<p style="color:#8b92a1;">Your cart is empty.</p>`;
+    drawer.innerHTML = `<p style="color:#9ca4b1;">Your cart is empty.</p>`;
     return;
   }
 
@@ -139,22 +139,26 @@ function updateCartDrawer() {
     total += item.price * item.qty;
 
     html += `
-      <div style="margin-bottom:18px;">
-        <div style="font-weight:600; margin-bottom:3px">${item.name}</div>
-        <div style="color:#4ef58a; font-weight:700">£${item.price}</div>
+      <div style="margin-bottom:22px;">
+        <div style="font-weight:700; font-size:16px; color:#fff;">${item.name}</div>
+        <div style="color:#4ef58a; font-size:17px; font-weight:900;">£${item.price}</div>
 
-        <div style="margin-top:10px; display:flex; gap:8px;">
+        <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
           <button class="qty-btn" onclick="changeQty('${item.name}', -1)">−</button>
           <button class="qty-btn" onclick="changeQty('${item.name}', 1)">+</button>
           <button class="qty-btn remove" onclick="removeItem('${item.name}')">×</button>
+        </div>
+
+        <div style="margin-top:6px; font-size:14px; color:#9ca4b1;">
+          Quantity: ${item.qty}
         </div>
       </div>
     `;
   });
 
   html += `
-    <hr style="border-color:rgba(255,255,255,0.1);margin:15px 0;">
-    <div style="font-size:18px;font-weight:700;color:#4ef58a;margin-bottom:12px;">
+    <hr style="border-color:rgba(255,255,255,0.1);margin:18px 0;">
+    <div style="font-size:20px;font-weight:900;color:#4ef58a;margin-bottom:12px;">
       Total: £${total.toFixed(2)}
     </div>
 
