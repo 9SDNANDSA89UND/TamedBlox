@@ -33,7 +33,8 @@
 
         <button id="cartBtn" class="icon-btn">
           <svg viewBox="0 0 24 24">
-            <path d="M3 3h2l3 12h11l3-8H6"></path>
+            <path d="M3 3h2l3 12h11l3-8H6" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"></path>
             <circle cx="9" cy="20" r="2"></circle>
             <circle cx="18" cy="20" r="2"></circle>
           </svg>
@@ -47,11 +48,13 @@
   <!-- ANNOUNCEMENT -->
   <div class="announcement-section">
     <div class="announcement marquee">
-      <span>⚡ Instant Delivery • Secure Checkout • 500+ Orders Delivered • Trusted by 100+ Players • 24/7 Support •</span>
+      <span>
+        ⚡ Instant Delivery • Secure Checkout • 500+ Orders Delivered • Trusted by 100+ Players • 24/7 Support •
+      </span>
     </div>
   </div>
 
-  <!-- NEW CHECKOUT CARD -->
+  <!-- CHECKOUT CARD -->
   <section class="checkout-card">
 
     <h2>Your Order</h2>
@@ -135,7 +138,7 @@
           localStorage.removeItem("cart");
           window.location.href = data.url;
         }
-      } catch {
+      } catch (err) {
         alert("Network error.");
       }
     }
