@@ -1,3 +1,6 @@
+/* ===============================
+   PRODUCT DATA
+=============================== */
 const products = [
   {
     name: "Mystic Blade",
@@ -24,14 +27,97 @@ const products = [
   }
 ];
 
-function renderProducts(list) {
-  const grid = document.getElementById("productGrid");
-  grid.innerHTML = "";
+/* ===============================
+   CART SYSTEM
+=============================== */
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  if (!list.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:#8b92a1;padding:40px 0;">No items available yet.</div>`;
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartDrawer();
+}
+
+/* Add to cart with quantity */
+function addToCart(productName) {
+  const item = products.find(p => p.name === productName);
+  if (!item) return;
+
+  const existing = cart.find(c => c.name === item.name);
+
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      qty: 1
+    });
+  }
+
+  saveCart();
+}
+
+/* ===============================
+   UPDATE CART DRAWER
+=============================== */
+function updateCartDrawer() {
+  const drawerContent = document.getElementById("drawerContent");
+
+  if (cart.length === 0) {
+    drawerContent.innerHTML = `<p style="color:#8b92a1;">Your cart is empty.</p>`;
     return;
   }
+
+  let html = "";
+  let total = 0;
+
+  cart.forEach(item => {
+    total += item.price * item.qty;
+
+    html += `
+      <div style="display:flex;align-items:center;margin-bottom:15px;gap:12px;">
+        <img src="${item.image}" style="width:60px;height:60px;border-radius:6px;object-fit:contain;">
+        <div style="flex:1;">
+          <div style="font-weight:600;">${item.name}</div>
+          <div style="color:#4ef58a;font-weight:700;">£${item.price}</div>
+          <div style="color:#8b92a1;font-size:14px;">Qty: ${item.qty}</div>
+        </div>
+        <button onclick="removeFromCart('${item.name}')" style="
+          background:#ff5555;
+          border:none;
+          padding:6px 10px;
+          border-radius:6px;
+          color:white;
+          cursor:pointer;
+        ">X</button>
+      </div>
+    `;
+  });
+
+  html += `
+    <hr style="border-color:rgba(255,255,255,0.1);margin:15px 0;">
+    <div style="font-size:18px;font-weight:700;color:#4ef58a;">
+      Total: £${total.toFixed(2)}
+    </div>
+  `;
+
+  drawerContent.innerHTML = html;
+}
+
+function removeFromCart(name) {
+  cart = cart.filter(item => item.name !== name);
+  saveCart();
+}
+
+/* ===============================
+   RENDER PRODUCTS
+=============================== */
+function renderProducts(list) {
+  const grid = document.getElementById("productGrid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
 
   list.forEach(product => {
     const card = document.createElement("div");
@@ -48,12 +134,20 @@ function renderProducts(list) {
         ${product.oldPrice ? `<span class="old-price">£${product.oldPrice}</span>` : ""}
       </div>
       <div class="stock">${product.stock} left</div>
-      <button class="buy-btn">Buy</button>
+      <button class="buy-btn" data-name="${product.name}">Buy</button>
     `;
 
     grid.appendChild(card);
   });
 
+  /* Buy Button Events */
+  document.querySelectorAll(".buy-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      addToCart(btn.getAttribute("data-name"));
+    });
+  });
+
+  /* Animation */
   setTimeout(() => {
     document.querySelectorAll(".scroll-fade").forEach(el =>
       el.classList.add("visible")
@@ -63,6 +157,9 @@ function renderProducts(list) {
 
 renderProducts(products);
 
+/* ===============================
+   FILTER SYSTEM
+=============================== */
 document.querySelectorAll(".filter").forEach(btn => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
@@ -72,3 +169,6 @@ document.querySelectorAll(".filter").forEach(btn => {
     renderProducts(f === "all" ? products : products.filter(p => p.rarity.toLowerCase() === f));
   });
 });
+
+/* Load cart into drawer on startup */
+updateCartDrawer();
