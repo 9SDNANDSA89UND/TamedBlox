@@ -5,13 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TamedBlox – Home</title>
 
-  <!-- Main styles -->
   <link rel="stylesheet" href="styles.css">
-
-  <!-- Reviews styling (new separate file) -->
   <link rel="stylesheet" href="reviews.css">
-
-  <!-- Product Cards styling -->
   <link rel="stylesheet" href="cards.css">
 </head>
 
@@ -37,8 +32,6 @@
       </div>
 
       <div class="nav-right">
-        <div class="balance-pill" id="balanceDisplay">Balance: £0.00</div>
-
         <button id="cartBtn" class="icon-btn">
           <svg viewBox="0 0 24 24">
             <path d="M3 3h2l3 12h11l3-8H6"
@@ -82,13 +75,12 @@
     <div id="productGrid" class="product-grid"></div>
   </section>
 
-  <!-- REVIEWS (NEW) -->
+  <!-- REVIEWS -->
   <section class="reviews-section">
     <h2 class="reviews-title">What Our Customers Say</h2>
 
     <div class="reviews-row">
 
-      <!-- Review 1 -->
       <div class="review-card">
         <div class="review-stars">
           <span class="star full">★</span>
@@ -101,7 +93,6 @@
         <div class="review-author">— A*** M.</div>
       </div>
 
-      <!-- Review 2 -->
       <div class="review-card">
         <div class="review-stars">
           <span class="star full">★</span>
@@ -114,7 +105,6 @@
         <div class="review-author">— R**** T.</div>
       </div>
 
-      <!-- Review 3 -->
       <div class="review-card">
         <div class="review-stars">
           <span class="star full">★</span>
@@ -141,7 +131,6 @@
 
   <div id="cartOverlay" class="cart-overlay"></div>
 
-  <!-- JS -->
   <script src="app.js"></script>
   <script src="drawer.js" type="module"></script>
 
