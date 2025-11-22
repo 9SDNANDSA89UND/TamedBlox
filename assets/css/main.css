@@ -390,7 +390,7 @@ a {
   width: 100%;
   padding: 16px;
 
-  background: #4ef58a; /* GREEN */
+  background: #4ef58a;
   color: #0b0f14;
 
   border-radius: 12px;
@@ -409,4 +409,27 @@ a {
 /* Utility */
 .hidden {
   display: none !important;
+}
+
+/* ==========================================
+   ⭐ IMPORTANT FIXES FOR BUTTON CLICK ISSUES
+========================================== */
+
+footer,
+.footer,
+#footer {
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.premium-checkout,
+.checkout-container {
+  position: relative;
+  z-index: 2;
+}
+
+.modern-modal.hidden {
+  pointer-events: none !important;
+  opacity: 0 !important;
 }
