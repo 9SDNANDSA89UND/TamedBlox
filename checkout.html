@@ -84,10 +84,26 @@
         total += i.price * i.qty;
 
         html += `
-          <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:12px;">
-            <div style="font-weight:900;font-size:18px;">${i.name}</div>
-            <div style="color:#4ef58a;font-size:16px;font-weight:900;">£${i.price}</div>
-            <div style="color:#aeb6c1;margin-top:4px;">Qty: ${i.qty}</div>
+          <div style="
+            display:flex;
+            align-items:center;
+            gap:16px;
+            margin-bottom:20px;
+            border-bottom:1px solid rgba(255,255,255,0.05);
+            padding-bottom:12px;
+          ">
+            <img src="${i.image}" style="
+              width:60px;
+              height:60px;
+              border-radius:10px;
+              object-fit:cover;
+            ">
+
+            <div style="flex:1;">
+              <div style="font-weight:900;font-size:18px;">${i.name}</div>
+              <div style="color:#4ef58a;font-size:16px;font-weight:900;">£${i.price}</div>
+              <div style="color:#aeb6c1;margin-top:4px;">Qty: ${i.qty}</div>
+            </div>
           </div>
         `;
       });
@@ -103,4 +119,3 @@
 
 </body>
 </html>
-
