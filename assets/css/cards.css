@@ -194,9 +194,11 @@
   color: #4ef58a;
 }
 
+/* ⭐ UPDATED: BIGGER OLD PRICE */
 .old-price {
-  font-size: 10px;
-  color: #aaa;
+  font-size: 13px;
+  font-weight: 700;
+  color: #b7b7b7;
   text-decoration: line-through;
 }
 
