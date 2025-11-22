@@ -95,7 +95,7 @@ body {
 }
 
 /* ============================
-   AUTH BUTTONS (LOGIN / SIGN UP)
+   AUTH BUTTONS
 ============================ */
 .auth-btn {
   padding: 8px 16px;
@@ -394,7 +394,7 @@ body {
 }
 
 /* ============================
-   CHECKOUT PAGE
+   CHECKOUT
 ============================ */
 .premium-checkout {
   max-width: 480px;
@@ -471,7 +471,7 @@ body {
 }
 
 /* ============================
-   AUTH MODALS
+   MODALS
 ============================ */
 .modal {
   position: fixed;
@@ -542,6 +542,24 @@ body {
   font-size: 26px;
   color: #aaa;
   cursor: pointer;
+}
+
+/* ============================
+   VALIDATION HINTS
+============================ */
+.modal-hint {
+  font-size: 12px;
+  margin: 5px 0 0;
+  min-height: 14px;
+  color: #9ca4b1;
+}
+
+.valid {
+  color: #4ef58a !important;
+}
+
+.invalid {
+  color: #ff4d4d !important;
 }
 
 /* ============================
