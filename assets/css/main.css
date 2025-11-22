@@ -1,6 +1,10 @@
-/* Updated main.css merging previous content and fixes */
+/* Updated main.css with premium marquee, button fixes, glow, and spacing fixes */
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+}
 
 body {
   background: #0b0f14;
@@ -9,7 +13,10 @@ body {
   overflow-x: hidden;
 }
 
-a { text-decoration: none; color: inherit; }
+a { 
+  text-decoration: none; 
+  color: inherit; 
+}
 
 .container {
   max-width: 1250px;
@@ -70,19 +77,14 @@ a { text-decoration: none; color: inherit; }
 .logo-white { color: white; }
 .logo-green { color: #4ef58a; }
 
-/* Green GLOW for BLOX */
 .glow-green {
   text-shadow: 0 0 10px #4ef58a, 0 0 18px #4ef58a, 0 0 25px #4ef58a;
 }
 
-.auth-btn {
-  background: #4ef58a;
-  color: #0a0a0a;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 10px;
-  font-weight: 800;
+.auth-btn, .buy-btn, .checkout-btn {
   cursor: pointer;
+  position: relative;
+  z-index: 20;
 }
 
 .cart-btn { position: relative; }
@@ -99,30 +101,40 @@ a { text-decoration: none; color: inherit; }
   box-shadow: 0 0 8px #4ef58a;
 }
 
-/* Announcement bar */
-.announcement-section {
-  width: 100%;
-  background: #4ef58a10;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(78,245,138,0.2);
-}
-
+/* PREMIUM MARQUEE */
 .marquee {
   width: 100%;
   overflow: hidden;
-  white-space: nowrap;
+  padding: 10px 0;
+  background: rgba(78,245,138,0.05);
+  border-bottom: 1px solid rgba(78,245,138,0.2);
+  position: relative;
+  z-index: 5;
 }
 
 .marquee-inner {
   display: inline-flex;
-  gap: 60px;
+  gap: 40px;
   padding-left: 100%;
-  animation: scroll 12s linear infinite;
+  animation: marqueeScroll 12s linear infinite;
 }
 
-@keyframes scroll {
+@keyframes marqueeScroll {
   0% { transform: translateX(0); }
   100% { transform: translateX(-100%); }
+}
+
+.marquee-pill {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 14px;
+  white-space: nowrap;
+  color: #fff;
+  background: linear-gradient(135deg, #3a2f7d, #1f2d69);
+  box-shadow: 0 0 10px rgba(78,245,138,0.35);
+  border: 1px solid rgba(255,255,255,0.1);
 }
 
 /* FOOTER */
@@ -166,6 +178,7 @@ a { text-decoration: none; color: inherit; }
   padding: 20px;
   z-index: 300;
 }
+
 .cart-drawer.open { right: 0; }
 
 .cart-overlay {
