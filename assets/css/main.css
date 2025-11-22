@@ -49,6 +49,11 @@ a {
   text-shadow: 0 0 10px #4ef58a, 0 0 20px #4ef58a;
 }
 
+/* Remove old left logo elements */
+.nav-left, .old-logo, header .logo-container {
+  display: none !important;
+}
+
 /* ==========================================
    NAVBAR
 ========================================== */
@@ -70,8 +75,14 @@ a {
 }
 
 .nav-center {
+  display: flex;
+  justify-content: center;
   width: 100%;
-  text-align: center;
+  pointer-events: none;
+}
+
+.nav-center .logo {
+  pointer-events: auto;
 }
 
 .nav-right {
@@ -110,7 +121,7 @@ a {
   width: 18px;
   height: 18px;
   stroke: currentColor;
-  pointer-events: none;
+  pointer-events: none !important;
 }
 
 .nav-rect-btn:hover {
