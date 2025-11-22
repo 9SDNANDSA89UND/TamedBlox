@@ -1,4 +1,4 @@
-/* Updated cards.css with glowing rarity tags */
+/* Updated cards.css with beautiful neon rarity tags */
 
 .product-grid {
   max-width: 1250px;
@@ -42,40 +42,39 @@
   margin-bottom: 10px;
 }
 
-/* NEW BEAUTIFUL BADGES */
+/* PREMIUM TAGS */
 .tag {
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 50px;
   font-size: 13px;
   font-weight: 700;
-  color: #ffffff;
-  display: inline-block;
+  color: #fff;
   backdrop-filter: blur(4px);
   border: 1px solid transparent;
 }
 
-/* GOD = neon pink */
+/* GOD */
 .tag-god {
   background: rgba(255, 0, 234, 0.25);
   color: #ff00ea;
   border-color: #ff00ea80;
-  box-shadow: 0 0 10px #ff00ea;
+  box-shadow: 0 0 12px #ff00ea;
 }
 
-/* SECRET = neon blue */
+/* SECRET */
 .tag-secret {
   background: rgba(0, 196, 255, 0.25);
   color: #00c4ff;
   border-color: #00c4ff80;
-  box-shadow: 0 0 10px #00c4ff;
+  box-shadow: 0 0 12px #00c4ff;
 }
 
-/* OG = orange gold */
+/* OG */
 .tag-og {
   background: rgba(255, 170, 43, 0.25);
   color: #ffaa2b;
   border-color: #ffaa2b80;
-  box-shadow: 0 0 10px #ffaa2b;
+  box-shadow: 0 0 12px #ffaa2b;
 }
 
 /* Discounts */
@@ -87,10 +86,10 @@
   color: #0b0f14;
 }
 
-.discount-red { background: #ff4646; }
+.discount-red    { background: #ff4646; }
 .discount-orange { background: #ff8c35; }
 .discount-yellow { background: #ffe24a; }
-.discount-green { background: #4ef58a; }
+.discount-green  { background: #4ef58a; }
 
 .price-box {
   display: flex;
