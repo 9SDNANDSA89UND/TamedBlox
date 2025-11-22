@@ -1,9 +1,35 @@
-// CART DRAWER LOGIC (Modernized)
+/* ==========================================
+   CART DRAWER — FINAL WORKING VERSION
+========================================== */
 
+// Global references
 const cartDrawer = document.getElementById("cartDrawer");
 const cartOverlay = document.getElementById("cartOverlay");
-const cartBtn = document.getElementById("cartBtn");
-const closeDrawer = document.getElementById("closeDrawer");
+
+// Wait for navbar to load dynamically before adding listeners
+document.addEventListener("DOMContentLoaded", () => {
+  const observer = new MutationObserver(() => {
+    const cartBtn = document.getElementById("cartBtn");
+    const closeDrawer = document.getElementById("closeDrawer");
+
+    if (cartBtn && closeDrawer) {
+      console.log("Cart button detected — listeners attached ✔");
+
+      cartBtn.onclick = () => openCart();
+      closeDrawer.onclick = () => closeCart();
+      cartOverlay.onclick = () => closeCart();
+
+      observer.disconnect();
+    }
+  });
+
+  // Watch DOM for injected navbar
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+
+/* ==========================================
+   OPEN / CLOSE DRAWER
+========================================== */
 
 function openCart() {
   cartDrawer.classList.add("open");
@@ -15,14 +41,12 @@ function closeCart() {
   cartOverlay.style.display = "none";
 }
 
-if (cartBtn) cartBtn.addEventListener("click", openCart);
-if (closeDrawer) closeDrawer.addEventListener("click", closeCart);
-if (cartOverlay) cartOverlay.addEventListener("click", closeCart);
+/* ==========================================
+   UPDATE CART UI
+========================================== */
 
-/* Update Drawer Content */
 function updateCartDrawer() {
   const drawer = document.getElementById("drawerContent");
-
   if (!drawer) return;
 
   if (cart.length === 0) {
@@ -38,6 +62,7 @@ function updateCartDrawer() {
 
     html += `
       <div class="cart-item">
+
         <div class="cart-item-title">${item.name}</div>
         <div class="cart-item-price">£${item.price}</div>
 
@@ -47,6 +72,7 @@ function updateCartDrawer() {
           <button class="qty-btn" onclick="changeQty('${item.name}', 1)">+</button>
           <button class="qty-btn qty-remove" onclick="removeItem('${item.name}')">×</button>
         </div>
+
       </div>
     `;
   });
@@ -57,4 +83,55 @@ function updateCartDrawer() {
   `;
 
   drawer.innerHTML = html;
+}
+
+/* ==========================================
+   CHANGE QTY / REMOVE ITEM
+========================================== */
+
+function changeQty(name, amount) {
+  const item = cart.find(i => i.name === name);
+  if (!item) return;
+
+  item.qty += amount;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.name !== name);
+  }
+
+  saveCart();
+}
+
+function removeItem(name) {
+  cart = cart.filter(i => i.name !== name);
+  saveCart();
+}
+
+/* ==========================================
+   SAVE CART STATE
+========================================== */
+
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartDrawer();
+  updateCartDot();
+}
+
+/* ==========================================
+   CART DOT
+========================================== */
+
+function updateCartDot() {
+  const dot = document.getElementById("cartDot");
+  if (!dot) return;
+
+  dot.style.display = cart.length > 0 ? "block" : "none";
+}
+
+/* ==========================================
+   CHECKOUT REDIRECT
+========================================== */
+
+function goToCheckout() {
+  window.location.href = "checkout.html";
 }
