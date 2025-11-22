@@ -62,10 +62,10 @@
     </div>
   </div>
 
-  <!-- PRODUCTS PAGE TITLE -->
+  <!-- PRODUCTS TITLE -->
   <section class="products-title">
     <h1>All Items</h1>
-    <p>Browse our full selection of premium digital items.</p>
+    <p>Browse our full selection of premium items.</p>
   </section>
 
   <!-- PRODUCT GRID -->
@@ -84,9 +84,42 @@
 
   <div id="cartOverlay" class="cart-overlay"></div>
 
-  <!-- SCRIPTS -->
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-box">
+      <h2 class="modal-title">Login</h2>
+      <input id="loginEmail" type="email" class="modal-input" placeholder="Email">
+      <input id="loginPassword" type="password" class="modal-input" placeholder="Password">
+      <button id="loginSubmit" class="modal-btn">Login</button>
+      <p id="loginError" class="modal-error"></p>
+      <button class="modal-close" onclick="closeModal('loginModal')">×</button>
+    </div>
+  </div>
+
+  <!-- SIGNUP MODAL -->
+  <div id="signupModal" class="modal hidden">
+    <div class="modal-box">
+      <h2 class="modal-title">Sign Up</h2>
+      <input id="signupUsername" type="text" class="modal-input" placeholder="Username">
+      <input id="signupEmail" type="email" class="modal-input" placeholder="Email">
+      <input id="signupPassword" type="password" class="modal-input" placeholder="Password">
+      <button id="signupSubmit" class="modal-btn">Create Account</button>
+      <p id="signupError" class="modal-error"></p>
+      <button class="modal-close" onclick="closeModal('signupModal')">×</button>
+    </div>
+  </div>
+
+  <!-- JS -->
   <script src="app.js"></script>
   <script src="drawer.js" type="module"></script>
+
+  <!-- MODAL JS -->
+  <script>
+    function openModal(id) { document.getElementById(id).classList.remove("hidden"); }
+    function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
+    openLogin.onclick = () => openModal("loginModal");
+    openSignup.onclick = () => openModal("signupModal");
+  </script>
 
 </body>
 </html>
