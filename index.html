@@ -68,7 +68,7 @@
   <!-- HERO -->
   <section class="hero">
     <h1>Premium In-Game Items. Delivered <span>Instantly.</span></h1>
-    <p class="hero-sub">TamedBlox provides fast, secure delivery on every purchase — trusted by over 100+ players.</p>
+    <p class="hero-sub">TamedBlox provides fast, secure delivery — trusted by 100+ players.</p>
 
     <div class="search-box">
       <input id="searchInput" type="text" placeholder="Search items...">
@@ -85,37 +85,38 @@
     <h2 class="reviews-title">What Our Customers Say</h2>
 
     <div class="reviews-row">
-
+      <!-- Review 1 -->
       <div class="review-card">
         <div class="review-stars">
           <span class="star full">★</span><span class="star full">★</span>
           <span class="star full">★</span><span class="star full">★</span>
           <span class="star full">★</span>
         </div>
-        <p class="review-text">“Super fast delivery! Got my item in under 5 seconds. Insane service.”</p>
+        <p class="review-text">“Super fast delivery! Got my item in under 5 seconds.”</p>
         <div class="review-author">— A*** M.</div>
       </div>
 
+      <!-- Review 2 -->
       <div class="review-card">
         <div class="review-stars">
           <span class="star full">★</span><span class="star full">★</span>
           <span class="star full">★</span><span class="star full">★</span>
           <span class="star half">★</span>
         </div>
-        <p class="review-text">“Reliable and cheap. Bought multiple times, always perfect.”</p>
+        <p class="review-text">“Reliable and cheap. Bought many times.”</p>
         <div class="review-author">— R**** T.</div>
       </div>
 
+      <!-- Review 3 -->
       <div class="review-card">
         <div class="review-stars">
           <span class="star full">★</span><span class="star full">★</span>
           <span class="star full">★</span><span class="star full">★</span>
           <span class="star empty">★</span>
         </div>
-        <p class="review-text">“Best experience I’ve had buying in-game items. Recommended.”</p>
+        <p class="review-text">“Best shopping experience. Highly recommend.”</p>
         <div class="review-author">— S** D.</div>
       </div>
-
     </div>
   </section>
 
@@ -130,9 +131,49 @@
 
   <div id="cartOverlay" class="cart-overlay"></div>
 
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-box">
+      <h2 class="modal-title">Login</h2>
+
+      <input id="loginEmail" type="email" class="modal-input" placeholder="Email">
+      <input id="loginPassword" type="password" class="modal-input" placeholder="Password">
+
+      <button id="loginSubmit" class="modal-btn">Login</button>
+      <p id="loginError" class="modal-error"></p>
+
+      <button class="modal-close" onclick="closeModal('loginModal')">×</button>
+    </div>
+  </div>
+
+  <!-- SIGNUP MODAL -->
+  <div id="signupModal" class="modal hidden">
+    <div class="modal-box">
+      <h2 class="modal-title">Sign Up</h2>
+
+      <input id="signupUsername" type="text" class="modal-input" placeholder="Username">
+      <input id="signupEmail" type="email" class="modal-input" placeholder="Email">
+      <input id="signupPassword" type="password" class="modal-input" placeholder="Password">
+
+      <button id="signupSubmit" class="modal-btn">Create Account</button>
+      <p id="signupError" class="modal-error"></p>
+
+      <button class="modal-close" onclick="closeModal('signupModal')">×</button>
+    </div>
+  </div>
+
   <!-- JS -->
   <script src="app.js"></script>
   <script src="drawer.js" type="module"></script>
+
+  <!-- MODAL JS (only open/close for now) -->
+  <script>
+    function openModal(id) { document.getElementById(id).classList.remove("hidden"); }
+    function closeModal(id) { document.getElementById(id).classList.add("hidden"); }
+
+    document.getElementById("openLogin").onclick = () => openModal("loginModal");
+    document.getElementById("openSignup").onclick = () => openModal("signupModal");
+  </script>
 
 </body>
 </html>
