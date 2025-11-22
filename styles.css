@@ -1,3 +1,6 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 /* ============================
    GLOBAL BASE STYLES
 ============================ */
@@ -583,4 +586,16 @@ body {
 @keyframes marquee-scroll {
   from { transform: translateX(0); }
   to   { transform: translateX(-100%); }
+}
+
+
+/* === MARQUEE FONT + SPEED + THINNER === */
+.announcement {
+  padding: 4px 0 !important;
+}
+
+.announcement span {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 12px !important;
+  animation: marquee-scroll 8s linear infinite !important;
 }
