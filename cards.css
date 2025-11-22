@@ -30,6 +30,10 @@
   margin-bottom: 12px;
   position: relative;
   z-index: 1;
+
+  /* FIX: Hide duplicate item name when image fails */
+  color: transparent;
+  font-size: 0;
 }
 
 /* BADGES */
@@ -124,4 +128,3 @@
   box-shadow: 0 0 26px rgba(78,245,138,0.55);
   transform: translateY(-2px);
 }
-
