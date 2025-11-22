@@ -450,6 +450,31 @@ body {
 }
 
 /* ============================
+   PROCEED TO CHECKOUT BUTTON (NEW)
+============================ */
+.checkout-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #4ef58a, #37d769);
+  border: none;
+  font-weight: 900;
+  font-size: 15px;
+  color: #050608;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(78,245,138,0.35);
+  transition: 0.25s ease;
+  margin-top: 10px;
+}
+
+.checkout-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 26px rgba(78,245,138,0.55);
+  filter: brightness(1.05);
+}
+
+/* ============================
    FONTS
 ============================ */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
