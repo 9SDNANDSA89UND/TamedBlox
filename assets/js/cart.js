@@ -87,6 +87,7 @@ window.Cart = {
 
     if (this.items.length === 0) {
       drawer.innerHTML = `<p style="color:#9ca4b1;">Your cart is empty.</p>`;
+      document.getElementById("drawerTotal").innerText = "£0.00";
       return;
     }
 
@@ -97,31 +98,30 @@ window.Cart = {
       total += item.price * item.qty;
 
       html += `
-        <div class="drawer-item">
-          <div class="drawer-row">
-            <span class="drawer-name">${item.name}</span>
-            <span class="drawer-price">£${item.price}</span>
+        <div class="cart-item">
+          <img src="${item.image}" class="cart-img">
+
+          <div class="cart-info">
+            <div class="cart-name">${item.name}</div>
+            <div class="cart-price">£${item.price}</div>
           </div>
 
-          <div class="drawer-controls">
-            <button class="qty-btn" onclick="Cart.changeQty('${item.name}', -1)">−</button>
-            <span class="drawer-qty">${item.qty}</span>
-            <button class="qty-btn" onclick="Cart.changeQty('${item.name}', 1)">+</button>
-            <button class="qty-btn remove" onclick="Cart.remove('${item.name}')">×</button>
+          <div class="cart-qty-controls">
+            <div class="cart-qty-row">
+              <button class="qty-btn" onclick="Cart.changeQty('${item.name}', -1)">−</button>
+              <span class="qty-display">${item.qty}</span>
+              <button class="qty-btn" onclick="Cart.changeQty('${item.name}', 1)">+</button>
+            </div>
+
+            <button class="qty-btn cart-remove" onclick="Cart.remove('${item.name}')">×</button>
           </div>
         </div>
       `;
     });
 
-    html += `
-      <hr class="drawer-line">
-      <div class="drawer-total">Total: £${total.toFixed(2)}</div>
-      <button class="checkout-btn" onclick="location.href='checkout.html'">
-        Proceed to Checkout
-      </button>
-    `;
-
     drawer.innerHTML = html;
+
+    /* ⭐ NEW total updater */
+    document.getElementById("drawerTotal").innerText = "£" + total.toFixed(2);
   }
 };
-
