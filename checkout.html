@@ -1,1 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TamedBlox — Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/modal.css">
+
+  <!-- Component Loader -->
+  <script>
+    async function loadComponent(selector, file) {
+      const el = document.querySelector(selector);
+      if (el) {
+        const html = await fetch(file).then(r => r.text());
+        el.innerHTML = html;
+      }
+    }
+  </script>
+</head>
+
+<body>
+
+  <!-- INCLUDES -->
+  <div id="navbar"></div>
+  <div id="modals"></div>
+
+  <script>
+    loadComponent("#navbar", "components/navbar.html");
+    loadComponent("#modals", "components/modals.html");
+  </script>
+
+  <!-- CHECKOUT BODY -->
+  <section class="premium-checkout">
+
+    <h1 class="checkout-title">Checkout</h1>
+
+    <p style="color:#aeb6c1;margin-bottom:20px;">
+      Review your items before completing your purchase.
+    </p>
+
+    <div id="checkoutItems"></div>
+
+    <h2 style="font-size:22px;font-weight:900;margin-top:30px;">Total</h2>
+    <div id="checkoutTotal" style="font-size:22px;font-weight:900;color:#4ef58a;margin-top:10px;">
+      £0.00
+    </div>
+
+    <button class="secure-btn" id="checkoutPay">
+      Continue to Payment
+    </button>
+
+  </section>
+
+  <!-- FOOTER -->
+  <div id="footer"></div>
+  <script>
+    loadComponent("#footer", "components/footer.html");
+  </script>
+
+  <!-- JS -->
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/auth.js"></script>
+
+  <script>
+    /* Populate checkout from Cart */
+    document.addEventListener("DOMContentLoaded", () => {
+      const wrapper = document.getElementById("checkoutItems");
+      const totalEl = document.getElementById("checkoutTotal");
+
+      const items = window.Cart.items;
+      let total = 0;
+
+      if (items.length === 0) {
+        wrapper.innerHTML = `<p style="color:#9ca4b1;">Your cart is empty.</p>`;
+        return;
+      }
+
+      let html = "";
+
+      items.forEach(i => {
+        total += i.price * i.qty;
+
+        html += `
+          <div style="margin-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:12px;">
+            <div style="font-weight:900;font-size:18px;">${i.name}</div>
+            <div style="color:#4ef58a;font-size:16px;font-weight:900;">£${i.price}</div>
+            <div style="color:#aeb6c1;margin-top:4px;">Qty: ${i.qty}</div>
+          </div>
+        `;
+      });
+
+      wrapper.innerHTML = html;
+      totalEl.innerText = "£" + total.toFixed(2);
+
+      document.getElementById("checkoutPay").onclick = () => {
+        alert("Redirect to payment gateway here.");
+      };
+    });
+  </script>
+
+</body>
+</html>
 
