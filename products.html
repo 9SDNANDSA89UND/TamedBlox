@@ -1,1 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TamedBlox — Products</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/cards.css">
+  <link rel="stylesheet" href="assets/css/modal.css">
+
+  <!-- Component loader -->
+  <script>
+    async function loadComponent(selector, file) {
+      const el = document.querySelector(selector);
+      if (el) {
+        const html = await fetch(file).then(r => r.text());
+        el.innerHTML = html;
+      }
+    }
+  </script>
+</head>
+
+<body>
+
+  <!-- INCLUDES -->
+  <div id="navbar"></div>
+  <div id="modals"></div>
+
+  <script>
+    loadComponent("#navbar", "components/navbar.html");
+    loadComponent("#modals", "components/modals.html");
+  </script>
+
+  <!-- HEADER -->
+  <section class="container" style="margin-top:40px;">
+    <h1 style="font-size:32px;font-weight:900;">All Products</h1>
+    <p style="color:#aeb6c1;margin-top:10px;">
+      Browse the full TamedBlox shop.
+    </p>
+
+    <!-- SEARCH -->
+    <input
+      id="searchInput"
+      placeholder="Search products..."
+      class="modern-input"
+      style="margin-top:20px;">
+  </section>
+
+  <!-- GRID -->
+  <div id="productGrid" class="product-grid"></div>
+
+  <!-- CART DRAWER -->
+  <div id="cartDrawer" class="cart-drawer">
+    <button id="closeDrawer" class="close-drawer">×</button>
+    <h2 style="font-weight:900;margin-bottom:20px;">Your Cart</h2>
+    <div id="drawerContent"></div>
+  </div>
+
+  <div id="cartOverlay" class="cart-overlay"></div>
+
+  <!-- FOOTER -->
+  <div id="footer"></div>
+  <script>
+    loadComponent("#footer", "components/footer.html");
+  </script>
+
+  <!-- JS -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/drawer.js"></script>
+  <script src="assets/js/auth.js"></script>
+
+</body>
+</html>
 
