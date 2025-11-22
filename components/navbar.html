@@ -4,30 +4,36 @@
     <!-- CENTER LOGO -->
     <div class="nav-center">
       <div class="logo">
-        <span class="logo-white">TAMED</span><span class="logo-green glow-green">BLOX</span>
+        <span class="logo-white">TAMED</span>
+        <span class="logo-green glow-green">BLOX</span>
       </div>
     </div>
 
-    <!-- RIGHT SIDE -->
+    <!-- RIGHT SIDE BUTTONS -->
     <div class="nav-right">
-
+      
       <!-- Login -->
-      <button id="openLogin" class="nav-icon-btn" title="Login">
+      <button id="openLogin" class="nav-rect-btn">
         <i data-lucide="log-in"></i>
+        <span>Login</span>
       </button>
 
-      <!-- Sign Up -->
-      <button id="openSignup" class="nav-icon-btn" title="Sign Up">
+      <!-- Signup -->
+      <button id="openSignup" class="nav-rect-btn nav-accent-btn">
         <i data-lucide="user-plus"></i>
+        <span>Sign Up</span>
       </button>
 
       <!-- Cart -->
-      <button id="cartBtn" class="nav-cart-btn" title="Cart">
+      <button id="cartBtn" class="nav-rect-btn nav-cart">
         <i data-lucide="shopping-cart"></i>
         <div id="cartDot" class="cart-dot"></div>
       </button>
 
     </div>
-
   </div>
 </nav>
+
+<script>
+  lucide.createIcons();
+</script>
