@@ -32,11 +32,10 @@
     loadComponent("#modals", "components/modals.html");
   </script>
 
-  <!-- CHECKOUT BODY -->
+  <!-- CHECKOUT PAGE -->
   <section class="premium-checkout">
 
     <h1 class="checkout-title">Checkout</h1>
-
     <p style="color:#aeb6c1;margin-bottom:20px;">
       Review your items before completing your purchase.
     </p>
@@ -48,7 +47,6 @@
       £0.00
     </div>
 
-    <!-- GREEN BUTTON -->
     <button class="secure-btn" id="checkoutPay">
       Continue to Payment
     </button>
@@ -66,7 +64,10 @@
   <script src="assets/js/auth.js"></script>
 
   <script>
-    /* Populate checkout from Cart */
+    /* ⭐ FIX 1: Load saved cart BEFORE anything else */
+    window.Cart.init();
+
+    /* ⭐ Populate checkout from Cart */
     document.addEventListener("DOMContentLoaded", () => {
       const wrapper = document.getElementById("checkoutItems");
       const totalEl = document.getElementById("checkoutTotal");
@@ -80,7 +81,6 @@
       }
 
       let html = "";
-
       items.forEach(i => {
         total += i.price * i.qty;
 
@@ -93,6 +93,7 @@
             border-bottom:1px solid rgba(255,255,255,0.05);
             padding-bottom:12px;
           ">
+
             <img src="${i.image}" style="
               width:60px;
               height:60px;
@@ -113,7 +114,7 @@
       totalEl.innerText = "£" + total.toFixed(2);
     });
 
-    /* ⭐ FIXED: Stripe Payment Redirect */
+    /* ⭐ FIX 2: Stripe Payment Redirect */
     document.getElementById("checkoutPay").onclick = async () => {
       const cart = window.Cart.items;
 
@@ -132,12 +133,13 @@
         const data = await res.json();
 
         if (data.url) {
-          window.location.href = data.url; // Redirect to Stripe
+          window.location.href = data.url; // redirect to Stripe checkout
         } else {
-          alert(data.error || "Payment failed.");
+          alert(data.error || "Payment session failed.");
         }
+
       } catch (err) {
-        alert("Could not connect to payment server.");
+        alert("Unable to reach payment server.");
       }
     };
   </script>
