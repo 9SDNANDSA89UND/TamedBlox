@@ -41,11 +41,7 @@
     </p>
 
     <!-- SEARCH -->
-    <input
-      id="searchInput"
-      placeholder="Search products..."
-      class="modern-input"
-      style="margin-top:20px;">
+    <input id="searchInput" placeholder="Search products..." class="modern-input" style="margin-top:20px;">
   </section>
 
   <!-- PRODUCT GRID -->
@@ -67,9 +63,8 @@
   <script src="assets/js/drawer.js"></script>
   <script src="assets/js/auth.js"></script>
 
-  <!-- ⭐ UPDATED PRODUCTS SCRIPT -->
+  <!-- ⭐ PRODUCTS SCRIPT -->
   <script>
-
     /* =========================================
        PRODUCT LIST
     ========================================== */
@@ -122,13 +117,13 @@
       list.forEach(p => {
         const discountPercent = getDiscountPercent(p.price, p.oldPrice);
         const rarityClass = `tag-${p.rarity.toLowerCase()}`;
-
         const discountHTML = discountPercent
           ? `<span class="discount-tag ${getDiscountClass(discountPercent)}">-${discountPercent}%</span>`
           : "";
 
         grid.innerHTML += `
           <div class="card">
+            
             <div class="card-badges">
               <span class="tag ${rarityClass}">${p.rarity}</span>
               ${discountHTML}
@@ -158,8 +153,8 @@
     function setupSearch() {
       const input = document.getElementById("searchInput");
       input.addEventListener("input", () => {
-        const value = input.value.toLowerCase();
-        const filtered = products.filter(p => p.name.toLowerCase().includes(value));
+        const q = input.value.toLowerCase();
+        const filtered = products.filter(p => p.name.toLowerCase().includes(q));
         renderProducts(filtered);
       });
     }
@@ -185,19 +180,30 @@
       setupSearch();
       Cart.init();
     });
-
   </script>
 
   <!-- ⭐ 3D TILT SCRIPT -->
   <script>
     document.addEventListener("mousemove", (e) => {
       document.querySelectorAll(".card").forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
 
-        const tiltX = (y / rect.height) * -12;
-        const tiltY = (x / rect.width) * 12;
+        const rect = card.getBoundingClientRect();
+        const hover =
+          e.clientX > rect.left &&
+          e.clientX < rect.right &&
+          e.clientY > rect.top &&
+          e.clientY < rect.bottom;
+
+        if (!hover) {
+          card.removeAttribute("data-tilt");
+          return;
+        }
+
+        const x = e.clientX - (rect.left + rect.width / 2);
+        const y = e.clientY - (rect.top + rect.height / 2);
+
+        const tiltX = (y / rect.height) * -10;
+        const tiltY = (x / rect.width) * 10;
 
         card.style.setProperty("--tiltX", tiltX + "deg");
         card.style.setProperty("--tiltY", tiltY + "deg");
