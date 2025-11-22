@@ -168,7 +168,7 @@ function goToCheckout() {
 }
 
 /* ============================
-   RENDER PRODUCT CARDS
+   RENDER PRODUCTS
 ============================ */
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
@@ -268,11 +268,16 @@ async function checkUsernameExists(username) {
   return data.exists;
 }
 
+/* ============================
+   EXTENDED SIGNUP VALIDATION
+============================ */
+
 let canSubmitSignup = {
   username: false,
   email: false,
   password: false,
-  match: false
+  match: false,
+  captcha: false
 };
 
 function updateSignupButton() {
@@ -281,8 +286,77 @@ function updateSignupButton() {
     canSubmitSignup.username &&
     canSubmitSignup.email &&
     canSubmitSignup.password &&
-    canSubmitSignup.match
+    canSubmitSignup.match &&
+    canSubmitSignup.captcha
   );
+}
+
+/* ============================
+   CAPTCHA SYSTEM
+============================ */
+function generateCaptcha() {
+  const text = Math.random().toString(36).substring(2, 8).toUpperCase();
+  document.getElementById("captchaText").innerText = text;
+  return text;
+}
+
+let captchaValue = generateCaptcha();
+
+document.getElementById("refreshCaptcha")?.addEventListener("click", () => {
+  captchaValue = generateCaptcha();
+});
+
+document.getElementById("captchaInput")?.addEventListener("input", (e) => {
+  const msg = document.getElementById("captchaCheck");
+
+  if (e.target.value.toUpperCase() === captchaValue) {
+    msg.innerText = "CAPTCHA matched ✓";
+    msg.className = "modal-hint valid";
+    canSubmitSignup.captcha = true;
+  } else {
+    msg.innerText = "CAPTCHA incorrect";
+    msg.className = "modal-hint invalid";
+    canSubmitSignup.captcha = false;
+  }
+
+  updateSignupButton();
+});
+
+/* ============================
+   USERNAME SUGGESTIONS
+============================ */
+function generateSuggestions(base) {
+  return [
+    base + Math.floor(Math.random() * 90 + 10),
+    base + Math.floor(Math.random() * 900 + 100),
+    base + "_official",
+    base + "_yt",
+    base + "_rbx",
+    base + "_store"
+  ];
+}
+
+async function showSuggestions(base) {
+  const box = document.getElementById("usernameSuggestions");
+  box.innerHTML = "";
+
+  const names = generateSuggestions(base);
+
+  names.forEach(name => {
+    const el = document.createElement("span");
+    el.innerText = name;
+    el.onclick = () => {
+      signupUsername.value = name;
+      document.getElementById("usernameCheck").innerText = "Username available ✓";
+      document.getElementById("usernameCheck").className = "modal-hint valid";
+      canSubmitSignup.username = true;
+      box.classList.add("hidden");
+      updateSignupButton();
+    };
+    box.appendChild(el);
+  });
+
+  box.classList.remove("hidden");
 }
 
 /* ============================
@@ -291,11 +365,13 @@ function updateSignupButton() {
 document.getElementById("signupUsername")?.addEventListener("input", async (e) => {
   const username = e.target.value.trim();
   const msg = document.getElementById("usernameCheck");
+  const box = document.getElementById("usernameSuggestions");
 
   if (username.length < 3) {
     msg.innerText = "Username too short";
     msg.className = "modal-hint invalid";
     canSubmitSignup.username = false;
+    box.classList.add("hidden");
     return updateSignupButton();
   }
 
@@ -305,10 +381,13 @@ document.getElementById("signupUsername")?.addEventListener("input", async (e) =
     msg.innerText = "Username already taken";
     msg.className = "modal-hint invalid";
     canSubmitSignup.username = false;
+
+    showSuggestions(username.replace(/[^a-zA-Z0-9]/g, ""));
   } else {
     msg.innerText = "Username available ✓";
     msg.className = "modal-hint valid";
     canSubmitSignup.username = true;
+    box.classList.add("hidden");
   }
 
   updateSignupButton();
@@ -342,7 +421,6 @@ document.getElementById("signupPassword")?.addEventListener("input", (e) => {
   const msg = document.getElementById("passwordStrength");
 
   const strength = passwordStrengthLevel(pw);
-
   const levels = ["Very Weak", "Weak", "Medium", "Strong", "Very Strong"];
   const colors = ["invalid", "invalid", "invalid", "valid", "valid"];
 
@@ -354,10 +432,10 @@ document.getElementById("signupPassword")?.addEventListener("input", (e) => {
 });
 
 /* ============================
-   CONFIRM PASSWORD
+   PASSWORD MATCH
 ============================ */
 document.getElementById("signupPasswordConfirm")?.addEventListener("input", (e) => {
-  const pw = document.getElementById("signupPassword").value;
+  const pw = signupPassword.value;
   const confirm = e.target.value;
   const msg = document.getElementById("passwordMatch");
 
