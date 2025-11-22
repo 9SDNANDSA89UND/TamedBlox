@@ -1,56 +1,62 @@
-/* ==========================================
-   CART DRAWER — FINAL WORKING VERSION
-========================================== */
+/* ============================
+   CART DRAWER HANDLING
+============================ */
 
-// Global references
-const cartDrawer = document.getElementById("cartDrawer");
-const cartOverlay = document.getElementById("cartOverlay");
+// OPEN + CLOSE BUTTONS
+let cartBtn;
+let closeDrawerBtn;
+let cartDrawer = document.getElementById("cartDrawer");
+let cartOverlay = document.getElementById("cartOverlay");
 
-// Wait for navbar to load dynamically before adding listeners
-document.addEventListener("DOMContentLoaded", () => {
-  const observer = new MutationObserver(() => {
-    const cartBtn = document.getElementById("cartBtn");
-    const closeDrawer = document.getElementById("closeDrawer");
-
-    if (cartBtn && closeDrawer) {
-      console.log("Cart button detected — listeners attached ✔");
-
-      cartBtn.onclick = () => openCart();
-      closeDrawer.onclick = () => closeCart();
-      cartOverlay.onclick = () => closeCart();
-
-      observer.disconnect();
-    }
-  });
-
-  // Watch DOM for injected navbar
-  observer.observe(document.body, { childList: true, subtree: true });
+/* Observe navbar load (because it's loaded dynamically) */
+const navObserver = new MutationObserver(() => {
+  let btn = document.getElementById("cartBtn");
+  if (btn) {
+    cartBtn = btn;
+    cartBtn.addEventListener("click", openDrawer);
+    console.log("Cart button detected — drawer listeners attached");
+    navObserver.disconnect();
+  }
 });
 
-/* ==========================================
-   OPEN / CLOSE DRAWER
-========================================== */
+navObserver.observe(document.body, { childList: true, subtree: true });
 
-function openCart() {
+/* Close button may also load dynamically */
+const drawerObserver = new MutationObserver(() => {
+  let btn = document.getElementById("closeDrawer");
+  if (btn) {
+    closeDrawerBtn = btn;
+    closeDrawerBtn.addEventListener("click", closeDrawer);
+    drawerObserver.disconnect();
+  }
+});
+
+drawerObserver.observe(document.body, { childList: true, subtree: true });
+
+function openDrawer() {
   cartDrawer.classList.add("open");
   cartOverlay.style.display = "block";
 }
 
-function closeCart() {
+cartOverlay.addEventListener("click", closeDrawer);
+
+function closeDrawer() {
   cartDrawer.classList.remove("open");
   cartOverlay.style.display = "none";
 }
 
-/* ==========================================
-   UPDATE CART UI
-========================================== */
+/* ============================
+   RENDER CART CONTENT
+============================ */
 
 function updateCartDrawer() {
   const drawer = document.getElementById("drawerContent");
-  if (!drawer) return;
 
+  if (!drawer) return;
   if (cart.length === 0) {
-    drawer.innerHTML = `<p style="color:#9ca4b1; margin-top:20px;">Your cart is empty.</p>`;
+    drawer.innerHTML = `
+      <p style="color:#9ca4b1; margin-top:10px;">Your cart is empty.</p>
+    `;
     return;
   }
 
@@ -62,76 +68,56 @@ function updateCartDrawer() {
 
     html += `
       <div class="cart-item">
-
         <div class="cart-item-title">${item.name}</div>
         <div class="cart-item-price">£${item.price}</div>
 
         <div class="cart-qty-row">
-          <button class="qty-btn" onclick="changeQty('${item.name}', -1)">−</button>
-          <div class="qty-display">${item.qty}</div>
-          <button class="qty-btn" onclick="changeQty('${item.name}', 1)">+</button>
-          <button class="qty-btn qty-remove" onclick="removeItem('${item.name}')">×</button>
-        </div>
+          
+          <!-- Minus -->
+          <button class="qty-btn" onclick="changeQty('${item.name}', -1)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
 
+          <div class="qty-display">${item.qty}</div>
+
+          <!-- Plus -->
+          <button class="qty-btn" onclick="changeQty('${item.name}', 1)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+
+          <!-- Remove -->
+          <button class="qty-btn qty-remove" onclick="removeItem('${item.name}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+
+        </div>
       </div>
     `;
   });
 
   html += `
     <div class="cart-total-line">Total: £${total.toFixed(2)}</div>
-    <button class="checkout-btn" onclick="goToCheckout()">Proceed to Checkout</button>
+    <button class="checkout-btn" onclick="goToCheckout()">
+      Proceed to Checkout
+    </button>
   `;
 
   drawer.innerHTML = html;
 }
 
-/* ==========================================
-   CHANGE QTY / REMOVE ITEM
-========================================== */
-
-function changeQty(name, amount) {
-  const item = cart.find(i => i.name === name);
-  if (!item) return;
-
-  item.qty += amount;
-
-  if (item.qty <= 0) {
-    cart = cart.filter(i => i.name !== name);
-  }
-
-  saveCart();
-}
-
-function removeItem(name) {
-  cart = cart.filter(i => i.name !== name);
-  saveCart();
-}
-
-/* ==========================================
-   SAVE CART STATE
-========================================== */
-
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
-  updateCartDrawer();
-  updateCartDot();
-}
-
-/* ==========================================
-   CART DOT
-========================================== */
-
-function updateCartDot() {
-  const dot = document.getElementById("cartDot");
-  if (!dot) return;
-
-  dot.style.display = cart.length > 0 ? "block" : "none";
-}
-
-/* ==========================================
-   CHECKOUT REDIRECT
-========================================== */
-
-function goToCheckout() {
-  window.location.href = "checkout.html";
-}
+/* Initialize drawer on page load */
+updateCartDrawer();
