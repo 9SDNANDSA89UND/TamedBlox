@@ -34,7 +34,6 @@
   cursor: pointer;
 }
 
-/* LIFT EFFECT */
 .card:hover {
   transform: scale(1.05);
   box-shadow:
@@ -121,32 +120,32 @@
 }
 
 /* ==========================================
-   BADGES (RARITY + DISCOUNT)
+   BADGES (RARITY LEFT, DISCOUNT RIGHT)
 ========================================== */
 .card-badges {
-  position: relative;
   width: 100%;
   margin-bottom: 10px;
 
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
-/* Center rarity tag */
+/* RARITY TAG LEFT */
 .tag {
-  margin: 0 auto;
+  margin: 0;
 }
 
-/* Anchor discount on right */
+/* DISCOUNT TAG RIGHT */
 .card-badges .discount-tag {
-  position: absolute;
-  right: 10px;
-  top: 0;
+  position: relative;
+  right: 0;
+  margin-left: auto;
 }
 
 /* ==========================================
-   RARITY TAGS — PULSE
+   RARITY TAGS — MINI PULSE
 ========================================== */
 @keyframes rarityPulseSmall {
   0% { box-shadow: 0 0 6px currentColor; }
@@ -206,7 +205,6 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Tilt animation (Option D) */
 .discount-tag:hover {
   transform: scale(1.18) rotate(3deg);
   box-shadow:
