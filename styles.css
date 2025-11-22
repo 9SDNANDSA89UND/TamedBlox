@@ -563,6 +563,7 @@ body {
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 /* === FIXED MARQUEE (bar stays still) === */
+
 .announcement-section {
   max-width: 600px !important;
   margin: 20px auto !important;
@@ -579,10 +580,15 @@ body {
 }
 
 .marquee {
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-inner {
   display: inline-flex;
   white-space: nowrap;
   gap: 60px;
-  animation: marquee-scroll 8s linear infinite;
+  animation: marquee-scroll 10s linear infinite;
 }
 
 .announcement span {
@@ -592,6 +598,6 @@ body {
 }
 
 @keyframes marquee-scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
