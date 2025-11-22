@@ -24,7 +24,7 @@
 
 <body>
 
-  <!-- INCLUDES -->
+  <!-- NAV + MODALS -->
   <div id="navbar"></div>
   <div id="modals"></div>
 
@@ -33,7 +33,7 @@
     loadComponent("#modals", "components/modals.html");
   </script>
 
-  <!-- HEADER -->
+  <!-- PAGE HEADER -->
   <section class="container" style="margin-top:40px;">
     <h1 style="font-size:32px;font-weight:900;">All Products</h1>
     <p style="color:#aeb6c1;margin-top:10px;">
@@ -47,7 +47,7 @@
   <!-- PRODUCT GRID -->
   <div id="productGrid" class="product-grid"></div>
 
-  <!-- CART DRAWER (from navbar) -->
+  <!-- CART DRAWER -->
   <div id="cartDrawer" class="cart-drawer"></div>
   <div id="cartOverlay" class="cart-overlay"></div>
 
@@ -63,8 +63,9 @@
   <script src="assets/js/drawer.js"></script>
   <script src="assets/js/auth.js"></script>
 
-  <!-- ⭐ PRODUCTS SCRIPT -->
+  <!-- ⭐ PRODUCT SCRIPT -->
   <script>
+
     /* =========================================
        PRODUCT LIST
     ========================================== */
@@ -117,13 +118,13 @@
       list.forEach(p => {
         const discountPercent = getDiscountPercent(p.price, p.oldPrice);
         const rarityClass = `tag-${p.rarity.toLowerCase()}`;
+
         const discountHTML = discountPercent
           ? `<span class="discount-tag ${getDiscountClass(discountPercent)}">-${discountPercent}%</span>`
           : "";
 
         grid.innerHTML += `
           <div class="card">
-            
             <div class="card-badges">
               <span class="tag ${rarityClass}">${p.rarity}</span>
               ${discountHTML}
@@ -141,7 +142,6 @@
             <button class="buy-btn" onclick="addToCart('${p.name}', this)">
               Add to Cart
             </button>
-
           </div>
         `;
       });
@@ -180,35 +180,35 @@
       setupSearch();
       Cart.init();
     });
+
   </script>
 
-  <!-- ⭐ 3D TILT SCRIPT -->
+  <!-- ⭐ 3D HOLOGRAPHIC TILT SCRIPT -->
   <script>
     document.addEventListener("mousemove", (e) => {
       document.querySelectorAll(".card").forEach(card => {
 
         const rect = card.getBoundingClientRect();
-        const hover =
+
+        const inside =
           e.clientX > rect.left &&
           e.clientX < rect.right &&
           e.clientY > rect.top &&
           e.clientY < rect.bottom;
 
-        if (!hover) {
-          card.removeAttribute("data-tilt");
+        if (!inside) {
+          card.style.transform = "";
           return;
         }
 
         const x = e.clientX - (rect.left + rect.width / 2);
         const y = e.clientY - (rect.top + rect.height / 2);
 
-        const tiltX = (y / rect.height) * -10;
-        const tiltY = (x / rect.width) * 10;
+        const tiltX = (y / rect.height) * -12;
+        const tiltY = (x / rect.width) * 12;
 
-        card.style.setProperty("--tiltX", tiltX + "deg");
-        card.style.setProperty("--tiltY", tiltY + "deg");
-
-        card.setAttribute("data-tilt", "true");
+        card.style.transform =
+          `rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.05)`;
       });
     });
   </script>
