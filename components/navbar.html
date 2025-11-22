@@ -54,6 +54,28 @@
   </div>
 </nav>
 
+<!-- ⭐ CART DRAWER (NOW GLOBAL & ALWAYS LOADED) -->
+<div id="cartDrawer" class="cart-drawer">
+  <div class="cart-header">
+    <h2 class="cart-title">Your Cart</h2>
+    <span id="closeDrawer" style="cursor:pointer;font-size:22px;">×</span>
+  </div>
+
+  <div id="drawerContent"></div>
+
+  <div class="cart-footer">
+    <div class="cart-total-line">
+      <span>Total</span>
+      <span id="drawerTotal">£0.00</span>
+    </div>
+
+    <button id="drawerCheckoutBtn" class="checkout-btn">Checkout</button>
+  </div>
+</div>
+
+<!-- ⭐ OVERLAY (CLICK TO CLOSE) -->
+<div id="cartOverlay" class="cart-overlay"></div>
+
 <script>
   // lucide icons (local file assumed)
   setTimeout(() => {
