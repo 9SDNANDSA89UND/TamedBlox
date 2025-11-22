@@ -9,6 +9,114 @@
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/modal.css">
 
+  <style>
+    /* --- PREMIUM CHECKOUT DESIGN --- */
+
+    .checkout-container {
+      max-width: 900px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .checkout-title {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .checkout-sub {
+      color: #aeb6c1;
+      margin-bottom: 26px;
+    }
+
+    .checkout-card {
+      background: #0f141a;
+      border: 1px solid rgba(78,245,138,0.18);
+      border-radius: 16px;
+      padding: 18px 22px;
+      margin-bottom: 18px;
+
+      display: flex;
+      align-items: center;
+      gap: 18px;
+
+      transition: 0.25s ease;
+    }
+
+    .checkout-card:hover {
+      border-color: #4ef58ab0;
+      box-shadow: 0 0 14px rgba(78,245,138,0.18);
+    }
+
+    .checkout-img {
+      width: 70px;
+      height: 70px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .checkout-info {
+      flex: 1;
+    }
+
+    .checkout-name {
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .checkout-price {
+      color: #4ef58a;
+      font-size: 17px;
+      font-weight: 900;
+      margin-top: 4px;
+    }
+
+    .checkout-qty {
+      color: #aeb6c1;
+      margin-top: 4px;
+    }
+
+    .checkout-total-box {
+      margin-top: 30px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+
+      font-size: 22px;
+      font-weight: 900;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .checkout-total-value {
+      color: #4ef58a;
+      font-weight: 900;
+    }
+
+    .checkout-btn {
+      margin-top: 26px;
+      width: 100%;
+      padding: 18px;
+      font-size: 18px;
+      font-weight: 900;
+
+      background: #4ef58a;
+      border: none;
+      border-radius: 14px;
+
+      cursor: pointer;
+      color: #0b0f14;
+
+      transition: 0.2s ease;
+    }
+
+    .checkout-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+
   <!-- Component Loader -->
   <script>
     async function loadComponent(selector, file) {
@@ -33,25 +141,23 @@
   </script>
 
   <!-- CHECKOUT PAGE -->
-  <section class="premium-checkout">
+  <div class="checkout-container">
 
     <h1 class="checkout-title">Checkout</h1>
-    <p style="color:#aeb6c1;margin-bottom:20px;">
-      Review your items before completing your purchase.
-    </p>
+    <p class="checkout-sub">Review your items before completing your purchase.</p>
 
     <div id="checkoutItems"></div>
 
-    <h2 style="font-size:22px;font-weight:900;margin-top:30px;">Total</h2>
-    <div id="checkoutTotal" style="font-size:22px;font-weight:900;color:#4ef58a;margin-top:10px;">
-      £0.00
+    <div class="checkout-total-box">
+      <span>Total</span>
+      <span id="checkoutTotal" class="checkout-total-value">£0.00</span>
     </div>
 
-    <button class="secure-btn" id="checkoutPay">
+    <button class="checkout-btn" id="checkoutPay">
       Continue to Payment
     </button>
 
-  </section>
+  </div>
 
   <!-- FOOTER -->
   <div id="footer"></div>
@@ -64,10 +170,10 @@
   <script src="assets/js/auth.js"></script>
 
   <script>
-    /* ⭐ FIX 1: Load saved cart BEFORE anything else */
+    /* Load cart data before anything else */
     window.Cart.init();
 
-    /* ⭐ Populate checkout from Cart */
+    /* Populate checkout from Cart */
     document.addEventListener("DOMContentLoaded", () => {
       const wrapper = document.getElementById("checkoutItems");
       const totalEl = document.getElementById("checkoutTotal");
@@ -85,26 +191,13 @@
         total += i.price * i.qty;
 
         html += `
-          <div style="
-            display:flex;
-            align-items:center;
-            gap:16px;
-            margin-bottom:20px;
-            border-bottom:1px solid rgba(255,255,255,0.05);
-            padding-bottom:12px;
-          ">
+          <div class="checkout-card">
+            <img src="${i.image}" class="checkout-img">
 
-            <img src="${i.image}" style="
-              width:60px;
-              height:60px;
-              border-radius:10px;
-              object-fit:cover;
-            ">
-
-            <div style="flex:1;">
-              <div style="font-weight:900;font-size:18px;">${i.name}</div>
-              <div style="color:#4ef58a;font-size:16px;font-weight:900;">£${i.price}</div>
-              <div style="color:#aeb6c1;margin-top:4px;">Qty: ${i.qty}</div>
+            <div class="checkout-info">
+              <div class="checkout-name">${i.name}</div>
+              <div class="checkout-price">£${i.price}</div>
+              <div class="checkout-qty">Qty: ${i.qty}</div>
             </div>
           </div>
         `;
@@ -114,7 +207,7 @@
       totalEl.innerText = "£" + total.toFixed(2);
     });
 
-    /* ⭐ FIX 2: Stripe Payment Redirect */
+    /* Stripe Payment Redirect */
     document.getElementById("checkoutPay").onclick = async () => {
       const cart = window.Cart.items;
 
@@ -133,7 +226,7 @@
         const data = await res.json();
 
         if (data.url) {
-          window.location.href = data.url; // redirect to Stripe checkout
+          window.location.href = data.url;
         } else {
           alert(data.error || "Payment session failed.");
         }
