@@ -34,8 +34,9 @@
   cursor: pointer;
 }
 
+/* HOVER LIFT */
 .card:hover {
-  transform: scale(1.04);
+  transform: scale(1.05);
   box-shadow:
     0 0 22px rgba(78,245,138,0.28),
     0 6px 16px rgba(0,0,0,0.45);
@@ -168,14 +169,36 @@
 }
 
 /* ==========================================
-   DISCOUNT TAG — SMALL
+   DISCOUNT TAG — HIGH VISIBILITY + OPTION D
 ========================================== */
 .discount-tag {
-  padding: 4px 8px;
+  padding: 6px 12px;
   border-radius: 50px;
-  font-size: 10px;
+
+  font-size: 13px;
   font-weight: 900;
+
   color: #0b0f14;
+  background: #4ef58a;
+
+  border: 2px solid rgba(255,255,255,0.4);
+
+  box-shadow:
+    0 0 10px rgba(78,245,138,0.7),
+    0 0 20px rgba(78,245,138,0.45);
+
+  opacity: 1 !important;
+  transform: scale(1.05);
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* ⭐ Option D: Tilt / Pop animation on hover */
+.discount-tag:hover {
+  transform: scale(1.18) rotate(3deg);
+  box-shadow:
+    0 0 18px rgba(78,245,138,0.9),
+    0 0 30px rgba(78,245,138,0.65);
 }
 
 /* ==========================================
@@ -194,7 +217,7 @@
   color: #4ef58a;
 }
 
-/* ⭐ UPDATED: BIGGER OLD PRICE */
+/* Bigger old price */
 .old-price {
   font-size: 13px;
   font-weight: 700;
