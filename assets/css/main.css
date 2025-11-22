@@ -43,7 +43,7 @@ a {
 }
 
 .glow-green {
-  text-shadow: 0 0 10px #4ef58a, 0 0 18px #4ef58a;
+  text-shadow: 0 0 10px #4ef58a, 0 0 20px #4ef58a;
 }
 
 /* ==========================================
@@ -84,6 +84,7 @@ a {
 /* ==========================================
    BUTTONS
 ========================================== */
+
 button {
   border: none;
   outline: none;
@@ -106,6 +107,7 @@ button {
 /* ==========================================
    CART BUTTON
 ========================================== */
+
 .icon-btn {
   width: 44px;
   height: 44px;
@@ -140,41 +142,50 @@ button {
 }
 
 /* ==========================================
-   PREMIUM MARQUEE (Slim)
+   PREMIUM NEON MARQUEE (NEW)
 ========================================== */
 
 .marquee {
   width: 100%;
   overflow: hidden;
-  padding: 6px 0;
-  background: rgba(78,245,138,0.05);
-  border-bottom: 1px solid rgba(78,245,138,0.2);
+  padding: 4px 0;
+  background: rgba(15,20,26,0.9);
+  border-bottom: 1px solid rgba(78,245,138,0.12);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
 
 .marquee-inner {
   display: inline-flex;
-  gap: 30px;
+  gap: 22px;
   padding-left: 100%;
-  animation: marqueeScroll 12s linear infinite;
   align-items: center;
+  animation: marqueeScroll 14s linear infinite;
 }
 
+/* NEW THEMED PILL */
 .marquee-pill {
   font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 600;
-  padding: 5px 14px;
-  border-radius: 30px;
+  padding: 6px 16px;
+  border-radius: 8px;
   white-space: nowrap;
-  color: #fff;
-  background: linear-gradient(135deg, #3a2f7d, #1f2d69);
-  border: 1px solid rgba(255,255,255,0.15);
-  box-shadow: 0 0 8px rgba(78,245,138,0.3);
+  color: #d7fbe6;
+
+  background: rgba(16,24,32,0.75);
+  border: 1px solid rgba(78,245,138,0.35);
+
+  box-shadow:
+    0 0 6px rgba(78,245,138,0.28),
+    inset 0 0 6px rgba(78,245,138,0.18);
+
+  letter-spacing: 0.2px;
+  backdrop-filter: blur(4px);
 }
 
 @keyframes marqueeScroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-100%); }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
 
 /* ==========================================
@@ -206,7 +217,7 @@ button {
 }
 
 /* ==========================================
-   CART DRAWER — FULLY MODERNIZED
+   CART DRAWER — MODERNIZED
 ========================================== */
 
 .cart-drawer {
