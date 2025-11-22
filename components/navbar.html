@@ -34,6 +34,16 @@
   </div>
 </nav>
 
+<!-- ================================
+     LUCIDE ICONS (REQUIRED)
+=================================== -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
 <script>
-  lucide.createIcons();
+  // Wait for navbar to load into DOM before injecting icons
+  setTimeout(() => {
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  }, 30);
 </script>
