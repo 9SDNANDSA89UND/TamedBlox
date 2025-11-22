@@ -1,1 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TamedBlox — Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/cards.css">
+  <link rel="stylesheet" href="assets/css/modal.css">
+  <link rel="stylesheet" href="assets/css/reviews.css">
+
+  <!-- Include Loader -->
+  <script>
+    async function loadComponent(selector, file) {
+      const el = document.querySelector(selector);
+      if (el) {
+        const html = await fetch(file).then(r => r.text());
+        el.innerHTML = html;
+      }
+    }
+  </script>
+</head>
+
+<body>
+
+  <!-- COMPONENTS -->
+  <div id="navbar"></div>
+  <div id="modals"></div>
+
+  <script>
+    loadComponent("#navbar", "components/navbar.html");
+    loadComponent("#modals", "components/modals.html");
+  </script>
+
+  <!-- HERO SECTION -->
+  <section class="container" style="margin-top:40px;">
+    <h1 style="font-size:32px;font-weight:900;">Featured Products</h1>
+    <p style="margin-top:10px;color:#b7bec9;">
+      Best-selling items from TamedBlox.
+    </p>
+  </section>
+
+  <!-- PRODUCT GRID -->
+  <div id="productGrid" class="product-grid"></div>
+
+  <!-- REVIEWS -->
+  <section class="reviews-section">
+    <h2 class="reviews-title">Customer Reviews</h2>
+
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-header">
+          <img src="https://via.placeholder.com/50" class="review-pfp">
+          <div>
+            <div class="review-name">Alex R</div>
+            <div class="review-rating">★★★★★</div>
+          </div>
+        </div>
+        <div class="review-body">
+          Instant delivery. Exactly what I paid for, 10/10.
+        </div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <img src="https://via.placeholder.com/50" class="review-pfp">
+          <div>
+            <div class="review-name">Nova</div>
+            <div class="review-rating">★★★★★</div>
+          </div>
+        </div>
+        <div class="review-body">
+          Quick service and amazing prices.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CART DRAWER -->
+  <div id="cartDrawer" class="cart-drawer">
+    <button id="closeDrawer" class="close-drawer">×</button>
+    <h2 style="font-weight:900;margin-bottom:20px;">Your Cart</h2>
+    <div id="drawerContent"></div>
+  </div>
+
+  <div id="cartOverlay" class="cart-overlay"></div>
+
+  <!-- FOOTER -->
+  <div id="footer"></div>
+
+  <script>
+    loadComponent("#footer", "components/footer.html");
+  </script>
+
+  <!-- JS -->
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/drawer.js"></script>
+  <script src="assets/js/auth.js"></script>
+
+</body>
+</html>
 
