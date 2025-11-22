@@ -228,7 +228,7 @@ updateCartDot();
    =============== AUTHENTICATION SYSTEM =======================
 =============================================================== */
 
-/* ========= Modal open/close ========= */
+/* ========= MODAL OPEN/CLOSE ========= */
 function openModal(id) {
   document.getElementById(id)?.classList.remove("hidden");
 }
@@ -243,15 +243,148 @@ document.getElementById("openSignup")?.addEventListener("click", () =>
   openModal("signupModal")
 );
 
-/* ========= SIGNUP ========= */
+/* ============================
+   VALIDATION HELPERS
+============================ */
+
+function validateEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function passwordStrengthLevel(pw) {
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  return score;
+}
+
+async function checkUsernameExists(username) {
+  const res = await fetch(
+    "https://website-5eml.onrender.com/auth/check-username?u=" + username
+  );
+  const data = await res.json();
+  return data.exists;
+}
+
+let canSubmitSignup = {
+  username: false,
+  email: false,
+  password: false,
+  match: false
+};
+
+function updateSignupButton() {
+  const btn = document.getElementById("signupSubmit");
+  btn.disabled = !(
+    canSubmitSignup.username &&
+    canSubmitSignup.email &&
+    canSubmitSignup.password &&
+    canSubmitSignup.match
+  );
+}
+
+/* ============================
+   USERNAME VALIDATION
+============================ */
+document.getElementById("signupUsername")?.addEventListener("input", async (e) => {
+  const username = e.target.value.trim();
+  const msg = document.getElementById("usernameCheck");
+
+  if (username.length < 3) {
+    msg.innerText = "Username too short";
+    msg.className = "modal-hint invalid";
+    canSubmitSignup.username = false;
+    return updateSignupButton();
+  }
+
+  const exists = await checkUsernameExists(username);
+
+  if (exists) {
+    msg.innerText = "Username already taken";
+    msg.className = "modal-hint invalid";
+    canSubmitSignup.username = false;
+  } else {
+    msg.innerText = "Username available ✓";
+    msg.className = "modal-hint valid";
+    canSubmitSignup.username = true;
+  }
+
+  updateSignupButton();
+});
+
+/* ============================
+   EMAIL VALIDATION
+============================ */
+document.getElementById("signupEmail")?.addEventListener("input", (e) => {
+  const email = e.target.value.trim();
+  const msg = document.getElementById("emailCheck");
+
+  if (validateEmail(email)) {
+    msg.innerText = "Valid email ✓";
+    msg.className = "modal-hint valid";
+    canSubmitSignup.email = true;
+  } else {
+    msg.innerText = "Invalid email";
+    msg.className = "modal-hint invalid";
+    canSubmitSignup.email = false;
+  }
+
+  updateSignupButton();
+});
+
+/* ============================
+   PASSWORD STRENGTH
+============================ */
+document.getElementById("signupPassword")?.addEventListener("input", (e) => {
+  const pw = e.target.value;
+  const msg = document.getElementById("passwordStrength");
+
+  const strength = passwordStrengthLevel(pw);
+
+  const levels = ["Very Weak", "Weak", "Medium", "Strong", "Very Strong"];
+  const colors = ["invalid", "invalid", "invalid", "valid", "valid"];
+
+  msg.innerText = "Strength: " + levels[strength];
+  msg.className = "modal-hint " + colors[strength];
+
+  canSubmitSignup.password = strength >= 2;
+  updateSignupButton();
+});
+
+/* ============================
+   CONFIRM PASSWORD
+============================ */
+document.getElementById("signupPasswordConfirm")?.addEventListener("input", (e) => {
+  const pw = document.getElementById("signupPassword").value;
+  const confirm = e.target.value;
+  const msg = document.getElementById("passwordMatch");
+
+  if (confirm === pw && pw.length > 0) {
+    msg.innerText = "Passwords match ✓";
+    msg.className = "modal-hint valid";
+    canSubmitSignup.match = true;
+  } else {
+    msg.innerText = "Passwords do not match";
+    msg.className = "modal-hint invalid";
+    canSubmitSignup.match = false;
+  }
+
+  updateSignupButton();
+});
+
+/* ============================
+   SIGNUP SUBMIT
+============================ */
 document.getElementById("signupSubmit")?.addEventListener("click", async () => {
-  const username = signupUsername.value;
-  const email = signupEmail.value;
-  const password = signupPassword.value;
+  const username = signupUsername.value.trim();
+  const email = signupEmail.value.trim();
+  const password = signupPassword.value.trim();
 
   const res = await fetch("https://website-5eml.onrender.com/auth/register", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, email, password })
   });
 
@@ -267,14 +400,16 @@ document.getElementById("signupSubmit")?.addEventListener("click", async () => {
   location.reload();
 });
 
-/* ========= LOGIN ========= */
+/* ============================
+   LOGIN SUBMIT
+============================ */
 document.getElementById("loginSubmit")?.addEventListener("click", async () => {
   const email = loginEmail.value;
   const password = loginPassword.value;
 
   const res = await fetch("https://website-5eml.onrender.com/auth/login", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
   });
 
@@ -290,7 +425,9 @@ document.getElementById("loginSubmit")?.addEventListener("click", async () => {
   location.reload();
 });
 
-/* ========= UPDATE NAVBAR WHEN LOGGED IN ========= */
+/* ============================
+   UPDATE NAVBAR WHEN LOGGED IN
+============================ */
 async function refreshAuthUI() {
   const token = localStorage.getItem("authToken");
   if (!token) return;
