@@ -11,20 +11,17 @@
 
     <!-- RIGHT SIDE BUTTONS -->
     <div class="nav-right">
-      
-      <!-- Login -->
+
       <button id="openLogin" class="nav-rect-btn">
         <i data-lucide="log-in"></i>
         <span>Login</span>
       </button>
 
-      <!-- Signup -->
       <button id="openSignup" class="nav-rect-btn nav-accent-btn">
         <i data-lucide="user-plus"></i>
         <span>Sign Up</span>
       </button>
 
-      <!-- Cart -->
       <button id="cartBtn" class="nav-rect-btn nav-cart">
         <i data-lucide="shopping-cart"></i>
         <div id="cartDot" class="cart-dot"></div>
@@ -34,16 +31,11 @@
   </div>
 </nav>
 
-<!-- ================================
-     LUCIDE ICONS (REQUIRED)
-=================================== -->
-<script src="https://unpkg.com/lucide@latest"></script>
+<!-- LOCAL LUCIDE -->
+<script src="assets/js/lucide.js"></script>
 
 <script>
-  // Wait for navbar to load into DOM before injecting icons
   setTimeout(() => {
-    if (window.lucide) {
-      lucide.createIcons();
-    }
+    lucide.createIcons();
   }, 30);
 </script>
