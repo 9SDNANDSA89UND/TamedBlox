@@ -556,3 +556,31 @@ body {
   transform: translateY(0);
   box-shadow: 0 8px 20px rgba(78, 245, 138, 0.3);
 }
+
+
+
+/* === AUTO PATCH APPLIED === */
+.card img {
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
+  margin-bottom: 8px !important;
+  font-size: 0 !important;
+  color: transparent !important;
+}
+
+.card {
+  padding-top: 14px !important;
+  padding-bottom: 14px !important;
+  gap: 6px !important;
+  height: auto !important;
+}
+
+.card h3 {
+  margin-bottom: 4px !important;
+}
+
+.price-box {
+  margin-top: 4px !important;
+  margin-bottom: 8px !important;
+  gap: 6px !important;
+}
