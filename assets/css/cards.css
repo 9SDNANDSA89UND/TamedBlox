@@ -1,6 +1,4 @@
-/* =============================
-   PRODUCT CARDS
-============================= */
+/* Updated cards.css with glowing rarity tags */
 
 .product-grid {
   max-width: 1250px;
@@ -17,7 +15,6 @@
   border-radius: 16px;
   padding: 18px;
   transition: 0.25s;
-  box-shadow: 0 0 0 rgba(78,245,138,0.15);
 }
 
 .card:hover {
@@ -39,10 +36,6 @@
   margin-bottom: 10px;
 }
 
-/* =============================
-   BADGES (RARITY + DISCOUNTS)
-============================= */
-
 .card-badges {
   display: flex;
   justify-content: space-between;
@@ -55,19 +48,12 @@
   color: #0b0f14;
   font-size: 12px;
   font-weight: bold;
+  box-shadow: 0 0 8px rgba(255,255,255,0.35);
 }
 
-.tag-god {
-  background: #ff00ea;
-}
-
-.tag-secret {
-  background: #00c4ff;
-}
-
-.tag-og {
-  background: #ffaa2b;
-}
+.tag-god { background: #ff00ea; box-shadow: 0 0 10px #ff00ea; }
+.tag-secret { background: #00c4ff; box-shadow: 0 0 10px #00c4ff; }
+.tag-og { background: #ffaa2b; box-shadow: 0 0 10px #ffaa2b; }
 
 .discount-tag {
   padding: 6px 12px;
@@ -77,29 +63,17 @@
   color: #0b0f14;
 }
 
-.discount-red {
-  background: #ff4646;
-}
-.discount-orange {
-  background: #ff8c35;
-}
-.discount-yellow {
-  background: #ffe24a;
-}
-.discount-green {
-  background: #4ef58a;
-}
-
-/* =============================
-   PRICE
-============================= */
+.discount-red { background: #ff4646; }
+.discount-orange { background: #ff8c35; }
+.discount-yellow { background: #ffe24a; }
+.discount-green { background: #4ef58a; }
 
 .price-box {
-  margin-top: 8px;
-  margin-bottom: 16px;
   display: flex;
   gap: 12px;
   align-items: baseline;
+  margin-top: 8px;
+  margin-bottom: 16px;
 }
 
 .price {
@@ -114,10 +88,6 @@
   text-decoration: line-through;
 }
 
-/* =============================
-   ADD TO CART BUTTON
-============================= */
-
 .buy-btn {
   width: 100%;
   background: #4ef58a;
@@ -125,13 +95,6 @@
   padding: 12px 0;
   border: none;
   border-radius: 12px;
-  font-size: 15px;
   font-weight: 900;
   cursor: pointer;
-  transition: 0.2s;
 }
-
-.buy-btn:hover {
-  opacity: 0.85;
-}
-
