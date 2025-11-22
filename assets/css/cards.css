@@ -11,7 +11,7 @@
 }
 
 /* ==========================================
-   HOLOGRAPHIC PRODUCT CARD
+   PREMIUM PRODUCT CARD (CLEAN GREEN)
 ========================================== */
 .card {
   position: relative;
@@ -19,53 +19,45 @@
   border-radius: 22px;
   padding: 22px;
 
-  border: 1px solid rgba(255,255,255,0.08);
+  border: 1px solid rgba(78,245,138,0.15);
   overflow: hidden;
 
   transform-style: preserve-3d;
-  perspective: 1000px;
+  perspective: 1100px;
 
   box-shadow:
-    0 0 20px rgba(0, 255, 170, 0.06),
+    0 0 20px rgba(78,245,138,0.06),
     inset 0 0 10px rgba(255,255,255,0.03);
 
-  transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s;
+  transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease;
   cursor: pointer;
 }
 
-/* ------------------------------------------
-   HOLOGRAPHIC BORDER EFFECT
------------------------------------------- */
+/* ==========================================
+   GREEN GLOW BORDER (NO RAINBOW)
+========================================== */
 .card::before {
   content: "";
   position: absolute;
   inset: -2px;
   border-radius: 22px;
 
-  background: linear-gradient(
-    120deg,
-    rgba(255,0,200,0.5),
-    rgba(0,200,255,0.5),
-    rgba(255,200,0,0.5),
-    rgba(78,245,138,1),
-    rgba(255,0,200,0.5)
+  background: radial-gradient(
+    circle at top right,
+    rgba(78,245,138,0.45),
+    rgba(78,245,138,0.2),
+    rgba(78,245,138,0.1),
+    transparent
   );
-  background-size: 300% 300%;
 
-  animation: holoGlow 5s ease infinite;
+  filter: blur(18px);
+  opacity: 0.65;
   z-index: -1;
-  filter: blur(4px);
 }
 
-@keyframes holoGlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* ------------------------------------------
-   HOLOGRAPHIC SHINE SWEEP
------------------------------------------- */
+/* ==========================================
+   SHINE SWEEP (HOLOGRAPHIC LIGHT BUT GREEN)
+========================================== */
 .card::after {
   content: "";
   position: absolute;
@@ -73,11 +65,9 @@
   border-radius: 22px;
 
   background: linear-gradient(
-    105deg,
+    110deg,
     transparent 0%,
-    rgba(255,255,255,0.15) 45%,
-    rgba(255,255,255,0.35) 50%,
-    rgba(255,255,255,0.15) 55%,
+    rgba(255,255,255,0.18) 50%,
     transparent 100%
   );
 
@@ -88,7 +78,7 @@
 }
 
 .card:hover::after {
-  opacity: 1;
+  opacity: 0.8;
   animation: shineSweep 1.4s ease forwards;
 }
 
@@ -97,18 +87,18 @@
   100% { transform: translateX(180%) rotate(10deg); }
 }
 
-/* ------------------------------------------
-   CARD HOVER LIFT
------------------------------------------- */
+/* ==========================================
+   HOVER LIFT
+========================================== */
 .card:hover {
   transform: scale(1.05);
   box-shadow:
-    0 0 30px rgba(78,245,138,0.35),
+    0 0 30px rgba(78,245,138,0.25),
     0 8px 24px rgba(0,0,0,0.45);
 }
 
 /* ==========================================
-   IMAGE
+   PRODUCT IMAGE
 ========================================== */
 .product-img {
   width: 100%;
@@ -117,8 +107,8 @@
   border-radius: 16px;
 
   box-shadow:
-    0 0 20px rgba(0,0,0,0.5),
-    0 0 30px rgba(78,245,138,0.2);
+    0 0 18px rgba(0,0,0,0.5),
+    0 0 26px rgba(78,245,138,0.2);
 
   margin-bottom: 20px;
 }
@@ -133,7 +123,7 @@
 }
 
 /* ==========================================
-   BADGES AREA
+   BADGES
 ========================================== */
 .card-badges {
   display: flex;
@@ -142,7 +132,7 @@
 }
 
 /* ==========================================
-   PULSING NEON RARITY TAGS (HOLO)
+   PULSING RARITY TAGS (NEON)
 ========================================== */
 @keyframes rarityPulse {
   0% { box-shadow: 0 0 10px currentColor; }
@@ -159,23 +149,23 @@
   backdrop-filter: blur(6px);
 }
 
-/* GOD */
+/* God */
 .tag-god {
-  background: rgba(255,0,200,0.25);
+  background: rgba(255,0,200,0.2);
   color: #ff00ea;
   border: 1px solid rgba(255,0,200,0.6);
 }
 
-/* SECRET */
+/* Secret */
 .tag-secret {
-  background: rgba(0,200,255,0.25);
+  background: rgba(0,200,255,0.2);
   color: #00c4ff;
   border: 1px solid rgba(0,200,255,0.6);
 }
 
 /* OG */
 .tag-og {
-  background: rgba(255,170,0,0.25);
+  background: rgba(255,170,0,0.2);
   color: #ffaa2b;
   border: 1px solid rgba(255,170,0,0.6);
 }
@@ -190,6 +180,11 @@
   font-weight: 900;
   color: #0b0f14;
 }
+
+.discount-red    { background: #ff4646; }
+.discount-orange { background: #ff8c35; }
+.discount-yellow { background: #ffe24a; }
+.discount-green  { background: #4ef58a; }
 
 /* ==========================================
    PRICE
@@ -214,7 +209,7 @@
 }
 
 /* ==========================================
-   ADD TO CART
+   ADD TO CART BUTTON
 ========================================== */
 .buy-btn {
   width: 100%;
