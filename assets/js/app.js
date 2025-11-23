@@ -11,7 +11,7 @@ const products = [
     image: "https://i.postimg.cc/tCT9T6xC/Carti.webp"
   }
 
-  // add more products manually here
+  // ⭐ Add more real products here
 ];
 
 /* =========================================
@@ -47,39 +47,52 @@ function renderProducts(list) {
     grid.innerHTML += `
       <div class="card">
 
+        <!-- ⭐ RARITY BADGE WITH GEM ICON -->
         <div class="card-badges">
-          <span class="tag ${rarityClass}">${p.rarity}</span>
+          <span class="tag ${rarityClass}">
+            <svg xmlns="http://www.w3.org/2000/svg"
+              width="14" height="14"
+              viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"
+              class="rarity-icon">
+              <path d="M10.5 3 8 9l4 13 4-13-2.5-6"/>
+              <path d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z"/>
+              <path d="M2 9h20"/>
+            </svg>
+            ${p.rarity}
+          </span>
 
+          <!-- ⭐ DISCOUNT BADGE -->
           ${
             p.oldPrice
-              ? `
-                <span class="discount-tag ${getDiscountClass(percent)}">
-
-                  <!-- ⭐ NEW TAG ICON YOU ASKED FOR -->
-                  <svg xmlns="http://www.w3.org/2000/svg" 
-                    width="24" height="24" viewBox="0 0 24 24" fill="none" 
-                    stroke="currentColor" stroke-width="2" 
-                    stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-tag-icon lucide-tag">
+              ? `<span class="discount-tag ${getDiscountClass(percent)}">
+                  <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14'
+                    viewBox='0 0 24 24' fill='none' stroke='currentColor'
+                    stroke-width='2' stroke-linecap='round' stroke-linejoin='round'
+                    class='lucide lucide-tag'>
                     <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
                     <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
                   </svg>
-
                   ${percent}% Discount
-                </span>`
+                 </span>`
               : ""
           }
         </div>
 
+        <!-- IMAGE -->
         <img src="${p.image}" alt="${p.name}" class="product-img">
 
+        <!-- NAME -->
         <h3>${p.name}</h3>
 
+        <!-- PRICE SECTION -->
         <div class="price-box">
           <span class="price">£${p.price}</span>
           ${p.oldPrice ? `<span class="old-price">£${p.oldPrice}</span>` : ""}
         </div>
 
+        <!-- ADD TO CART BUTTON -->
         <button class="buy-btn" onclick="addToCart('${p.name}', this)">
           <svg xmlns="http://www.w3.org/2000/svg" 
             class="btn-cart-icon" width="16" height="16" 
