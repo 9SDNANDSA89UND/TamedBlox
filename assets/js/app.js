@@ -1,7 +1,7 @@
 /* =====================================================
-   TamedBlox — USD-ONLY PRICE SYSTEM
-   No currency selector. No conversion.
-   Simply display all prices as USD labels.
+   TamedBlox — USD-ONLY PRICE SYSTEM (Option A)
+   No conversions. No dropdown. No detection.
+   All GBP backend values displayed as USD labels.
 ===================================================== */
 
 /* Format product numbers as USD strings */
@@ -20,7 +20,7 @@ async function loadProducts() {
     const res = await fetch("https://website-5eml.onrender.com/products");
     products = await res.json();
 
-    // Ensure numeric fields
+    // Ensure numeric formatting
     products.forEach(p => {
       p.price = Number(p.price);
       p.oldPrice = p.oldPrice ? Number(p.oldPrice) : null;
@@ -104,7 +104,6 @@ function addToCart(name, btn) {
   const product = products.find(p => p.name === name);
   const img = btn.closest(".card").querySelector(".product-img");
 
-  // Store values as USD numbers (not strings)
   const usdProduct = {
     ...product,
     price: Number(product.price),
@@ -130,8 +129,7 @@ function initCardTilt() {
       const rx = ((y - r.height / 2) / (r.height / 2)) * -10;
       const ry = ((x - r.width / 2) / (r.width / 2)) * 10;
 
-      card.style.transform =
-        `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`;
     });
 
     card.addEventListener("mouseleave", () => {
