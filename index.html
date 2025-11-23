@@ -25,7 +25,7 @@
 
 <body>
 
-  <!-- COMPONENTS -->
+  <!-- NAVBAR + MODALS (LOADED BEFORE ANY JS EXECUTES) -->
   <div id="navbar"></div>
   <div id="modals"></div>
 
@@ -42,10 +42,10 @@
     </p>
   </section>
 
-  <!-- PRODUCT GRID (Loaded from backend via app.js) -->
+  <!-- PRODUCT GRID -->
   <div id="productGrid" class="product-grid"></div>
 
-  <!-- REVIEWS -->
+  <!-- REVIEWS SECTION (UNCHANGED) -->
   <section class="reviews-section">
     <h2 class="reviews-title">Customer Reviews</h2>
 
@@ -107,14 +107,11 @@
     loadComponent("#footer", "components/footer.html");
   </script>
 
-  <!-- JS SCRIPTS -->
+  <!-- JS SCRIPTS (MOVED TO VERY BOTTOM — FIXES CURRENCY) -->
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/drawer.js"></script>
   <script src="assets/js/auth.js"></script>
-
-  <!-- ❌ Removed the loadProducts() override here -->
-  <!-- This block caused GBP overwrite and broke currency conversion -->
 
 </body>
 </html>
