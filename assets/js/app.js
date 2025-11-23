@@ -1,24 +1,16 @@
 /* =====================================================
    CURRENCY SYSTEM — FINAL FULLY FIXED VERSION
-   - Live FX using open.er-api.com (CORS SAFE)
-   - Auto detect via IP
-   - Dropdown override
-   - Conversion BEFORE render
 ===================================================== */
 
 /* ------------------------------
-   GLOBAL FX TABLE (BASE GBP)
+   LIVE EXCHANGE RATES (BASE = GBP)
 ------------------------------ */
 let exchangeRates = { rates: {} };
 
-/* ------------------------------
-   LOAD LIVE GBP → X RATES
------------------------------- */
 async function loadRates() {
   try {
     const res = await fetch("https://open.er-api.com/v6/latest/GBP");
     const data = await res.json();
-
     if (data && data.result === "success") {
       exchangeRates.rates = data.rates;
     } else {
@@ -30,7 +22,7 @@ async function loadRates() {
 }
 
 /* ------------------------------
-   AUTO-DETECT USER CURRENCY
+   AUTO-DETECT USER CURRENCY VIA IP
 ------------------------------ */
 async function detectUserCurrency() {
   try {
@@ -43,7 +35,7 @@ async function detectUserCurrency() {
 }
 
 /* ------------------------------
-   CONVERT PRICE (GBP → X)
+   CONVERT PRICE (GBP → currency)
 ------------------------------ */
 function convertPrice(amountGBP, currency) {
   if (!exchangeRates.rates[currency]) return amountGBP;
@@ -55,7 +47,6 @@ function convertPrice(amountGBP, currency) {
 ------------------------------ */
 function formatPrice(amountGBP) {
   const converted = convertPrice(amountGBP, userCurrency);
-
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: userCurrency,
@@ -64,13 +55,13 @@ function formatPrice(amountGBP) {
 }
 
 /* ------------------------------
-   LOAD USER DROPDOWN OVERRIDE
+   LOAD DROPDOWN OVERRIDE
 ------------------------------ */
 let savedCurrency = localStorage.getItem("tamedblox_currency");
 let userCurrency = "GBP";
 
 /* ------------------------------
-   WAIT FOR NAVBAR
+   WAIT UNTIL NAVBAR EXISTS
 ------------------------------ */
 function waitForNavbar(callback) {
   if (document.getElementById("currencySelector")) return callback();
@@ -78,7 +69,7 @@ function waitForNavbar(callback) {
 }
 
 /* ------------------------------
-   INITIALIZE DROPDOWN
+   INITIALIZE DROPDOWN (ALWAYS WORKS)
 ------------------------------ */
 function initCurrencyDropdown() {
   const dropdown = document.getElementById("currencySelector");
@@ -89,25 +80,39 @@ function initCurrencyDropdown() {
   dropdown.addEventListener("change", () => {
     const val = dropdown.value;
 
-    if (val === "AUTO") localStorage.removeItem("tamedblox_currency");
-    else localStorage.setItem("tamedblox_currency", val);
+    if (val === "AUTO") {
+      localStorage.removeItem("tamedblox_currency");
+    } else {
+      localStorage.setItem("tamedblox_currency", val);
+    }
 
     location.reload();
   });
 }
 
 /* =====================================================
-   PRODUCT LIST (GBP BASE VALUES)
+   PRODUCT LIST (BASE GBP PRICES)
 ===================================================== */
+
 const products = [
   {
     name: "La Grande Combinasion ($10M/s)",
     rarity: "Secret",
-    price: 10.30,   // BASE GBP
-    oldPrice: 13.38, // BASE GBP
+    price: 10.30,      // base GBP
+    oldPrice: 13.38,   // base GBP
     image: "https://i.postimg.cc/tCT9T6xC/Carti.webp"
   }
 ];
+
+/* =====================================================
+   FIX FOR PRICE CONVERSION BUG
+===================================================== */
+function normalizeProducts() {
+  products.forEach(p => {
+    p.price = Number(p.price);
+    if (p.oldPrice) p.oldPrice = Number(p.oldPrice);
+  });
+}
 
 /* =====================================================
    DISCOUNT HELPERS
@@ -117,8 +122,15 @@ function getDiscountPercent(price, oldPrice) {
   return Math.round(((oldPrice - price) / oldPrice) * 100);
 }
 
+function getDiscountClass(percent) {
+  if (percent > 90) return "discount-red";
+  if (percent > 50) return "discount-orange";
+  if (percent > 20) return "discount-yellow";
+  return "discount-green";
+}
+
 /* =====================================================
-   RENDER PRODUCTS — NOW USING formatPrice()
+   RENDER PRODUCT CARDS
 ===================================================== */
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
@@ -132,14 +144,10 @@ function renderProducts(list) {
 
     grid.innerHTML += `
       <div class="card">
-        
+
         <div class="card-badges">
           <span class="tag ${rarityClass}">${p.rarity}</span>
-          ${
-            p.oldPrice
-              ? `<span class="discount-tag">${percent}% OFF</span>`
-              : ""
-          }
+          ${p.oldPrice ? `<span class="discount-tag">${percent}% OFF</span>` : ""}
         </div>
 
         <img src="${p.image}" class="product-img">
@@ -148,11 +156,7 @@ function renderProducts(list) {
 
         <div class="price-box">
           <span class="price">${formatPrice(p.price)}</span>
-          ${
-            p.oldPrice
-              ? `<span class="old-price">${formatPrice(p.oldPrice)}</span>`
-              : ""
-          }
+          ${p.oldPrice ? `<span class="old-price">${formatPrice(p.oldPrice)}</span>` : ""}
         </div>
 
         <button class="buy-btn" onclick="addToCart('${p.name}', this)">
@@ -184,9 +188,7 @@ function setupSearch() {
 ===================================================== */
 function addToCart(name, btn) {
   const product = products.find(p => p.name === name);
-  const card = btn.closest(".card");
-  const img = card.querySelector(".product-img");
-
+  const img = btn.closest(".card").querySelector(".product-img");
   window.Cart.addItem(product, img);
 }
 
@@ -202,12 +204,10 @@ function initCardTilt() {
       const x = e.clientX - r.left;
       const y = e.clientY - r.top;
 
-      const rotateX = ((y - r.height / 2) / (r.height / 2)) * -10;
-      const rotateY = ((x - r.width / 2) / (r.width / 2)) * 10;
+      const rx = ((y - r.height / 2) / (r.height / 2)) * -10;
+      const ry = ((x - r.width / 2) / (r.width / 2)) * 10;
 
-      card.style.transform = `perspective(800px)
-                              rotateX(${rotateX}deg)
-                              rotateY(${rotateY}deg)`;
+      card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`;
     });
 
     card.addEventListener("mouseleave", () => {
@@ -217,27 +217,33 @@ function initCardTilt() {
 }
 
 /* =====================================================
-   MAIN INITIALIZER — ORDER FIXED
+   MAIN INITIALIZER (ORDER FIXED)
 ===================================================== */
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // 1. LOAD LIVE RATES FIRST
+  // 1. Normalise number types BEFORE conversion
+  normalizeProducts();
+
+  // 2. Load live FX rates
   await loadRates();
 
-  // 2. AUTO-DETECT OR OVERRIDE
+  // 3. Auto-detect local currency OR load saved override
   if (!savedCurrency || savedCurrency === "AUTO") {
     userCurrency = await detectUserCurrency();
   } else {
     userCurrency = savedCurrency;
   }
 
-  // 3. WAIT FOR NAVBAR → INITIALIZE DROPDOWN
+  // 4. Wait for navbar → then init dropdown
   waitForNavbar(initCurrencyDropdown);
 
-  // 4. NOW RENDER EVERYTHING WITH CORRECT CURRENCY
+  // 5. Render with correct converted prices
   renderProducts(products);
+
   setupSearch();
 
-  // 5. INIT CART LAST
-  if (window.Cart && window.Cart.init) window.Cart.init();
+  // 6. Initialize Cart LAST
+  if (window.Cart && window.Cart.init) {
+    window.Cart.init();
+  }
 });
