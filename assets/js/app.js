@@ -93,28 +93,11 @@ async function loadProducts() {
 
     normalizeProducts();
 
-    // ⭐ Wait for navbar + currency to finish loading
-    await waitForCurrencyReady();
-
     renderProducts(products);
 
   } catch (err) {
     console.error("❌ Failed to load backend products:", err);
   }
-}
-
-/* Utility: Wait for userCurrency to be set */
-function waitForCurrencyReady() {
-  return new Promise(resolve => {
-    let tries = 0;
-    const check = () => {
-      if (userCurrency && userCurrency !== "GBP_DEFAULT_PENDING") return resolve();
-      tries++;
-      if (tries > 50) return resolve();
-      setTimeout(check, 20);
-    };
-    check();
-  });
 }
 
 /* Convert price fields to real numbers */
@@ -227,19 +210,23 @@ function initCardTilt() {
 document.addEventListener("DOMContentLoaded", async () => {
   await loadRates();
 
-  // Mark currency as pending during load
+  // temporary state
   userCurrency = "GBP_DEFAULT_PENDING";
 
+  // detect or load saved currency
   if (!savedCurrency || savedCurrency === "AUTO") {
     userCurrency = await detectUserCurrency();
   } else {
     userCurrency = savedCurrency;
   }
 
-  waitForNavbar(initCurrencyDropdown);
+  // wait for navbar THEN run dropdown + load products
+  waitForNavbar(() => {
+    initCurrencyDropdown();
 
-  // ⭐ products load AFTER currency is ready
-  loadProducts();
+    // ⭐ now products render with correct currency
+    loadProducts();
+  });
 
   setupSearch();
 
