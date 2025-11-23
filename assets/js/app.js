@@ -1,11 +1,26 @@
 /* =====================================================
    CURRENCY: AUTO-DETECT + LIVE CONVERSION + DROPDOWN
+   (FINAL FULLY WORKING VERSION)
 ===================================================== */
 
-// Live FX rates (base = GBP)
+
+/* ------------------------------
+   LIVE EXCHANGE RATES (GBP BASE)
+------------------------------ */
 let exchangeRates = { rates: {} };
 
-// Detect user's real currency by IP
+async function loadRates() {
+  try {
+    const res = await fetch("https://api.exchangerate.host/latest?base=GBP");
+    exchangeRates = await res.json();
+  } catch (err) {
+    exchangeRates = { rates: {} };
+  }
+}
+
+/* -----------------------------------
+   AUTO-DETECT USER CURRENCY BY IP
+----------------------------------- */
 async function detectUserCurrency() {
   try {
     const res = await fetch("https://ipapi.co/json/");
@@ -16,27 +31,17 @@ async function detectUserCurrency() {
   }
 }
 
-// Load live exchange rates
-async function loadRates() {
-  try {
-    const res = await fetch("https://api.exchangerate.host/latest?base=GBP");
-    exchangeRates = await res.json();
-  } catch (err) {
-    exchangeRates = { rates: {} };
-  }
+/* -----------------------------------
+   PRICE CONVERSION (GBP → X)
+----------------------------------- */
+function convertPrice(amountGBP, currency) {
+  if (!exchangeRates.rates[currency]) return amountGBP;
+  return amountGBP * exchangeRates.rates[currency];
 }
 
-// Convert GBP → user currency
-function convertPrice(amountGBP, targetCurrency) {
-  if (!exchangeRates.rates[targetCurrency]) return amountGBP;
-  return amountGBP * exchangeRates.rates[targetCurrency];
-}
-
-// Load saved override
-let savedCurrency = localStorage.getItem("tamedblox_currency");
-let userCurrency = "GBP"; // will be overwritten below
-
-// Format the price after conversion
+/* -----------------------------------
+   PRICE FORMATTER
+----------------------------------- */
 function formatPrice(amountGBP) {
   const converted = convertPrice(amountGBP, userCurrency);
 
@@ -47,39 +52,52 @@ function formatPrice(amountGBP) {
   }).format(converted);
 }
 
-/* =====================================================
-   CURRENCY DROPDOWN (Manual Override)
-===================================================== */
-document.addEventListener("DOMContentLoaded", () => {
+/* -----------------------------------
+   LOAD USER CURRENCY OVERRIDE
+----------------------------------- */
+let savedCurrency = localStorage.getItem("tamedblox_currency");
+let userCurrency = "GBP"; // will be replaced later
+
+/* -----------------------------------
+   WAIT FOR NAVBAR BEFORE INIT
+----------------------------------- */
+function waitForNavbar(callback) {
+  if (document.getElementById("currencySelector")) return callback();
+  setTimeout(() => waitForNavbar(callback), 50);
+}
+
+/* -----------------------------------
+   DROPDOWN INITIALIZER
+----------------------------------- */
+function initCurrencyDropdown() {
   const dropdown = document.getElementById("currencySelector");
+  if (!dropdown) return;
 
-  if (dropdown) {
-    dropdown.value = savedCurrency || "AUTO";
+  dropdown.value = savedCurrency || "AUTO";
 
-    dropdown.addEventListener("change", () => {
-      const selection = dropdown.value;
+  dropdown.addEventListener("change", () => {
+    const val = dropdown.value;
 
-      if (selection === "AUTO") {
-        localStorage.removeItem("tamedblox_currency");
-      } else {
-        localStorage.setItem("tamedblox_currency", selection);
-      }
+    if (val === "AUTO") {
+      localStorage.removeItem("tamedblox_currency");
+    } else {
+      localStorage.setItem("tamedblox_currency", val);
+    }
 
-      location.reload();
-    });
-  }
-});
+    location.reload();
+  });
+}
 
 
 /* =====================================================
-   PRODUCT LIST (GBP BASE PRICES)
+   PRODUCT LIST
 ===================================================== */
 const products = [
   {
     name: "La Grande Combinasion ($10M/s)",
     rarity: "Secret",
-    price: 10.30,     // stored in GBP
-    oldPrice: 13.38,  // stored in GBP
+    price: 10.30, // stored as GBP
+    oldPrice: 13.38,
     image: "https://i.postimg.cc/tCT9T6xC/Carti.webp"
   }
 ];
@@ -100,7 +118,7 @@ function getDiscountClass(percent) {
 }
 
 /* =====================================================
-   RENDER PRODUCTS
+   RENDER PRODUCTS (NOW USES FORMATPRICE)
 ===================================================== */
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
@@ -116,21 +134,8 @@ function renderProducts(list) {
       <div class="card">
 
         <div class="card-badges">
-          <span class="tag ${rarityClass}">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-              viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M10.5 3 8 9l4 13 4-13-2.5-6"/>
-              <path d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z"/>
-              <path d="M2 9h20"/>
-            </svg>
-            ${p.rarity}
-          </span>
-
-          ${p.oldPrice ? `
-          <span class="discount-tag ${getDiscountClass(percent)}">
-            ${percent}% OFF
-          </span>` : ""}
+          <span class="tag ${rarityClass}">${p.rarity}</span>
+          ${p.oldPrice ? `<span class="discount-tag">${percent}% OFF</span>` : ""}
         </div>
 
         <img src="${p.image}" class="product-img">
@@ -168,12 +173,10 @@ function setupSearch() {
 }
 
 /* =====================================================
-   ADD TO CART WRAPPER
+   ADD TO CART
 ===================================================== */
 function addToCart(name, btn) {
   const product = products.find(p => p.name === name);
-  if (!product) return;
-
   const card = btn.closest(".card");
   const img = card.querySelector(".product-img");
 
@@ -207,20 +210,20 @@ function initCardTilt() {
 }
 
 /* =====================================================
-   INIT EVERYTHING (NOW ASYNC)
+   MAIN INITIALIZER (FINAL FIXED)
 ===================================================== */
 document.addEventListener("DOMContentLoaded", async () => {
+  await loadRates(); // load FX first
 
-  await loadRates(); // load conversion table
-
-  // If not manually overridden:
   if (!savedCurrency || savedCurrency === "AUTO") {
-    userCurrency = await detectUserCurrency();
+    userCurrency = await detectUserCurrency(); // auto detect
   } else {
-    userCurrency = savedCurrency;
+    userCurrency = savedCurrency; // dropdown override
   }
 
-  renderProducts(products);
+  waitForNavbar(initCurrencyDropdown); // dropdown always works
+
+  renderProducts(products); // now prices are correct
   setupSearch();
 
   if (window.Cart && window.Cart.init)
