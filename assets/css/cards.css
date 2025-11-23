@@ -1,6 +1,11 @@
-/* ============================================================
+/* ===============================
+   TAMEDBLOX — PREMIUM CARD SYSTEM (REWRITTEN)
+   Fully redesigned for cleaner, modern, glowing visuals
+=============================== */
+
+/* ============================================
    PRODUCT GRID
-============================================================ */
+============================================ */
 .product-grid {
   max-width: 1300px;
   margin: 50px auto;
@@ -11,11 +16,11 @@
   gap: 32px;
 }
 
-/* ============================================================
-   PRODUCT CARD — PREMIUM
-============================================================ */
+/* ============================================
+   CARD BASE
+============================================ */
 .card {
-  background: rgba(17, 25, 31, 0.9);
+  background: linear-gradient(145deg, #0f141a, #111922);
   border: 1px solid rgba(78, 245, 138, 0.15);
   border-radius: 20px;
 
@@ -29,16 +34,29 @@
   justify-content: space-between;
 
   transition: 0.25s ease;
+
+  /* Entrance animation */
+  opacity: 0;
+  transform: translateY(12px);
+  animation: cardFade 0.45s ease forwards;
+}
+
+@keyframes cardFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .card:hover {
   transform: translateY(-6px);
   box-shadow: 0 0 22px rgba(78, 245, 138, 0.25);
+  border-color: rgba(78, 245, 138, 0.45);
 }
 
-/* ============================================================
-   IMAGE AREA — PERFECT SQUARE
-============================================================ */
+/* ============================================
+   IMAGE AREA
+============================================ */
 .product-img {
   width: 100%;
   height: 250px;
@@ -53,12 +71,14 @@
   align-items: center;
   justify-content: center;
 
-  box-shadow: inset 0 0 12px rgba(78, 245, 138, 0.12);
+  box-shadow:
+    inset 0 0 18px rgba(78, 245, 138, 0.25),
+    0 0 18px rgba(78, 245, 138, 0.12);
 }
 
-/* ============================================================
-   BADGE ROW
-============================================================ */
+/* ============================================
+   BADGES ROW
+============================================ */
 .card-badges {
   position: absolute;
   top: 14px;
@@ -70,9 +90,9 @@
   align-items: center;
 }
 
-/* ============================================================
-   RARITY TAG — TEXT ONLY
-============================================================ */
+/* ============================================
+   RARITY TAGS
+============================================ */
 .tag {
   padding: 6px 16px;
   font-size: 13px;
@@ -88,21 +108,23 @@
   align-items: center;
   justify-content: center;
 
-  box-shadow: 0 0 12px currentColor;
+  box-shadow:
+    0 0 12px currentColor,
+    inset 0 0 12px rgba(255,255,255,0.08);
 }
 
 /* GOD */
-.tag-god    { color: #ff48ff; background: rgba(255, 0, 255, 0.22); }
+.tag-god { color: #ff48ff; background: rgba(255, 0, 255, 0.22); }
 
 /* SECRET */
 .tag-secret { color: #00d2ff; background: rgba(0, 210, 255, 0.22); }
 
 /* OG */
-.tag-og     { color: #ffb03a; background: rgba(255,170,60,0.22); }
+.tag-og { color: #ffb03a; background: rgba(255,170,60,0.22); }
 
-/* ============================================================
-   DISCOUNT BADGE (TAG ICON + TEXT)
-============================================================ */
+/* ============================================
+   DISCOUNT BADGE
+============================================ */
 .discount-tag {
   display: inline-flex;
   align-items: center;
@@ -126,9 +148,9 @@
   flex-shrink: 0;
 }
 
-/* ============================================================
+/* ============================================
    PRODUCT NAME
-============================================================ */
+============================================ */
 .card h3 {
   margin-top: 18px;
   font-size: 17px;
@@ -139,9 +161,9 @@
   text-overflow: ellipsis;
 }
 
-/* ============================================================
+/* ============================================
    PRICE SECTION
-============================================================ */
+============================================ */
 .price-box {
   display: flex;
   align-items: center;
@@ -161,9 +183,9 @@
   text-decoration: line-through;
 }
 
-/* ============================================================
+/* ============================================
    BUY BUTTON
-============================================================ */
+============================================ */
 .buy-btn {
   width: 100%;
   padding: 14px 0;
@@ -187,8 +209,12 @@
 }
 
 .buy-btn:hover {
-  box-shadow: 0 0 12px rgba(78, 245, 138, 0.4);
-  transform: translateY(-3px);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 16px rgba(78, 245, 138, 0.45);
+}
+
+.buy-btn:active {
+  transform: scale(0.97);
 }
 
 .btn-cart-icon {
