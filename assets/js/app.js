@@ -1,6 +1,6 @@
 /* =====================================================
-   STATIC CURRENCY SYSTEM — 100% RELIABLE (NO API)
-   BASE: GBP
+   CURRENCY SYSTEM — FINAL FIX (NO AUTO, NO DETECTION)
+   BASE CURRENCY: GBP
 ===================================================== */
 
 /* ------------------------------
@@ -23,39 +23,18 @@ const exchangeRates = {
 };
 
 /* =====================================================
-   LOAD SAVED CURRENCY (BEFORE ANYTHING RENDERS)
+   LOAD SAVED CURRENCY (NO AUTO SHIT)
 ===================================================== */
 
 let savedCurrency = localStorage.getItem("tamedblox_currency");
-// ❗ Do NOT use "AUTO" — null means autodetect
-let userCurrency = savedCurrency || null;
-
-/* ------------------------------ */
-async function loadRates() {
-  return true;
-}
-
-/* ------------------------------ */
-async function detectUserCurrency() {
-  try {
-    const res = await fetch("https://ipapi.co/json/");
-    const data = await res.json();
-
-    if (exchangeRates[data.currency]) {
-      return data.currency;   // valid currency
-    }
-  } catch (err) {}
-
-  return "GBP"; // fallback always valid
-}
+let userCurrency = savedCurrency || "GBP"; // ALWAYS valid currency
 
 /* =====================================================
-   PRICE CONVERSION FUNCTIONS
+   PRICE CONVERSION
 ===================================================== */
 
 function convertPrice(amountGBP, currency) {
-  const rate = exchangeRates[currency] || 1;
-  return amountGBP * rate;
+  return amountGBP * (exchangeRates[currency] || 1);
 }
 
 function formatPrice(amountGBP) {
@@ -69,7 +48,7 @@ function formatPrice(amountGBP) {
 }
 
 /* =====================================================
-   NAVBAR WAIT + DROPDOWN INIT
+   NAVBAR DROPDOWN (FINAL)
 ===================================================== */
 
 function waitForNavbar(cb) {
@@ -81,23 +60,16 @@ function initCurrencyDropdown() {
   const dropdown = document.getElementById("currencySelector");
   if (!dropdown) return;
 
-  dropdown.value = savedCurrency || "AUTO";
+  dropdown.value = userCurrency;
 
   dropdown.addEventListener("change", () => {
-    const val = dropdown.value;
-
-    if (val === "AUTO") {
-      localStorage.removeItem("tamedblox_currency");
-    } else {
-      localStorage.setItem("tamedblox_currency", val);
-    }
-
+    localStorage.setItem("tamedblox_currency", dropdown.value);
     location.reload();
   });
 }
 
 /* =====================================================
-   BACKEND PRODUCT LOADING
+   LOAD PRODUCTS
 ===================================================== */
 
 let products = [];
@@ -107,7 +79,11 @@ async function loadProducts() {
     const res = await fetch("https://website-5eml.onrender.com/products");
     products = await res.json();
 
-    normalizeProducts();
+    products.forEach(p => {
+      p.price = Number(p.price);
+      if (p.oldPrice) p.oldPrice = Number(p.oldPrice);
+    });
+
     renderProducts(products);
 
   } catch (err) {
@@ -115,25 +91,14 @@ async function loadProducts() {
   }
 }
 
-function normalizeProducts() {
-  products.forEach(p => {
-    p.price = Number(p.price);
-    if (p.oldPrice) p.oldPrice = Number(p.oldPrice);
-  });
-}
-
 /* =====================================================
-   DISCOUNTS
+   RENDER PRODUCTS
 ===================================================== */
 
 function getDiscountPercent(price, oldPrice) {
   if (!oldPrice || oldPrice <= price) return 0;
   return Math.round(((oldPrice - price) / oldPrice) * 100);
 }
-
-/* =====================================================
-   RENDER PRODUCTS
-===================================================== */
 
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
@@ -147,6 +112,7 @@ function renderProducts(list) {
 
     grid.innerHTML += `
       <div class="card">
+
         <div class="card-badges">
           <span class="tag ${rarityClass}">${p.rarity || "Secret"}</span>
           ${p.oldPrice ? `<span class="discount-tag">${percent}% OFF</span>` : ""}
@@ -164,6 +130,7 @@ function renderProducts(list) {
         <button class="buy-btn" onclick="addToCart('${p.name}', this)">
           Add to Cart
         </button>
+
       </div>
     `;
   });
@@ -174,6 +141,7 @@ function renderProducts(list) {
 /* =====================================================
    SEARCH
 ===================================================== */
+
 function setupSearch() {
   const input = document.getElementById("searchInput");
   if (!input) return;
@@ -220,33 +188,21 @@ function initCardTilt() {
 }
 
 /* =====================================================
-   MAIN INITIALIZER (FINAL FIX)
+   MAIN INIT — SIMPLE AND BULLETPROOF
 ===================================================== */
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-  await loadRates();
+  // Navbar → dropdown
+  waitForNavbar(() => initCurrencyDropdown());
 
-  // Auto-detect properly (NO MORE "AUTO" bug)
-  if (!userCurrency) {
-    userCurrency = await detectUserCurrency();
-  }
-
-  // VALIDATE CURRENCY
-  if (!exchangeRates[userCurrency]) {
-    userCurrency = "GBP"; // guaranteed fallback
-  }
-
-  // Navbar dropdown init
-  waitForNavbar(() => {
-    initCurrencyDropdown();
-  });
-
-  // Now load products with correct, final currency
+  // Products
   await loadProducts();
 
+  // Search
   setupSearch();
 
+  // Cart init
   if (window.Cart && window.Cart.init) {
     window.Cart.init();
   }
