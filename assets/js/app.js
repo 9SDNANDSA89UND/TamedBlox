@@ -1,32 +1,18 @@
 /* =========================================
-   PRODUCT DATA — 10 TEST PRODUCTS
+   MANUAL PRODUCT LIST (NO RANDOMIZATION)
 ========================================= */
 
-const imgURL = "https://i.postimg.cc/tCT9T6xC/Carti.webp";
+const products = [
+  {
+    name: "La Grande Combinasion ($10M/s)",
+    rarity: "Secret",
+    price: 10.30,
+    oldPrice: 13.38, // 23% discount
+    image: "https://i.postimg.cc/tCT9T6xC/Carti.webp"
+  }
 
-const rarityOptions = ["OG", "Secret", "God"];
-
-function makeRandomOldPrice(price) {
-  return Number((price + (Math.random() * 10 + 5)).toFixed(2));
-}
-
-const names = [
-  "Test A", "Test B", "Test C", "Test D", "Test E",
-  "Test F", "Test G", "Test H", "Test I", "Test J"
+  // ⭐ Add more real products below manually
 ];
-
-const products = [];
-
-for (let i = 0; i < 10; i++) {
-  const price = Number((Math.random() * 20 + 3).toFixed(2));
-  products.push({
-    name: names[i],
-    rarity: rarityOptions[Math.floor(Math.random() * rarityOptions.length)],
-    price: price,
-    oldPrice: makeRandomOldPrice(price),
-    image: imgURL
-  });
-}
 
 /* =========================================
    DISCOUNT SYSTEM
@@ -51,6 +37,7 @@ function getDiscountClass(percent) {
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
   if (!grid) return;
+
   grid.innerHTML = "";
 
   list.forEach(p => {
@@ -62,16 +49,16 @@ function renderProducts(list) {
 
         <div class="card-badges">
           <span class="tag ${rarityClass}">${p.rarity}</span>
-          <span class="discount-tag ${getDiscountClass(percent)}">-${percent}%</span>
+          ${p.oldPrice ? `<span class="discount-tag ${getDiscountClass(percent)}">-${percent}%</span>` : ""}
         </div>
 
-        <img src="${p.image}" class="product-img">
+        <img src="${p.image}" alt="${p.name}" class="product-img">
 
         <h3>${p.name}</h3>
 
         <div class="price-box">
           <span class="price">£${p.price}</span>
-          <span class="old-price">£${p.oldPrice}</span>
+          ${p.oldPrice ? `<span class="old-price">£${p.oldPrice}</span>` : ""}
         </div>
 
         <button class="buy-btn" onclick="addToCart('${p.name}', this)">
@@ -101,10 +88,8 @@ function setupSearch() {
   if (!input) return;
 
   input.addEventListener("input", () => {
-    const value = input.value.toLowerCase();
-    const filtered = products.filter(p =>
-      p.name.toLowerCase().includes(value)
-    );
+    const q = input.value.toLowerCase();
+    const filtered = products.filter(p => p.name.toLowerCase().includes(q));
     renderProducts(filtered);
   });
 }
@@ -124,16 +109,14 @@ function addToCart(name, btn) {
 }
 
 /* =========================================
-   INITIALIZER
+   INIT
 ========================================= */
 
-function initApp() {
+document.addEventListener("DOMContentLoaded", () => {
   renderProducts(products);
   setupSearch();
 
   if (window.Cart && window.Cart.init) {
     window.Cart.init();
   }
-}
-
-document.addEventListener("DOMContentLoaded", initApp);
+});
