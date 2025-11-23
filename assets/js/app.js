@@ -1,27 +1,15 @@
 /* =====================================================
-   USD-ONLY PRICE SYSTEM — FINAL VERSION
-   Backend returns GBP -> we always convert to USD.
+   SIMPLE USD DISPLAY SYSTEM
+   No conversion. Just display product.price as USD.
 ===================================================== */
 
-/* USD conversion rate (GBP -> USD) */
-const USD_RATE = 1.27;
-
-/* Convert GBP -> USD */
-function toUSD(amountGBP) {
-  return (amountGBP * USD_RATE).toFixed(2);
-}
-
-/* Format as USD */
-function formatUSD(amountGBP) {
-  const converted = amountGBP * USD_RATE;
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD"
-  }).format(converted);
+/* Format number as USD without converting anything */
+function formatUSD(amount) {
+  return `$${Number(amount).toFixed(2)} USD`;
 }
 
 /* =====================================================
-   PRODUCT LOADING
+   LOAD PRODUCTS FROM BACKEND (GBP NUMBERS)
 ===================================================== */
 
 let products = [];
@@ -31,6 +19,7 @@ async function loadProducts() {
     const res = await fetch("https://website-5eml.onrender.com/products");
     products = await res.json();
 
+    // Ensure numeric values
     products.forEach(p => {
       p.price = Number(p.price);
       if (p.oldPrice) p.oldPrice = Number(p.oldPrice);
@@ -65,7 +54,9 @@ function renderProducts(list) {
       <div class="card">
 
         <div class="card-badges">
-          <span class="tag tag-${(p.rarity || "Secret").toLowerCase()}">${p.rarity || "Secret"}</span>
+          <span class="tag tag-${(p.rarity || "Secret").toLowerCase()}">
+            ${p.rarity || "Secret"}
+          </span>
           ${discount ? `<span class="discount-tag">${discount}% OFF</span>` : ""}
         </div>
 
@@ -75,7 +66,11 @@ function renderProducts(list) {
 
         <div class="price-box">
           <span class="price">${formatUSD(p.price)}</span>
-          ${p.oldPrice ? `<span class="old-price">${formatUSD(p.oldPrice)}</span>` : ""}
+          ${
+            p.oldPrice
+              ? `<span class="old-price">${formatUSD(p.oldPrice)}</span>`
+              : ""
+          }
         </div>
 
         <button class="buy-btn" onclick="addToCart('${p.name}', this)">
@@ -90,7 +85,7 @@ function renderProducts(list) {
 }
 
 /* =====================================================
-   SEARCH
+   SEARCH BAR
 ===================================================== */
 
 function setupSearch() {
@@ -104,25 +99,24 @@ function setupSearch() {
 }
 
 /* =====================================================
-   CART
+   CART INTEGRATION
 ===================================================== */
 
 function addToCart(name, btn) {
   const product = products.find(p => p.name === name);
   const img = btn.closest(".card").querySelector(".product-img");
 
-  // Convert price to USD BEFORE sending to cart
   const usdProduct = {
     ...product,
-    price: Number(toUSD(product.price)),
-    oldPrice: product.oldPrice ? Number(toUSD(product.oldPrice)) : null
+    price: Number(product.price), // already USD-style numeric
+    oldPrice: product.oldPrice ? Number(product.oldPrice) : null
   };
 
   window.Cart.addItem(usdProduct, img);
 }
 
 /* =====================================================
-   CARD TILT
+   CARD TILT EFFECT
 ===================================================== */
 
 function initCardTilt() {
@@ -147,7 +141,7 @@ function initCardTilt() {
 }
 
 /* =====================================================
-   MAIN INITIALIZER
+   INITIALIZATION
 ===================================================== */
 
 document.addEventListener("DOMContentLoaded", async () => {
