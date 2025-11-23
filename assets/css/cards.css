@@ -31,12 +31,12 @@
 
   display: grid;
   grid-template-rows:
-    24px   /* badges */
-    auto   /* image square */
-    40px   /* product title */
-    28px   /* price box */
-    1fr    /* spacing */
-    40px;  /* add to cart */
+    24px
+    auto
+    40px
+    28px
+    1fr
+    40px;
 
   gap: 6px;
 
@@ -109,14 +109,19 @@
 }
 
 /* ==========================================
-   PERFECT SQUARE IMAGE
+   PERFECT SQUARE IMAGE — FIT FULL IMAGE
 ========================================== */
 .product-img {
   width: 100%;
-  aspect-ratio: 1 / 1;     /* square */
-  object-fit: cover;       /* fill without distortion */
-  object-position: center; /* keep centered */
+  aspect-ratio: 1 / 1;     /* Square */
+  
+  object-fit: contain;     /* NO crop: shrink to fit */
+  object-position: center;
+
+  background-color: #0d1117; /* clean backdrop */
   border-radius: 10px;
+
+  padding: 5px;  /* keep image off edges */
 
   box-shadow:
     0 0 10px rgba(0,0,0,0.5),
