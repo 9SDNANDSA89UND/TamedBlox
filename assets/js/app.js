@@ -1,11 +1,7 @@
 /* =====================================================
-   FRONTEND-ONLY CURRENCY SYSTEM — FINAL VERSION (v8)
-   Backend always returns GBP — we convert on frontend.
+   FRONTEND CURRENCY SYSTEM — v9 (INSPIRED BY EXAMPLE)
 ===================================================== */
 
-/* ------------------------------
-   STATIC EXCHANGE RATES (BASE GBP)
------------------------------- */
 const exchangeRates = {
   GBP: 1,
   USD: 1.27,
@@ -15,39 +11,29 @@ const exchangeRates = {
   JPY: 187.30,
   AED: 4.67,
   HKD: 9.94,
-  SGD: 1.71,
-  NOK: 13.58,
-  SEK: 13.62,
-  DKK: 8.72,
-  PLN: 5.06
+  SGD: 1.71
 };
 
-/* =====================================================
-   LOAD SAVED CURRENCY (DEFAULT GBP)
-===================================================== */
-
+// Always valid currency:
 let userCurrency = localStorage.getItem("tamedblox_currency") || "GBP";
 
-/* =====================================================
-   CURRENCY CONVERSION
-===================================================== */
-
+/* ------------------------------
+   Conversion & Format
+------------------------------ */
 function convertPrice(amountGBP) {
-  return amountGBP * (exchangeRates[userCurrency] || 1);
+  return amountGBP * exchangeRates[userCurrency];
 }
 
 function formatPrice(amountGBP) {
-  const converted = convertPrice(amountGBP);
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: userCurrency
-  }).format(converted);
+  }).format(convertPrice(amountGBP));
 }
 
-/* =====================================================
-   CURRENCY DROPDOWN
-===================================================== */
-
+/* ------------------------------
+   Dropdown
+------------------------------ */
 function initCurrencyDropdown() {
   const dropdown = document.getElementById("currencySelector");
   if (!dropdown) return;
@@ -58,58 +44,43 @@ function initCurrencyDropdown() {
     userCurrency = dropdown.value;
     localStorage.setItem("tamedblox_currency", userCurrency);
 
-    // Re-render prices instantly
+    // Just like your example: re-render display
     renderProducts(products);
   });
 }
 
-/* =====================================================
-   PRODUCT DATA
-===================================================== */
-
+/* ------------------------------
+   Load Products (GBP base)
+------------------------------ */
 let products = [];
 
 async function loadProducts() {
-  try {
-    const res = await fetch("https://website-5eml.onrender.com/products");
-    products = await res.json();
+  const res = await fetch("https://website-5eml.onrender.com/products");
+  products = await res.json();
 
-    products.forEach(p => {
-      p.price = Number(p.price);
-      if (p.oldPrice) p.oldPrice = Number(p.oldPrice);
-    });
+  products.forEach(p => {
+    p.price = Number(p.price);
+    if (p.oldPrice) p.oldPrice = Number(p.oldPrice);
+  });
 
-    renderProducts(products);
-
-  } catch (err) {
-    console.error("❌ Failed to load products:", err);
-  }
+  renderProducts(products);
 }
 
-/* =====================================================
-   PRODUCT RENDERER
-===================================================== */
-
-function getDiscountPercent(price, oldPrice) {
-  if (!oldPrice || oldPrice <= price) return 0;
-  return Math.round(((oldPrice - price) / oldPrice) * 100);
-}
-
-function renderProducts(list) {
+/* ------------------------------
+   Render Cards (CONVERT HERE)
+------------------------------ */
+function renderProducts(items) {
   const grid = document.getElementById("productGrid");
-  if (!grid) return;
-
   grid.innerHTML = "";
 
-  list.forEach(p => {
-    const percent = getDiscountPercent(p.price, p.oldPrice);
+  items.forEach(p => {
+    const discount = p.oldPrice ? Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100) : 0;
 
     grid.innerHTML += `
       <div class="card">
-
         <div class="card-badges">
           <span class="tag tag-${(p.rarity || "Secret").toLowerCase()}">${p.rarity || "Secret"}</span>
-          ${p.oldPrice ? `<span class="discount-tag">${percent}% OFF</span>` : ""}
+          ${discount ? `<span class="discount-tag">${discount}% OFF</span>` : ""}
         </div>
 
         <img src="${p.image}" class="product-img">
@@ -124,95 +95,23 @@ function renderProducts(list) {
         <button class="buy-btn" onclick="addToCart('${p.name}', this)">
           Add to Cart
         </button>
-
       </div>
     `;
   });
-
-  initCardTilt();
 }
 
-/* =====================================================
-   SEARCH BAR
-===================================================== */
+/* ------------------------------
+   Initialize
+------------------------------ */
+document.addEventListener("DOMContentLoaded", async () => {
 
-function setupSearch() {
-  const input = document.getElementById("searchInput");
-  if (!input) return;
-
-  input.addEventListener("input", () => {
-    const q = input.value.toLowerCase();
-    renderProducts(products.filter(p => p.name.toLowerCase().includes(q)));
-  });
-}
-
-/* =====================================================
-   CART INTEGRATION
-===================================================== */
-
-function addToCart(name, btn) {
-  const product = products.find(p => p.name === name);
-  const img = btn.closest(".card").querySelector(".product-img");
-  window.Cart.addItem(product, img);
-}
-
-/* =====================================================
-   3D TILT EFFECT
-===================================================== */
-
-function initCardTilt() {
-  const cards = document.querySelectorAll(".card");
-
-  cards.forEach(card => {
-    card.addEventListener("mousemove", e => {
-      const r = card.getBoundingClientRect();
-      const x = e.clientX - r.left;
-      const y = e.clientY - r.top;
-
-      const rx = ((y - r.height / 2) / (r.height / 2)) * -10;
-      const ry = ((x - r.width / 2) / (r.width / 2)) * 10;
-
-      card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-    });
-
-    card.addEventListener("mouseleave", () => {
-      card.style.transform = "perspective(800px) rotateX(0) rotateY(0)";
-    });
-  });
-}
-
-/* =====================================================
-   MAIN INITIALIZER (v8 FIX)
-===================================================== */
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  /* 
-    FIX FOR PRICES ALWAYS SHOWING GBP:
-    ---------------------------------
-    We delay loading products UNTIL the navbar (dropdown)
-    is fully loaded. This ensures userCurrency is correct
-    BEFORE renderProducts() ever runs.
-  */
-
-  const wait = setInterval(() => {
-    const dropdown = document.getElementById("currencySelector");
-    if (dropdown) {
-      clearInterval(wait);
-
-      // init dropdown FIRST
+  // Initialize dropdown FIRST
+  const waitNavbar = setInterval(() => {
+    if (document.getElementById("currencySelector")) {
+      clearInterval(waitNavbar);
       initCurrencyDropdown();
-
-      // THEN load products (correct currency applied)
-      loadProducts();
-
-      // Setup search once data exists
-      setupSearch();
-
-      // Init cart
-      if (window.Cart && window.Cart.init) {
-        window.Cart.init();
-      }
     }
-  }, 20);
+  }, 30);
+
+  await loadProducts();
 });
