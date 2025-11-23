@@ -1,10 +1,10 @@
 /* =====================================================
-   CURRENCY SYSTEM — FIXED + RELIABLE VERSION
+   CURRENCY SYSTEM — FIXED + BACKEND PRODUCT SUPPORT
 ===================================================== */
 
 /* ------------------------------
    FALLBACK EXCHANGE RATES (GBP→X)
-   Used if the API fails or rate-limits
+   Used if API fails
 ------------------------------ */
 const fallbackRates = {
   USD: 1.27,
@@ -37,12 +37,12 @@ async function loadRates() {
     }
   } catch (err) {}
 
-  // 🔥 API failed = use fallback
+  // API failed → fallback
   exchangeRates.rates = fallbackRates;
 }
 
 /* ------------------------------
-   AUTO-DETECT CURRENCY
+   AUTO-DETECT USER CURRENCY
 ------------------------------ */
 async function detectUserCurrency() {
   try {
@@ -55,13 +55,11 @@ async function detectUserCurrency() {
 }
 
 /* ------------------------------
-   CONVERT PRICE
+   CONVERT PRICE (GBP → userCurrency)
 ------------------------------ */
 function convertPrice(amountGBP, currency) {
   const rate = exchangeRates.rates[currency];
-
-  if (!rate) return amountGBP; // fallback to GBP
-
+  if (!rate) return amountGBP;
   return amountGBP * rate;
 }
 
@@ -70,7 +68,6 @@ function convertPrice(amountGBP, currency) {
 ------------------------------ */
 function formatPrice(amountGBP) {
   const converted = convertPrice(amountGBP, userCurrency);
-
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: userCurrency,
@@ -79,22 +76,17 @@ function formatPrice(amountGBP) {
 }
 
 /* ------------------------------
-   LOAD SAVED CURRENCY
+   CURRENCY DROPDOWN SETUP
 ------------------------------ */
+
 let savedCurrency = localStorage.getItem("tamedblox_currency");
 let userCurrency = "GBP";
 
-/* ------------------------------
-   WAIT FOR NAVBAR
------------------------------- */
 function waitForNavbar(cb) {
   if (document.getElementById("currencySelector")) return cb();
   setTimeout(() => waitForNavbar(cb), 20);
 }
 
-/* ------------------------------
-   INIT DROPDOWN
------------------------------- */
 function initCurrencyDropdown() {
   const dropdown = document.getElementById("currencySelector");
   if (!dropdown) return;
@@ -115,20 +107,25 @@ function initCurrencyDropdown() {
 }
 
 /* =====================================================
-   PRODUCT LIST
+   LOAD PRODUCTS FROM BACKEND
 ===================================================== */
 
-const products = [
-  {
-    name: "La Grande Combinasion ($10M/s)",
-    rarity: "Secret",
-    price: 10.30,       // GBP
-    oldPrice: 13.38,    // GBP
-    image: "https://i.postimg.cc/tCT9T6xC/Carti.webp"
-  }
-];
+let products = [];
 
-/* Ensure numeric */
+async function loadProducts() {
+  try {
+    const res = await fetch("https://website-5eml.onrender.com/products");
+    products = await res.json();
+
+    normalizeProducts();
+    renderProducts(products);
+
+  } catch (err) {
+    console.error("❌ Failed to load products from backend:", err);
+  }
+}
+
+/* Ensure numeric fields */
 function normalizeProducts() {
   products.forEach(p => {
     p.price = Number(p.price);
@@ -145,7 +142,7 @@ function getDiscountPercent(price, oldPrice) {
 }
 
 /* =====================================================
-   RENDER PRODUCTS
+   RENDER PRODUCT CARDS
 ===================================================== */
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
@@ -155,13 +152,13 @@ function renderProducts(list) {
 
   list.forEach(p => {
     const percent = getDiscountPercent(p.price, p.oldPrice);
-    const rarityClass = `tag-${p.rarity.toLowerCase()}`;
+    const rarityClass = `tag-${p.rarity?.toLowerCase() || "secret"}`;
 
     grid.innerHTML += `
       <div class="card">
 
         <div class="card-badges">
-          <span class="tag ${rarityClass}">${p.rarity}</span>
+          <span class="tag ${rarityClass}">${p.rarity || "Secret"}</span>
           ${p.oldPrice ? `<span class="discount-tag">${percent}% OFF</span>` : ""}
         </div>
 
@@ -186,7 +183,7 @@ function renderProducts(list) {
 }
 
 /* =====================================================
-   SEARCH
+   SEARCH BAR
 ===================================================== */
 function setupSearch() {
   const input = document.getElementById("searchInput");
@@ -199,16 +196,16 @@ function setupSearch() {
 }
 
 /* =====================================================
-   ADD TO CART
+   CART ADDING
 ===================================================== */
 function addToCart(name, btn) {
-  const p = products.find(p => p.name === name);
+  const product = products.find(p => p.name === name);
   const img = btn.closest(".card").querySelector(".product-img");
-  window.Cart.addItem(p, img);
+  window.Cart.addItem(product, img);
 }
 
 /* =====================================================
-   3D CARD TILT
+   3D TILT EFFECT
 ===================================================== */
 function initCardTilt() {
   const cards = document.querySelectorAll(".card");
@@ -232,25 +229,30 @@ function initCardTilt() {
 }
 
 /* =====================================================
-   MAIN INIT
+   MAIN INITIALIZER
 ===================================================== */
 document.addEventListener("DOMContentLoaded", async () => {
 
-  normalizeProducts();
-
+  // 1. Load FX rates
   await loadRates();
 
+  // 2. Detect or load currency
   if (!savedCurrency || savedCurrency === "AUTO") {
     userCurrency = await detectUserCurrency();
   } else {
     userCurrency = savedCurrency;
   }
 
+  // 3. Wait for navbar then init dropdown
   waitForNavbar(initCurrencyDropdown);
 
-  renderProducts(products);
+  // 4. Load backend products
+  await loadProducts();
+
+  // 5. Search
   setupSearch();
 
+  // 6. Init cart last
   if (window.Cart && window.Cart.init) {
     window.Cart.init();
   }
