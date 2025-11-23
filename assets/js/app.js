@@ -1,6 +1,54 @@
-/* =========================================
+/* =====================================================
+   AUTO-DETECT CURRENCY BASED ON USER'S LOCATION
+===================================================== */
+
+const currencyMap = {
+  "Europe/London": "GBP",
+  "Europe/Paris": "EUR",
+  "Europe/Berlin": "EUR",
+  "Europe/Madrid": "EUR",
+  "Europe/Rome": "EUR",
+  "Europe/Amsterdam": "EUR",
+  "Europe/Oslo": "NOK",
+  "Europe/Stockholm": "SEK",
+  "Europe/Copenhagen": "DKK",
+  "Europe/Warsaw": "PLN",
+
+  "America/New_York": "USD",
+  "America/Chicago": "USD",
+  "America/Denver": "USD",
+  "America/Los_Angeles": "USD",
+  "America/Toronto": "CAD",
+  "America/Vancouver": "CAD",
+
+  "Asia/Tokyo": "JPY",
+  "Asia/Hong_Kong": "HKD",
+  "Asia/Seoul": "KRW",
+  "Asia/Singapore": "SGD",
+  "Asia/Dubai": "AED",
+
+  "Australia/Sydney": "AUD",
+  "Australia/Melbourne": "AUD"
+};
+
+// Detect user timezone → map to currency
+const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+const userCurrency = currencyMap[userTimezone] || "GBP"; // fallback for unknown regions
+
+/* =====================================================
+   CURRENCY FORMATTER
+===================================================== */
+function formatPrice(amount) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: userCurrency,
+    minimumFractionDigits: 2
+  }).format(amount);
+}
+
+/* =====================================================
    PRODUCT LIST
-========================================= */
+===================================================== */
 const products = [
   {
     name: "La Grande Combinasion ($10M/s)",
@@ -11,9 +59,9 @@ const products = [
   }
 ];
 
-/* =========================================
+/* =====================================================
    DISCOUNT HELPERS
-========================================= */
+===================================================== */
 function getDiscountPercent(price, oldPrice) {
   if (!oldPrice || oldPrice <= price) return 0;
   return Math.round(((oldPrice - price) / oldPrice) * 100);
@@ -26,9 +74,9 @@ function getDiscountClass(percent) {
   return "discount-green";
 }
 
-/* =========================================
-   RENDER PRODUCTS
-========================================= */
+/* =====================================================
+   RENDER PRODUCTS TO GRID
+===================================================== */
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
   if (!grid) return;
@@ -58,8 +106,9 @@ function renderProducts(list) {
               <svg xmlns='http://www.w3.org/2000/svg' width='14' height='14'
                 viewBox='0 0 24 24' fill='none' stroke='currentColor'
                 stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
-                <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 
-                1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 
+                <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 
+                0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 
+                2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 
                 0 0-3.42z"/>
                 <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
               </svg>
@@ -72,19 +121,19 @@ function renderProducts(list) {
         <h3>${p.name}</h3>
 
         <div class="price-box">
-          <span class="price">£${p.price.toFixed(2)}</span>
-          ${p.oldPrice ? `<span class="old-price">£${p.oldPrice.toFixed(2)}</span>` : ""}
+          <span class="price">${formatPrice(p.price)}</span>
+          ${p.oldPrice ? `<span class="old-price">${formatPrice(p.oldPrice)}</span>` : ""}
         </div>
 
         <button class="buy-btn" onclick="addToCart('${p.name}', this)">
-          <svg xmlns="http://www.w3.org/2000/svg"
-            class="btn-cart-icon" width="16" height="16"
-            viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" class="btn-cart-icon"
+            width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
             <circle cx="9" cy="21" r="1"/>
             <circle cx="20" cy="21" r="1"/>
-            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 
+            1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
           </svg>
           Add to Cart
         </button>
@@ -95,9 +144,9 @@ function renderProducts(list) {
   initCardTilt();
 }
 
-/* =========================================
-   SEARCH
-========================================= */
+/* =====================================================
+   SEARCH BAR
+===================================================== */
 function setupSearch() {
   const input = document.getElementById("searchInput");
   if (!input) return;
@@ -111,9 +160,9 @@ function setupSearch() {
   });
 }
 
-/* =========================================
-   CART ADD WRAPPER
-========================================= */
+/* =====================================================
+   CART ADD
+===================================================== */
 function addToCart(name, btn) {
   const product = products.find(p => p.name === name);
   if (!product) return;
@@ -124,9 +173,9 @@ function addToCart(name, btn) {
   window.Cart.addItem(product, img);
 }
 
-/* =========================================
-   3D TILT — MOUSE BASED
-========================================= */
+/* =====================================================
+   3D TILT — MOUSE POSITION
+===================================================== */
 function initCardTilt() {
   const cards = document.querySelectorAll(".card");
   if (!cards.length) return;
@@ -154,9 +203,9 @@ function initCardTilt() {
   });
 }
 
-/* =========================================
+/* =====================================================
    INIT
-========================================= */
+===================================================== */
 document.addEventListener("DOMContentLoaded", () => {
   renderProducts(products);
   setupSearch();
