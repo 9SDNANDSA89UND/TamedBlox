@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="assets/css/modal.css">
   <link rel="stylesheet" href="assets/css/reviews.css">
 
-  <!-- Include Loader -->
+  <!-- Component Loader -->
   <script>
     async function loadComponent(selector, file) {
       const el = document.querySelector(selector);
@@ -42,7 +42,7 @@
     </p>
   </section>
 
-  <!-- PRODUCT GRID -->
+  <!-- PRODUCT GRID (Loaded from backend via app.js) -->
   <div id="productGrid" class="product-grid"></div>
 
   <!-- REVIEWS -->
@@ -75,13 +75,11 @@
           Quick service and amazing prices.
         </div>
       </div>
-
     </div>
   </section>
 
-  <!-- ⭐ NEW CART DRAWER (updated) -->
+  <!-- 🛒 NEW CART DRAWER -->
   <div id="cartDrawer" class="cart-drawer">
-
     <div class="cart-header">
       <h2 class="cart-title">Cart</h2>
       <span class="cart-clear" onclick="Cart.items=[];Cart.save();">Clear Cart</span>
@@ -99,15 +97,12 @@
         Buy
       </button>
     </div>
-
   </div>
 
   <div id="cartOverlay" class="cart-overlay"></div>
-  <!-- ⭐ END CART DRAWER -->
 
   <!-- FOOTER -->
   <div id="footer"></div>
-
   <script>
     loadComponent("#footer", "components/footer.html");
   </script>
@@ -117,6 +112,13 @@
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/drawer.js"></script>
   <script src="assets/js/auth.js"></script>
+
+  <!-- ⭐ LOAD BACKEND PRODUCTS ON HOMEPAGE -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      await loadProducts();  // ← THIS FIXES EVERYTHING
+    });
+  </script>
 
 </body>
 </html>
