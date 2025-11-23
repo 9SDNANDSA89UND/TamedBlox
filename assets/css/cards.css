@@ -1,145 +1,137 @@
-/* ==========================================
+/* ============================================================
    PRODUCT GRID
-========================================== */
+============================================================ */
 .product-grid {
   max-width: 1250px;
   margin: 40px auto;
   padding: 0 20px;
 
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 26px;
 }
 
-/* ==========================================
-   CARD BASE
-========================================== */
+/* ============================================================
+   PRODUCT CARD — CLEAN + PREMIUM
+============================================================ */
 .card {
-  background: linear-gradient(180deg, #0f141a, #0d1a16);
-  border: 1px solid rgba(78, 245, 138, 0.25);
+  background: linear-gradient(145deg, #0e141a, #0c1116);
+  border: 1px solid rgba(78, 245, 138, 0.2);
   border-radius: 18px;
-  padding: 18px;
+
+  padding: 20px;
   position: relative;
   overflow: hidden;
 
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
 }
 
 .card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 0 18px rgba(78, 245, 138, 0.25);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 0 25px rgba(78, 245, 138, 0.25);
 }
 
-/* ==========================================
-   IMAGE BOX (PERFECT SQUARE)
-========================================== */
+/* ============================================================
+   IMAGE — PERFECT SQUARE FIT
+============================================================ */
 .product-img {
   width: 100%;
-  aspect-ratio: 1 / 1;                    /* always square */
-  object-fit: contain;                   /* shrink to fit */
-  background: #0c1217;
-  border-radius: 12px;
+  height: 260px;
+  border-radius: 14px;
 
-  margin-bottom: 14px;
-}
+  object-fit: contain; /* PERFECT FIT WITH NO CROP */
+  background: rgba(255, 255, 255, 0.04);
 
-/* ==========================================
-   BADGES (RARITY + DISCOUNT)
-========================================== */
-.card-badges {
+  padding: 10px;
+
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  align-items: center;
+  justify-content: center;
 }
 
-/* rarity base */
+/* ============================================================
+   RARITY TAGS — GLASS + NEON
+============================================================ */
 .tag {
-  padding: 6px 14px;
-  border-radius: 50px;
+  display: inline-block;
+
+  padding: 6px 16px;
   font-size: 13px;
   font-weight: 700;
+
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
   color: #fff;
-  backdrop-filter: blur(4px);
-  border: 1px solid transparent;
+
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 0 12px currentColor;
+
+  text-shadow: 0 0 4px currentColor;
 }
 
 /* GOD */
 .tag-god {
-  background: rgba(255, 0, 234, 0.25);
-  color: #ff00ea;
-  border-color: #ff00ea80;
-  box-shadow: 0 0 12px #ff00ea;
+  color: #ff00ff;
+  background: rgba(255, 0, 255, 0.25);
 }
 
 /* SECRET */
 .tag-secret {
-  background: rgba(0, 196, 255, 0.25);
   color: #00c4ff;
-  border-color: #00c4ff80;
-  box-shadow: 0 0 12px #00c4ff;
+  background: rgba(0, 196, 255, 0.25);
 }
 
 /* OG */
 .tag-og {
-  background: rgba(255, 170, 43, 0.25);
   color: #ffaa2b;
-  border-color: #ffaa2b80;
-  box-shadow: 0 0 12px #ffaa2b;
+  background: rgba(255, 170, 43, 0.25);
 }
 
-/* discount badge */
+/* ============================================================
+   DISCOUNT TAG — SMALL & CLEAN
+============================================================ */
 .discount-tag {
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-radius: 50px;
   font-size: 12px;
   font-weight: 900;
   color: #0b0f14;
+
+  background: #4ef58a;
+  box-shadow: 0 0 8px rgba(78, 245, 138, 0.4);
 }
 
+/* Discount colors */
 .discount-red    { background: #ff4646; }
 .discount-orange { background: #ff8c35; }
 .discount-yellow { background: #ffe24a; }
 .discount-green  { background: #4ef58a; }
 
-/* ==========================================
-   PRODUCT NAME (ONE-LINE + ELLIPSIS)
-========================================== */
+/* Badge Row */
+.card-badges {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+/* ============================================================
+   PRODUCT TEXT
+============================================================ */
 .card h3 {
   font-size: 18px;
   font-weight: 900;
-  margin: 6px 0 0 0;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  width: 100%;
-  display: block;
-}
-
-/* optional subtitle */
-.card-subtitle {
-  font-size: 14px;
-  color: #aeb6c1;
+  margin: 12px 0 8px;
 
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* ==========================================
-   PRICE BOX
-========================================== */
+/* PRICE SECTION */
 .price-box {
   display: flex;
   gap: 12px;
   align-items: baseline;
-  margin-top: 8px;
   margin-bottom: 16px;
 }
 
@@ -151,40 +143,40 @@
 
 .old-price {
   font-size: 15px;
-  color: #c8c8c8;
+  color: #888;
   text-decoration: line-through;
 }
 
-/* ==========================================
-   ADD TO CART BUTTON
-========================================== */
+/* ============================================================
+   BUTTON
+============================================================ */
 .buy-btn {
   width: 100%;
-  padding: 14px;
-
   background: #4ef58a;
   color: #0b0f14;
 
+  padding: 14px 0;
   border: none;
   border-radius: 12px;
-  font-size: 15px;
+
   font-weight: 900;
+  font-size: 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
   cursor: pointer;
   transition: 0.2s ease;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
 }
 
 .buy-btn:hover {
   opacity: 0.9;
 }
 
+/* Cart icon */
 .btn-cart-icon {
   width: 16px;
   height: 16px;
-  stroke: #0b0f14;
 }
