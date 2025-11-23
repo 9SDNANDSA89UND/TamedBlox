@@ -2,8 +2,7 @@
    PRODUCT DATA — 10 TEST PRODUCTS
 ========================================= */
 
-const imgURL =
-  "https://static.wikia.nocookie.net/stealabr/images/5/58/Strawberryelephant.png/revision/latest?cb=20250830235735";
+const imgURL = "https://i.postimg.cc/tCT9T6xC/Carti.webp";
 
 const rarityOptions = ["OG", "Secret", "God"];
 
@@ -66,7 +65,7 @@ function renderProducts(list) {
           <span class="discount-tag ${getDiscountClass(percent)}">-${percent}%</span>
         </div>
 
-        <img src="${p.image}" alt="${p.name}" class="product-img">
+        <img src="${p.image}" class="product-img">
 
         <h3>${p.name}</h3>
 
