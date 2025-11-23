@@ -1,5 +1,5 @@
 /* =========================================
-   PRODUCT LIST (MANUAL — NO RANDOM)
+   MANUAL PRODUCT LIST (NO RANDOMIZATION)
 ========================================= */
 
 const products = [
@@ -7,15 +7,15 @@ const products = [
     name: "La Grande Combinasion ($10M/s)",
     rarity: "Secret",
     price: 10.30,
-    oldPrice: 13.38, 
+    oldPrice: 13.38, // 23% discount
     image: "https://i.postimg.cc/tCT9T6xC/Carti.webp"
   }
 
-  // Add more products here
+  // add more products manually here
 ];
 
 /* =========================================
-   DISCOUNT CALCULATION
+   DISCOUNT SYSTEM
 ========================================= */
 
 function getDiscountPercent(price, oldPrice) {
@@ -31,7 +31,7 @@ function getDiscountClass(percent) {
 }
 
 /* =========================================
-   RENDER PRODUCTS
+   PRODUCT RENDERING
 ========================================= */
 
 function renderProducts(list) {
@@ -47,55 +47,45 @@ function renderProducts(list) {
     grid.innerHTML += `
       <div class="card">
 
-        <!-- BADGES -->
         <div class="card-badges">
+          <span class="tag ${rarityClass}">${p.rarity}</span>
 
-          <!-- ⭐ RARITY TAG (NO ICONS) -->
-          <span class="tag ${rarityClass}">
-            ${p.rarity}
-          </span>
-
-          <!-- ⭐ DISCOUNT TAG WITH TAG ICON -->
           ${
             p.oldPrice
               ? `
-                <span class="discount-tag">
+                <span class="discount-tag ${getDiscountClass(percent)}">
+
+                  <!-- ⭐ NEW TAG ICON YOU ASKED FOR -->
                   <svg xmlns="http://www.w3.org/2000/svg" 
-                       width="16" height="16" viewBox="0 0 24 24"
-                       fill="none" stroke="currentColor" stroke-width="2"
-                       stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 7V5a2 2 0 0 1 2-2h2"/>
-                    <path d="M17 3h2a2 2 0 0 1 2 2v2"/>
-                    <path d="M21 17v2a2 2 0 0 1-2 2h-2"/>
-                    <path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
-                    <line x1="9" y1="15" x2="15" y2="9"/>
+                    width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                    stroke="currentColor" stroke-width="2" 
+                    stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-tag-icon lucide-tag">
+                    <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/>
+                    <circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/>
                   </svg>
+
                   ${percent}% Discount
                 </span>`
               : ""
           }
-
         </div>
 
-        <!-- PRODUCT IMAGE -->
         <img src="${p.image}" alt="${p.name}" class="product-img">
 
-        <!-- PRODUCT NAME -->
         <h3>${p.name}</h3>
 
-        <!-- PRICE -->
         <div class="price-box">
           <span class="price">£${p.price}</span>
           ${p.oldPrice ? `<span class="old-price">£${p.oldPrice}</span>` : ""}
         </div>
 
-        <!-- ADD TO CART BUTTON -->
         <button class="buy-btn" onclick="addToCart('${p.name}', this)">
-          <svg xmlns="http://www.w3.org/2000/svg"
-               class="btn-cart-icon" width="16" height="16"
-               viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2"
-               stroke-linecap="round" stroke-linejoin="round">
+          <svg xmlns="http://www.w3.org/2000/svg" 
+            class="btn-cart-icon" width="16" height="16" 
+            viewBox="0 0 24 24" fill="none" 
+            stroke="currentColor" stroke-width="2" 
+            stroke-linecap="round" stroke-linejoin="round">
             <circle cx="9" cy="21" r="1"></circle>
             <circle cx="20" cy="21" r="1"></circle>
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
@@ -124,7 +114,7 @@ function setupSearch() {
 }
 
 /* =========================================
-   CART FLY ANIMATION
+   CART SYSTEM — FLY ANIMATION
 ========================================= */
 
 function addToCart(name, btn) {
@@ -138,7 +128,7 @@ function addToCart(name, btn) {
 }
 
 /* =========================================
-   INIT EVERYTHING
+   INIT
 ========================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
