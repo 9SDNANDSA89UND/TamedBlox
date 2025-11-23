@@ -21,7 +21,7 @@
 
 <body>
 
-  <!-- NAVBAR + AUTH MODALS -->
+  <!-- NAVBAR + AUTH MODALS (LOADED BEFORE SCRIPT EXECUTION) -->
   <div id="navbar"></div>
   <div id="modals"></div>
 
@@ -41,7 +41,7 @@
     <input id="searchInput" placeholder="Search products..." class="modern-input" style="margin-top:20px;">
   </section>
 
-  <!-- PRODUCT GRID (now loaded by app.js from backend) -->
+  <!-- PRODUCT GRID -->
   <div id="productGrid" class="product-grid"></div>
 
   <!-- CART DRAWER -->
@@ -70,13 +70,13 @@
     loadComponent("#footer", "components/footer.html");
   </script>
 
-  <!-- JS -->
+  <!-- JS (LOADED LAST → FIXES CURRENCY SYSTEM) -->
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/drawer.js"></script>
   <script src="assets/js/auth.js"></script>
 
-  <!-- Init Cart -->
+  <!-- INIT CART -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       if (window.Cart && window.Cart.init) {
