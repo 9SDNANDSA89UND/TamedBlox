@@ -12,24 +12,19 @@
 }
 
 /* ============================================================
-   PRODUCT CARD — PREMIUM REWORKED
+   PRODUCT CARD — PREMIUM
 ============================================================ */
 .card {
   background: rgba(17, 25, 31, 0.9);
   border: 1px solid rgba(78, 245, 138, 0.15);
   border-radius: 20px;
-
   padding: 18px 18px 22px;
-
   position: relative;
   overflow: hidden;
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
   transition: 0.25s ease;
-  box-shadow: 0 0 0 rgba(78, 245, 138, 0.0);
 }
 
 .card:hover {
@@ -38,91 +33,94 @@
 }
 
 /* ============================================================
-   IMAGE AREA — PERFECT SQUARE
+   IMAGE AREA
 ============================================================ */
 .product-img {
   width: 100%;
   height: 250px;
-
   border-radius: 14px;
   padding: 6px;
-
   object-fit: contain;
   background: rgba(255, 255, 255, 0.03);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   box-shadow: inset 0 0 12px rgba(78, 245, 138, 0.12);
 }
 
 /* ============================================================
-   BADGE ROW
+   BADGES ROW
 ============================================================ */
 .card-badges {
   position: absolute;
   top: 14px;
   left: 14px;
   right: 14px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 /* ============================================================
-   RARITY TAG — MODERN STYLE
+   RARITY BADGE (POPULAR STYLE)
 ============================================================ */
 .tag {
-  padding: 6px 14px;
-  font-size: 13px;
-  font-weight: 700;
-
-  border-radius: 40px;
-  color: white;
-
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.15);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  box-shadow: 0 0 12px currentColor;
-  text-shadow: 0 0 4px currentColor;
-}
-
-.tag-god { color: #ff48ff; background: rgba(255, 0, 255, 0.22); }
-.tag-secret { color: #00d2ff; background: rgba(0, 210, 255, 0.22); }
-.tag-og { color: #ffb03a; background: rgba(255,170,60,0.22); }
-
-/* ============================================================
-   DISCOUNT BADGE (WITH ICON)
-============================================================ */
-.discount-tag {
   display: inline-flex;
   align-items: center;
   gap: 6px;
 
   padding: 6px 14px;
   font-size: 13px;
+  font-weight: 700;
+
+  border-radius: 12px;
+  color: white;
+
+  border: none;
+  box-shadow: 0 0 10px rgba(0,0,0,0.25);
+}
+
+/* GOD = RED */
+.tag-god {
+  background: #ff3b5c;
+}
+
+/* SECRET = BLUE */
+.tag-secret {
+  background: #007bff;
+}
+
+/* OG = ORANGE */
+.tag-og {
+  background: #ff9d2f;
+}
+
+.tag svg {
+  width: 16px;
+  height: 16px;
+  stroke: white;
+}
+
+/* ============================================================
+   DISCOUNT BADGE
+============================================================ */
+.discount-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
   font-weight: 800;
-
   border-radius: 40px;
-  color: #0b0f14;
-
   background: #4ef58a;
-  box-shadow: 0 0 6px rgba(78, 245, 138, 0.5);
+  color: #0B0F14;
+  box-shadow: 0 0 6px rgba(78,245,138,0.45);
 }
 
 .discount-tag svg {
   width: 15px;
   height: 15px;
   stroke: #0b0f14;
-
-  flex-shrink: 0; /* Prevent warping */
-  display: block;
 }
 
 /* ============================================================
@@ -132,16 +130,13 @@
   margin-top: 16px;
   font-size: 17px;
   font-weight: 800;
-
-  letter-spacing: 0.3px;
-
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 /* ============================================================
-   PRICE AREA
+   PRICE
 ============================================================ */
 .price-box {
   display: flex;
@@ -163,32 +158,27 @@
 }
 
 /* ============================================================
-   BUTTON — NEW POLISHED STYLE
+   ADD TO CART BUTTON
 ============================================================ */
 .buy-btn {
   width: 100%;
   padding: 14px 0;
-
   background: #4ef58a;
   color: #0d1117;
-
   border: none;
   border-radius: 12px;
-
   font-size: 15px;
   font-weight: 900;
-
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-
   cursor: pointer;
   transition: 0.2s ease;
 }
 
 .buy-btn:hover {
-  box-shadow: 0 0 12px rgba(78, 245, 138, 0.4);
+  box-shadow: 0 0 12px rgba(78,245,138,0.4);
   transform: translateY(-3px);
 }
 
