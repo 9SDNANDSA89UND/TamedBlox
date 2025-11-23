@@ -1,10 +1,10 @@
 /* =====================================================
-   CURRENCY SYSTEM — FINAL FIX (NO AUTO, NO DETECTION)
-   BASE CURRENCY: GBP
+   FRONTEND-ONLY CURRENCY SYSTEM — FINAL VERSION
+   Backend always returns GBP — we convert it here.
 ===================================================== */
 
 /* ------------------------------
-   STATIC EXCHANGE RATES
+   STATIC EXCHANGE RATES (BASE GBP)
 ------------------------------ */
 const exchangeRates = {
   GBP: 1,
@@ -23,38 +23,30 @@ const exchangeRates = {
 };
 
 /* =====================================================
-   LOAD SAVED CURRENCY (NO AUTO SHIT)
+   LOAD SAVED CURRENCY (DEFAULT GBP)
 ===================================================== */
 
-let savedCurrency = localStorage.getItem("tamedblox_currency");
-let userCurrency = savedCurrency || "GBP"; // ALWAYS valid currency
+let userCurrency = localStorage.getItem("tamedblox_currency") || "GBP";
 
 /* =====================================================
-   PRICE CONVERSION
+   CURRENCY CONVERSION (SIMPLE & RELIABLE)
 ===================================================== */
 
-function convertPrice(amountGBP, currency) {
-  return amountGBP * (exchangeRates[currency] || 1);
+function convertPrice(amountGBP) {
+  return amountGBP * (exchangeRates[userCurrency] || 1);
 }
 
 function formatPrice(amountGBP) {
-  const converted = convertPrice(amountGBP, userCurrency);
-
+  const converted = convertPrice(amountGBP);
   return new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: userCurrency,
-    minimumFractionDigits: 2
+    currency: userCurrency
   }).format(converted);
 }
 
 /* =====================================================
-   NAVBAR DROPDOWN (FINAL)
+   CURRENCY DROPDOWN (INSTANT RE-RENDER)
 ===================================================== */
-
-function waitForNavbar(cb) {
-  if (document.getElementById("currencySelector")) return cb();
-  setTimeout(() => waitForNavbar(cb), 20);
-}
 
 function initCurrencyDropdown() {
   const dropdown = document.getElementById("currencySelector");
@@ -63,13 +55,16 @@ function initCurrencyDropdown() {
   dropdown.value = userCurrency;
 
   dropdown.addEventListener("change", () => {
-    localStorage.setItem("tamedblox_currency", dropdown.value);
-    location.reload();
+    userCurrency = dropdown.value;
+    localStorage.setItem("tamedblox_currency", userCurrency);
+
+    // Re-render products instantly
+    renderProducts(products);
   });
 }
 
 /* =====================================================
-   LOAD PRODUCTS
+   BACKEND PRODUCT LOADING
 ===================================================== */
 
 let products = [];
@@ -79,6 +74,7 @@ async function loadProducts() {
     const res = await fetch("https://website-5eml.onrender.com/products");
     products = await res.json();
 
+    // Ensure number format
     products.forEach(p => {
       p.price = Number(p.price);
       if (p.oldPrice) p.oldPrice = Number(p.oldPrice);
@@ -87,12 +83,12 @@ async function loadProducts() {
     renderProducts(products);
 
   } catch (err) {
-    console.error("❌ Failed to load backend products:", err);
+    console.error("❌ Failed to load products:", err);
   }
 }
 
 /* =====================================================
-   RENDER PRODUCTS
+   PRODUCT RENDERER (CURRENCY APPLIED HERE)
 ===================================================== */
 
 function getDiscountPercent(price, oldPrice) {
@@ -108,13 +104,12 @@ function renderProducts(list) {
 
   list.forEach(p => {
     const percent = getDiscountPercent(p.price, p.oldPrice);
-    const rarityClass = `tag-${(p.rarity || "Secret").toLowerCase()}`;
 
     grid.innerHTML += `
       <div class="card">
 
         <div class="card-badges">
-          <span class="tag ${rarityClass}">${p.rarity || "Secret"}</span>
+          <span class="tag tag-${(p.rarity || "Secret").toLowerCase()}">${p.rarity || "Secret"}</span>
           ${p.oldPrice ? `<span class="discount-tag">${percent}% OFF</span>` : ""}
         </div>
 
@@ -139,7 +134,7 @@ function renderProducts(list) {
 }
 
 /* =====================================================
-   SEARCH
+   SEARCH BAR
 ===================================================== */
 
 function setupSearch() {
@@ -153,7 +148,7 @@ function setupSearch() {
 }
 
 /* =====================================================
-   CART
+   CART INTEGRATION
 ===================================================== */
 
 function addToCart(name, btn) {
@@ -163,7 +158,7 @@ function addToCart(name, btn) {
 }
 
 /* =====================================================
-   CARD TILT EFFECT
+   3D CARD TILT
 ===================================================== */
 
 function initCardTilt() {
@@ -188,21 +183,22 @@ function initCardTilt() {
 }
 
 /* =====================================================
-   MAIN INIT — SIMPLE AND BULLETPROOF
+   MAIN INITIALIZER
 ===================================================== */
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // Navbar → dropdown
-  waitForNavbar(() => initCurrencyDropdown());
+  // Wait for navbar to exist
+  const wait = setInterval(() => {
+    if (document.getElementById("currencySelector")) {
+      clearInterval(wait);
+      initCurrencyDropdown();
+    }
+  }, 20);
 
-  // Products
   await loadProducts();
-
-  // Search
   setupSearch();
 
-  // Cart init
   if (window.Cart && window.Cart.init) {
     window.Cart.init();
   }
