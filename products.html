@@ -5,26 +5,20 @@
   <title>TamedBlox — Products</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="assets/css/main.css">
   <link rel="stylesheet" href="assets/css/cards.css">
   <link rel="stylesheet" href="assets/css/modal.css">
 
-  <!-- Component loader -->
   <script>
     async function loadComponent(selector, file) {
       const el = document.querySelector(selector);
-      if (el) {
-        const html = await fetch(file).then(r => r.text());
-        el.innerHTML = html;
-      }
+      if (el) el.innerHTML = await fetch(file).then(r => r.text());
     }
   </script>
 </head>
 
 <body>
 
-  <!-- NAV + MODALS -->
   <div id="navbar"></div>
   <div id="modals"></div>
 
@@ -33,136 +27,34 @@
     loadComponent("#modals", "components/modals.html");
   </script>
 
-  <!-- PAGE HEADER -->
   <section class="container" style="margin-top:40px;">
     <h1 style="font-size:32px;font-weight:900;">All Products</h1>
-    <p style="color:#aeb6c1;margin-top:10px;">
-      Browse the full TamedBlox shop.
-    </p>
-
+    <p style="color:#aeb6c1;margin-top:10px;">Browse the full TamedBlox shop.</p>
     <input id="searchInput" placeholder="Search products..." class="modern-input" style="margin-top:20px;">
   </section>
 
-  <!-- PRODUCT GRID -->
   <div id="productGrid" class="product-grid"></div>
 
-  <!-- CART -->
   <div id="cartDrawer" class="cart-drawer"></div>
   <div id="cartOverlay" class="cart-overlay"></div>
 
-  <!-- FOOTER -->
   <div id="footer"></div>
-  <script> loadComponent("#footer", "components/footer.html"); </script>
+  <script>
+    loadComponent("#footer", "components/footer.html");
+  </script>
 
-  <!-- JS -->
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/drawer.js"></script>
   <script src="assets/js/auth.js"></script>
 
-  <!-- PRODUCT SCRIPT -->
   <script>
-
-    const imgURL =
-      "https://static.wikia.nocookie.net/stealabr/images/5/58/Strawberryelephant.png/revision/latest?cb=20250830235735";
-
-    const rarityOptions = ["OG", "Secret", "God"];
-
-    function makeRandomOldPrice(price) {
-      return Number((price + (Math.random() * 10 + 5)).toFixed(2));
-    }
-
-    const products = [];
-    const names = ["Test A","Test B","Test C","Test D","Test E","Test F","Test G","Test H","Test I","Test J"];
-
-    for (let i = 0; i < 10; i++) {
-      const price = Number((Math.random() * 20 + 3).toFixed(2));
-      products.push({
-        name: names[i],
-        rarity: rarityOptions[Math.floor(Math.random() * rarityOptions.length)],
-        price: price,
-        oldPrice: makeRandomOldPrice(price),
-        image: imgURL
-      });
-    }
-
-    function getDiscountPercent(price, oldPrice) {
-      return Math.round(((oldPrice - price) / oldPrice) * 100);
-    }
-
-    function getDiscountClass(percent) {
-      if (percent > 90) return "discount-red";
-      if (percent > 50) return "discount-orange";
-      if (percent > 20) return "discount-yellow";
-      return "discount-green";
-    }
-
-    function renderProducts(list) {
-      const grid = document.getElementById("productGrid");
-      grid.innerHTML = "";
-
-      list.forEach(p => {
-        const percent = getDiscountPercent(p.price, p.oldPrice);
-        const rarityClass = `tag-${p.rarity.toLowerCase()}`;
-
-        grid.innerHTML += `
-          <div class="card">
-
-            <div class="card-badges">
-              <span class="tag ${rarityClass}">${p.rarity}</span>
-              <span class="discount-tag ${getDiscountClass(percent)}">-${percent}%</span>
-            </div>
-
-            <img src="${p.image}" class="product-img">
-
-            <h3>${p.name}</h3>
-
-            <div class="price-box">
-              <span class="price">£${p.price}</span>
-              <span class="old-price">£${p.oldPrice}</span>
-            </div>
-
-            <button class="buy-btn" onclick="addToCart('${p.name}', this)">
-              <svg xmlns="http://www.w3.org/2000/svg"
-                class="btn-cart-icon" width="16" height="16"
-                viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="9" cy="21" r="1"></circle>
-                <circle cx="20" cy="21" r="1"></circle>
-                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-              </svg>
-              Add to Cart
-            </button>
-          </div>
-        `;
-      });
-    }
-
-    function setupSearch() {
-      const input = document.getElementById("searchInput");
-      input.addEventListener("input", () => {
-        const q = input.value.toLowerCase();
-        renderProducts(products.filter(p => p.name.toLowerCase().includes(q)));
-      });
-    }
-
-    function addToCart(name, btn) {
-      const product = products.find(p => p.name === name);
-      if (!product) return;
-
-      const card = btn.closest(".card");
-      const img = card.querySelector(".product-img");
-
-      Cart.addItem(product, img);
-    }
-
+    /* This file now only loads products from app.js */
     document.addEventListener("DOMContentLoaded", () => {
-      renderProducts(products);
-      setupSearch();
-      Cart.init();
+      if (window.Cart && window.Cart.init) {
+        window.Cart.init();
+      }
     });
-
   </script>
 
 </body>
