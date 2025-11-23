@@ -1,30 +1,33 @@
 /* =========================================
-   PRODUCT DATA
+   PRODUCT DATA — 10 TEST PRODUCTS
 ========================================= */
 
-const products = [
-  {
-    name: "Mystic Blade",
-    rarity: "God",
-    price: 12.99,
-    oldPrice: 19.99,
-    image: "https://static.wikia.nocookie.net/stealabr/images/5/58/Strawberryelephant.png/revision/latest?cb=20250830235735"
-  },
-  {
-    name: "Shadow Cloak",
-    rarity: "Secret",
-    price: 8.49,
-    oldPrice: 12.0,
-    image: "https://static.wikia.nocookie.net/stealabr/images/5/58/Strawberryelephant.png/revision/latest?cb=20250830235735"
-  },
-  {
-    name: "OG Emblem",
-    rarity: "OG",
-    price: 4.2,
-    oldPrice: null,
-    image: "https://static.wikia.nocookie.net/stealabr/images/5/58/Strawberryelephant.png/revision/latest?cb=20250830235735"
-  }
+const imgURL =
+  "https://static.wikia.nocookie.net/stealabr/images/5/58/Strawberryelephant.png/revision/latest?cb=20250830235735";
+
+const rarityOptions = ["God", "Secret", "Mythic", "OG", "Limited", "Exclusive"];
+
+function makeRandomOldPrice(price) {
+  return Number((price + (Math.random() * 10 + 5)).toFixed(2));
+}
+
+const names = [
+  "Test A", "Test B", "Test C", "Test D", "Test E",
+  "Test F", "Test G", "Test H", "Test I", "Test J"
 ];
+
+const products = [];
+
+for (let i = 0; i < 10; i++) {
+  const price = Number((Math.random() * 20 + 3).toFixed(2));
+  products.push({
+    name: names[i],
+    rarity: rarityOptions[Math.floor(Math.random() * rarityOptions.length)],
+    price: price,
+    oldPrice: makeRandomOldPrice(price),
+    image: imgURL
+  });
+}
 
 /* =========================================
    DISCOUNT SYSTEM
@@ -49,33 +52,29 @@ function getDiscountClass(percent) {
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
   if (!grid) return;
-
   grid.innerHTML = "";
 
   list.forEach(p => {
-    const discountPercent = getDiscountPercent(p.price, p.oldPrice);
+    const percent = getDiscountPercent(p.price, p.oldPrice);
     const rarityClass = `tag-${p.rarity.toLowerCase()}`;
-
-    const discountHTML = discountPercent
-      ? `<span class="discount-tag ${getDiscountClass(discountPercent)}">-${discountPercent}%</span>`
-      : "";
 
     grid.innerHTML += `
       <div class="card">
+
         <div class="card-badges">
           <span class="tag ${rarityClass}">${p.rarity}</span>
-          ${discountHTML}
+          <span class="discount-tag ${getDiscountClass(percent)}">-${percent}%</span>
         </div>
 
         <img src="${p.image}" alt="${p.name}" class="product-img">
+
         <h3>${p.name}</h3>
 
         <div class="price-box">
           <span class="price">£${p.price}</span>
-          ${p.oldPrice ? `<span class="old-price">£${p.oldPrice}</span>` : ""}
+          <span class="old-price">£${p.oldPrice}</span>
         </div>
 
-        <!-- ⭐ Add to Cart button with Lucide icon -->
         <button class="buy-btn" onclick="addToCart('${p.name}', this)">
           <svg xmlns="http://www.w3.org/2000/svg" 
             class="btn-cart-icon" width="16" height="16" 
@@ -104,13 +103,15 @@ function setupSearch() {
 
   input.addEventListener("input", () => {
     const value = input.value.toLowerCase();
-    const filtered = products.filter(p => p.name.toLowerCase().includes(value));
+    const filtered = products.filter(p =>
+      p.name.toLowerCase().includes(value)
+    );
     renderProducts(filtered);
   });
 }
 
 /* =========================================
-   CART SYSTEM (fly animation)
+   CART SYSTEM — FLY ANIMATION
 ========================================= */
 
 function addToCart(name, btn) {
