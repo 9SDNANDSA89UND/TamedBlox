@@ -1,26 +1,37 @@
 /* =====================================================
-   CURRENCY: AUTO-DETECT + LIVE CONVERSION + DROPDOWN
-   (FINAL FULLY WORKING VERSION)
+   CURRENCY SYSTEM — FINAL FULLY FIXED VERSION
+   - Live FX using open.er-api.com (CORS SAFE)
+   - Auto detect via IP
+   - Dropdown override
+   - Conversion BEFORE render
 ===================================================== */
 
-
 /* ------------------------------
-   LIVE EXCHANGE RATES (GBP BASE)
+   GLOBAL FX TABLE (BASE GBP)
 ------------------------------ */
 let exchangeRates = { rates: {} };
 
+/* ------------------------------
+   LOAD LIVE GBP → X RATES
+------------------------------ */
 async function loadRates() {
   try {
-    const res = await fetch("https://api.exchangerate.host/latest?base=GBP");
-    exchangeRates = await res.json();
+    const res = await fetch("https://open.er-api.com/v6/latest/GBP");
+    const data = await res.json();
+
+    if (data && data.result === "success") {
+      exchangeRates.rates = data.rates;
+    } else {
+      exchangeRates = { rates: {} };
+    }
   } catch (err) {
     exchangeRates = { rates: {} };
   }
 }
 
-/* -----------------------------------
-   AUTO-DETECT USER CURRENCY BY IP
------------------------------------ */
+/* ------------------------------
+   AUTO-DETECT USER CURRENCY
+------------------------------ */
 async function detectUserCurrency() {
   try {
     const res = await fetch("https://ipapi.co/json/");
@@ -31,17 +42,17 @@ async function detectUserCurrency() {
   }
 }
 
-/* -----------------------------------
-   PRICE CONVERSION (GBP → X)
------------------------------------ */
+/* ------------------------------
+   CONVERT PRICE (GBP → X)
+------------------------------ */
 function convertPrice(amountGBP, currency) {
   if (!exchangeRates.rates[currency]) return amountGBP;
   return amountGBP * exchangeRates.rates[currency];
 }
 
-/* -----------------------------------
-   PRICE FORMATTER
------------------------------------ */
+/* ------------------------------
+   FORMAT PRICE
+------------------------------ */
 function formatPrice(amountGBP) {
   const converted = convertPrice(amountGBP, userCurrency);
 
@@ -52,23 +63,23 @@ function formatPrice(amountGBP) {
   }).format(converted);
 }
 
-/* -----------------------------------
-   LOAD USER CURRENCY OVERRIDE
------------------------------------ */
+/* ------------------------------
+   LOAD USER DROPDOWN OVERRIDE
+------------------------------ */
 let savedCurrency = localStorage.getItem("tamedblox_currency");
-let userCurrency = "GBP"; // will be replaced later
+let userCurrency = "GBP";
 
-/* -----------------------------------
-   WAIT FOR NAVBAR BEFORE INIT
------------------------------------ */
+/* ------------------------------
+   WAIT FOR NAVBAR
+------------------------------ */
 function waitForNavbar(callback) {
   if (document.getElementById("currencySelector")) return callback();
-  setTimeout(() => waitForNavbar(callback), 50);
+  setTimeout(() => waitForNavbar(callback), 30);
 }
 
-/* -----------------------------------
-   DROPDOWN INITIALIZER
------------------------------------ */
+/* ------------------------------
+   INITIALIZE DROPDOWN
+------------------------------ */
 function initCurrencyDropdown() {
   const dropdown = document.getElementById("currencySelector");
   if (!dropdown) return;
@@ -78,26 +89,22 @@ function initCurrencyDropdown() {
   dropdown.addEventListener("change", () => {
     const val = dropdown.value;
 
-    if (val === "AUTO") {
-      localStorage.removeItem("tamedblox_currency");
-    } else {
-      localStorage.setItem("tamedblox_currency", val);
-    }
+    if (val === "AUTO") localStorage.removeItem("tamedblox_currency");
+    else localStorage.setItem("tamedblox_currency", val);
 
     location.reload();
   });
 }
 
-
 /* =====================================================
-   PRODUCT LIST
+   PRODUCT LIST (GBP BASE VALUES)
 ===================================================== */
 const products = [
   {
     name: "La Grande Combinasion ($10M/s)",
     rarity: "Secret",
-    price: 10.30, // stored as GBP
-    oldPrice: 13.38,
+    price: 10.30,   // BASE GBP
+    oldPrice: 13.38, // BASE GBP
     image: "https://i.postimg.cc/tCT9T6xC/Carti.webp"
   }
 ];
@@ -110,15 +117,8 @@ function getDiscountPercent(price, oldPrice) {
   return Math.round(((oldPrice - price) / oldPrice) * 100);
 }
 
-function getDiscountClass(percent) {
-  if (percent > 90) return "discount-red";
-  if (percent > 50) return "discount-orange";
-  if (percent > 20) return "discount-yellow";
-  return "discount-green";
-}
-
 /* =====================================================
-   RENDER PRODUCTS (NOW USES FORMATPRICE)
+   RENDER PRODUCTS — NOW USING formatPrice()
 ===================================================== */
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
@@ -132,10 +132,14 @@ function renderProducts(list) {
 
     grid.innerHTML += `
       <div class="card">
-
+        
         <div class="card-badges">
           <span class="tag ${rarityClass}">${p.rarity}</span>
-          ${p.oldPrice ? `<span class="discount-tag">${percent}% OFF</span>` : ""}
+          ${
+            p.oldPrice
+              ? `<span class="discount-tag">${percent}% OFF</span>`
+              : ""
+          }
         </div>
 
         <img src="${p.image}" class="product-img">
@@ -144,7 +148,11 @@ function renderProducts(list) {
 
         <div class="price-box">
           <span class="price">${formatPrice(p.price)}</span>
-          ${p.oldPrice ? `<span class="old-price">${formatPrice(p.oldPrice)}</span>` : ""}
+          ${
+            p.oldPrice
+              ? `<span class="old-price">${formatPrice(p.oldPrice)}</span>`
+              : ""
+          }
         </div>
 
         <button class="buy-btn" onclick="addToCart('${p.name}', this)">
@@ -167,8 +175,7 @@ function setupSearch() {
 
   input.addEventListener("input", () => {
     const q = input.value.toLowerCase();
-    const filtered = products.filter(p => p.name.toLowerCase().includes(q));
-    renderProducts(filtered);
+    renderProducts(products.filter(p => p.name.toLowerCase().includes(q)));
   });
 }
 
@@ -188,7 +195,6 @@ function addToCart(name, btn) {
 ===================================================== */
 function initCardTilt() {
   const cards = document.querySelectorAll(".card");
-  if (!cards.length) return;
 
   cards.forEach(card => {
     card.addEventListener("mousemove", e => {
@@ -196,11 +202,12 @@ function initCardTilt() {
       const x = e.clientX - r.left;
       const y = e.clientY - r.top;
 
-      const rotateX = ((y - r.height/2) / (r.height/2)) * -10;
-      const rotateY = ((x - r.width/2) / (r.width/2)) * 10;
+      const rotateX = ((y - r.height / 2) / (r.height / 2)) * -10;
+      const rotateY = ((x - r.width / 2) / (r.width / 2)) * 10;
 
-      card.style.transform =
-        `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      card.style.transform = `perspective(800px)
+                              rotateX(${rotateX}deg)
+                              rotateY(${rotateY}deg)`;
     });
 
     card.addEventListener("mouseleave", () => {
@@ -210,22 +217,27 @@ function initCardTilt() {
 }
 
 /* =====================================================
-   MAIN INITIALIZER (FINAL FIXED)
+   MAIN INITIALIZER — ORDER FIXED
 ===================================================== */
 document.addEventListener("DOMContentLoaded", async () => {
-  await loadRates(); // load FX first
 
+  // 1. LOAD LIVE RATES FIRST
+  await loadRates();
+
+  // 2. AUTO-DETECT OR OVERRIDE
   if (!savedCurrency || savedCurrency === "AUTO") {
-    userCurrency = await detectUserCurrency(); // auto detect
+    userCurrency = await detectUserCurrency();
   } else {
-    userCurrency = savedCurrency; // dropdown override
+    userCurrency = savedCurrency;
   }
 
-  waitForNavbar(initCurrencyDropdown); // dropdown always works
+  // 3. WAIT FOR NAVBAR → INITIALIZE DROPDOWN
+  waitForNavbar(initCurrencyDropdown);
 
-  renderProducts(products); // now prices are correct
+  // 4. NOW RENDER EVERYTHING WITH CORRECT CURRENCY
+  renderProducts(products);
   setupSearch();
 
-  if (window.Cart && window.Cart.init)
-    window.Cart.init();
+  // 5. INIT CART LAST
+  if (window.Cart && window.Cart.init) window.Cart.init();
 });
