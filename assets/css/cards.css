@@ -1,18 +1,21 @@
 /* ==========================================
-   PRODUCT GRID — ULTRA SMALL
+   PRODUCT GRID — FIXED WIDTH (shows all cards)
 ========================================== */
 .product-grid {
-  max-width: 1350px;
-  margin: 30px auto;
+  width: 100%;
+  max-width: 1400px;
+  margin: 40px auto;
   padding: 0 20px;
 
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
+  gap: 26px;
+
+  justify-items: center;
 }
 
 /* ==========================================
-   PREMIUM CARD — FIXED LAYOUT GRID
+   PREMIUM CARD — FIXED LAYOUT
 ========================================== */
 .card {
   position: relative;
@@ -24,16 +27,16 @@
   overflow: hidden;
 
   width: 100%;
-  height: 330px; /* consistent size */
+  height: 330px;
 
   display: grid;
   grid-template-rows:
-    24px      /* badges */
-    150px     /* square image */
-    40px      /* title */
-    28px      /* price */
-    1fr       /* filler */
-    40px;     /* add to cart button */
+    24px
+    150px
+    40px
+    28px
+    1fr
+    40px;
 
   gap: 6px;
 
@@ -44,7 +47,7 @@
   cursor: pointer;
 }
 
-/* ⭐Auto tilt on hover */
+/* ⭐ Automatic tilt on hover */
 .card:hover {
   transform: scale(1.05) rotateX(4deg) rotateY(-4deg);
   box-shadow:
@@ -53,7 +56,7 @@
 }
 
 /* ==========================================
-   GREEN GLOW BORDER GLOW
+   BACKLIGHT GLOW
 ========================================== */
 .card::before {
   content: "";
@@ -91,7 +94,7 @@
 
   opacity: 0;
   transform: translateX(-200%) rotate(10deg);
-  transition: opacity 0.35s;
+  transition: opacity 0.3s;
   pointer-events: none;
 }
 
@@ -106,7 +109,7 @@
 }
 
 /* ==========================================
-   PRODUCT IMAGE — PERFECT SQUARE
+   SQUARE PRODUCT IMAGE
 ========================================== */
 .product-img {
   width: 100%;
@@ -120,23 +123,20 @@
 }
 
 /* ==========================================
-   BADGES ROW
+   BADGES (rarity left, discount right)
 ========================================== */
 .card-badges {
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* ---------- RARITY TAG ---------- */
+/* RARITY TAG PULSE */
 .tag {
   padding: 4px 10px;
   border-radius: 50px;
   font-size: 10px;
   font-weight: 800;
-  margin: 0;
-
   backdrop-filter: blur(3px);
   animation: rarityPulseSmall 2.4s ease-in-out infinite;
 }
@@ -153,10 +153,28 @@
   border: 1px solid rgba(0,200,255,0.45);
 }
 
+.tag-mythic {
+  background: rgba(180,0,255,0.18);
+  color: #c44dff;
+  border: 1px solid rgba(180,0,255,0.45);
+}
+
 .tag-og {
   background: rgba(255,170,0,0.18);
   color: #ffaa2b;
   border: 1px solid rgba(255,170,0,0.45);
+}
+
+.tag-limited {
+  background: rgba(255,60,60,0.18);
+  color: #ff4a4a;
+  border: 1px solid rgba(255,60,60,0.45);
+}
+
+.tag-exclusive {
+  background: rgba(60,255,153,0.18);
+  color: #4fff96;
+  border: 1px solid rgba(60,255,153,0.45);
 }
 
 @keyframes rarityPulseSmall {
@@ -165,24 +183,25 @@
   100% { box-shadow: 0 0 6px currentColor; }
 }
 
-/* ---------- DISCOUNT TAG (now smaller) ---------- */
+/* ==========================================
+   DISCOUNT TAG — SMALL & CLEAN
+========================================== */
 .discount-tag {
   padding: 4px 8px;
-  border-radius: 40px;
-
   font-size: 11px;
   font-weight: 900;
 
-  color: #0b0f14;
+  border-radius: 40px;
+
   background: #4ef58a;
+  color: #0b0f14;
 
   border: 1px solid rgba(255,255,255,0.3);
   box-shadow:
     0 0 7px rgba(78,245,138,0.6),
     0 0 14px rgba(78,245,138,0.3);
 
-  transform: scale(1);
-  transition: 0.18s ease;
+  transition: 0.18s;
 }
 
 .discount-tag:hover {
@@ -190,12 +209,11 @@
 }
 
 /* ==========================================
-   TITLE — FIXED POSITION
+   TITLE — fixed height
 ========================================== */
 .card h3 {
   font-size: 15px;
   font-weight: 800;
-  margin: 0;
   height: 40px;
   display: flex;
   align-items: center;
@@ -203,7 +221,7 @@
 }
 
 /* ==========================================
-   PRICE SECTION — FIXED
+   PRICE BOX — fixed height
 ========================================== */
 .price-box {
   height: 28px;
@@ -221,12 +239,12 @@
 .old-price {
   font-size: 13px;
   font-weight: 700;
-  color: #b7b7b7;
   text-decoration: line-through;
+  color: #b7b7b7;
 }
 
 /* ==========================================
-   ADD TO CART BUTTON — WITH ICON SUPPORT
+   ADD TO CART BUTTON — with icon
 ========================================== */
 .buy-btn {
   width: 100%;
@@ -235,6 +253,7 @@
 
   background: #4ef58a;
   color: #0b0f14;
+
   font-size: 12px;
   font-weight: 900;
 
@@ -247,7 +266,7 @@
     0 0 8px rgba(78,245,138,0.5),
     0 4px 14px rgba(0,0,0,0.45);
 
-  transition: 0.25s ease;
+  transition: 0.25s;
 }
 
 .buy-btn:hover {
@@ -255,7 +274,6 @@
   opacity: 0.95;
 }
 
-/* cart icon styling */
 .btn-cart-icon {
   width: 16px;
   height: 16px;
