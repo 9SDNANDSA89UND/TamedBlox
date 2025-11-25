@@ -89,7 +89,7 @@
 }
 
 
-/* BUBBLES */
+/* MESSAGE BUBBLES */
 .msg {
   max-width: 80%;
   padding: 10px 14px;
@@ -155,7 +155,9 @@
   box-shadow: 0 0 8px rgba(78,245,138,0.35);
 }
 
-.chat-input-row button {
+
+/* SEND BUTTON — NEW ICON */
+.chat-send-btn {
   width: 54px;
   margin-left: 8px;
 
@@ -167,18 +169,23 @@
   align-items: center;
   justify-content: center;
 
-  color: #0b0f14;
-  font-size: 18px;
-  font-weight: 900;
-
   cursor: pointer;
   transition: 0.18s ease;
 }
-.chat-input-row button:hover {
+
+.chat-send-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke: #0b0f14;
+}
+
+.chat-send-btn:hover {
   transform: scale(1.06);
   box-shadow: 0 0 12px rgba(78,245,138,0.45);
 }
 
+
+/* UTILITY */
 .hidden {
   display: none !important;
 }
