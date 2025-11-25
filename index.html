@@ -28,7 +28,7 @@
 
 <body>
 
-  <!-- NAVBAR + MODALS -->
+  <!-- NAVBAR + AUTH MODALS -->
   <div id="navbar"></div>
   <div id="modals"></div>
 
@@ -112,16 +112,18 @@
     loadComponent("#footer", "components/footer.html");
   </script>
 
+
   <!-- JS (BOTTOM ORDER FIXES CART + AUTH + CARD VISUALS) -->
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/drawer.js"></script>
   <script src="assets/js/auth.js"></script>
 
-  <!-- ⭐ NEW MESSENGER-STYLE CHAT UI -->
+
+  <!-- ⭐ NEW PREMIUM CHAT UI -->
   <div id="chatButton" class="chat-circle hidden">
     <svg xmlns="http://www.w3.org/2000/svg" 
-         width="28" height="28" viewBox="0 0 24 24" fill="none"
+         width="24" height="24" viewBox="0 0 24 24" fill="none"
          stroke="currentColor" stroke-width="2"
          stroke-linecap="round" stroke-linejoin="round"
          class="lucide lucide-message-circle-icon">
@@ -132,9 +134,7 @@
   <div id="chatWindow" class="chat-window hidden">
 
     <!-- Order Summary -->
-    <div id="chatOrderSummary" class="chat-order-summary">
-      <!-- filled by chat.js -->
-    </div>
+    <div id="chatOrderSummary" class="chat-order-summary"></div>
 
     <!-- Messages -->
     <div id="chatMessages" class="chat-messages"></div>
