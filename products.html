@@ -21,7 +21,7 @@
 
 <body>
 
-  <!-- NAVBAR + AUTH MODALS (LOADED BEFORE SCRIPT EXECUTION) -->
+  <!-- NAVBAR + AUTH MODALS -->
   <div id="navbar"></div>
   <div id="modals"></div>
 
@@ -56,7 +56,7 @@
     <div class="cart-footer">
       <div class="cart-total-line">
         <span>Total</span>
-        <span id="drawerTotal">£0.00</span>
+        <span id="drawerTotal">$0.00 USD</span>
       </div>
       <button id="drawerCheckoutBtn" class="checkout-btn">Checkout</button>
     </div>
@@ -70,7 +70,7 @@
     loadComponent("#footer", "components/footer.html");
   </script>
 
-  <!-- JS (LOADED LAST → FIXES CURRENCY SYSTEM) -->
+  <!-- JS (correct order!) -->
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/drawer.js"></script>
