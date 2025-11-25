@@ -45,7 +45,7 @@
   <!-- PRODUCT GRID -->
   <div id="productGrid" class="product-grid"></div>
 
-  <!-- REVIEWS SECTION (UNCHANGED) -->
+  <!-- REVIEWS -->
   <section class="reviews-section">
     <h2 class="reviews-title">Customer Reviews</h2>
 
@@ -90,7 +90,7 @@
     <div class="cart-footer">
       <div class="cart-total-line">
         <span>Total</span>
-        <span id="drawerTotal">£0.00</span>
+        <span id="drawerTotal">$0.00 USD</span>
       </div>
 
       <button class="checkout-btn" onclick="location.href='checkout.html'">
@@ -107,7 +107,7 @@
     loadComponent("#footer", "components/footer.html");
   </script>
 
-  <!-- JS SCRIPTS (MOVED TO VERY BOTTOM — FIXES CURRENCY) -->
+  <!-- JS (BOTTOM LOADING FIXES CURRENCY + CART SYSTEM) -->
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/drawer.js"></script>
