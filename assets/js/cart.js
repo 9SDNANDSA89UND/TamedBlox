@@ -1,42 +1,27 @@
 /* =========================================
-   CART SYSTEM (NOW WITH AUTO CURRENCY)
+   CART SYSTEM — USD ONLY (NO CURRENCY MAP)
 ========================================= */
 
-/* --- MUST MATCH app.js --- */
-function formatPrice(amount) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: userCurrency,   // comes from app.js
-    minimumFractionDigits: 2
-  }).format(amount);
+function formatUSD(amount) {
+  return `$${Number(amount).toFixed(2)} USD`;
 }
 
 window.Cart = {
   items: [],
 
-  /* -----------------------------
-     INIT
-  ----------------------------- */
   init() {
     const saved = localStorage.getItem("tamedblox_cart");
     this.items = saved ? JSON.parse(saved) : [];
-
     this.updateDot();
     this.updateDrawer();
   },
 
-  /* -----------------------------
-     SAVE CART
-  ----------------------------- */
   save() {
     localStorage.setItem("tamedblox_cart", JSON.stringify(this.items));
     this.updateDot();
     this.updateDrawer();
   },
 
-  /* -----------------------------
-     FLY TO CART ANIMATION
-  ----------------------------- */
   flyToCart(imgSrc, startElement) {
     const cartIcon = document.getElementById("cartBtn");
     if (!cartIcon || !startElement) return;
@@ -50,7 +35,6 @@ window.Cart = {
 
     flyImg.style.left = startRect.left + "px";
     flyImg.style.top = startRect.top + "px";
-
     document.body.appendChild(flyImg);
 
     let trail = setInterval(() => {
@@ -70,11 +54,8 @@ window.Cart = {
     }, 45);
 
     requestAnimationFrame(() => {
-      flyImg.style.transform = `
-        translate(${endRect.left - startRect.left}px,
-                  ${endRect.top - startRect.top}px)
-        scale(0.2)
-      `;
+      flyImg.style.transform =
+        `translate(${endRect.left - startRect.left}px, ${endRect.top - startRect.top}px) scale(0.2)`;
       flyImg.style.opacity = "0";
     });
 
@@ -89,10 +70,7 @@ window.Cart = {
     }, 900);
   },
 
-  /* -----------------------------
-     ADD ITEM
-  ----------------------------- */
-  addItem(product, clickedElement = null) {
+  addItem(product, imgEl = null) {
     const existing = this.items.find(i => i.name === product.name);
 
     if (existing) {
@@ -108,52 +86,36 @@ window.Cart = {
 
     this.save();
 
-    if (clickedElement) {
-      this.flyToCart(product.image, clickedElement);
+    if (imgEl) {
+      this.flyToCart(product.image, imgEl);
     }
   },
 
-  /* -----------------------------
-     CHANGE QTY
-  ----------------------------- */
   changeQty(name, amount) {
     const item = this.items.find(i => i.name === name);
     if (!item) return;
 
     item.qty += amount;
-    if (item.qty <= 0) {
-      this.items = this.items.filter(i => i.name !== name);
-    }
+    if (item.qty <= 0) this.items = this.items.filter(i => i.name !== name);
 
     this.save();
   },
 
-  /* -----------------------------
-     REMOVE ITEM
-  ----------------------------- */
   remove(name) {
     this.items = this.items.filter(i => i.name !== name);
     this.save();
   },
 
-  /* -----------------------------
-     UPDATE CART DOT
-  ----------------------------- */
   updateDot() {
     const dot = document.getElementById("cartDot");
     if (!dot) return;
-
     dot.style.display = this.items.length > 0 ? "block" : "none";
   },
 
-  /* -----------------------------
-     UPDATE CART DRAWER UI
-     (NOW WITH RETRY FIX)
-  ----------------------------- */
   updateDrawer() {
     const drawer = document.getElementById("drawerContent");
 
-    // ⭐ FIX: Wait for navbar/drawer to load
+    // drawer not loaded yet → wait
     if (!drawer) {
       setTimeout(() => this.updateDrawer(), 50);
       return;
@@ -161,8 +123,7 @@ window.Cart = {
 
     if (this.items.length === 0) {
       drawer.innerHTML = `<p style="color:#9ca4b1;">Your cart is empty.</p>`;
-      const totalEl = document.getElementById("drawerTotal");
-      if (totalEl) totalEl.innerText = formatPrice(0);
+      document.getElementById("drawerTotal").innerText = formatUSD(0);
       return;
     }
 
@@ -178,7 +139,7 @@ window.Cart = {
 
           <div class="cart-info">
             <div class="cart-name">${item.name}</div>
-            <div class="cart-price">${formatPrice(item.price)}</div>
+            <div class="cart-price">${formatUSD(item.price)}</div>
           </div>
 
           <div class="cart-qty-controls">
@@ -195,8 +156,6 @@ window.Cart = {
     });
 
     drawer.innerHTML = html;
-
-    const totalEl = document.getElementById("drawerTotal");
-    if (totalEl) totalEl.innerText = formatPrice(total);
+    document.getElementById("drawerTotal").innerText = formatUSD(total);
   }
 };
