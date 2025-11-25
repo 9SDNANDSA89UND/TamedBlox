@@ -76,7 +76,7 @@ a {
 }
 
 /* ==========================================
-   NAV BUTTONS
+   NAV BUTTONS (LOGIN, SIGNUP, CART)
 ========================================== */
 .nav-rect-btn {
   display: flex;
@@ -138,22 +138,40 @@ a {
 }
 
 /* ==========================================
-   ⭐ CURRENCY DROPDOWN (ADDED)
+   🔥 NEW ACCOUNT + LOGOUT BUTTONS
 ========================================== */
-.currency-dropdown {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.14);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 10px;
+.nav-account-btn,
+.nav-logout-btn {
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-weight: 600;
   font-size: 14px;
   cursor: pointer;
   backdrop-filter: blur(6px);
+  transition: 0.2s ease;
 }
 
-.currency-dropdown option {
-  background: #0f141a;
-  color: white;
+/* Green hover for Account */
+.nav-account-btn:hover {
+  background: rgba(78, 245, 138, 0.18);
+  border-color: rgba(78, 245, 138, 0.45);
+  color: #4ef58a;
+}
+
+/* Red hover for Logout */
+.nav-logout-btn:hover {
+  background: rgba(255, 60, 60, 0.18);
+  border-color: rgba(255, 60, 60, 0.45);
+  color: #ff6b6b;
+}
+
+/* Spacing next to Cart */
+.nav-right .nav-account-btn,
+.nav-right .nav-logout-btn {
+  margin-left: 4px;
 }
 
 /* ==========================================
@@ -233,7 +251,7 @@ a {
 }
 
 /* ==========================================
-   NEW PREMIUM CART DRAWER
+   CART DRAWER
 ========================================== */
 .cart-drawer {
   width: 390px;
