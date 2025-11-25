@@ -1,18 +1,37 @@
-async function loadChatVisibility() {
+async function loadChat() {
   const token = localStorage.getItem("authToken");
+
+  // Not logged in → no chat
   if (!token) return;
 
-  const res = await fetch("https://website-5eml.onrender.com/chats/my-chats", {
+  // Get auth user info (needed to check admin)
+  const userRes = await fetch("https://website-5eml.onrender.com/auth/me", {
+    headers: { Authorization: "Bearer " + token }
+  });
+  const user = await userRes.json();
+
+  // If user is ADMIN → Always show chat button
+  const ADMIN_EMAIL = "benjaminmorcombe@gmail.com";
+  const isAdmin = user.email === ADMIN_EMAIL;
+
+  // Fetch chat data
+  const chatRes = await fetch("https://website-5eml.onrender.com/chats/my-chats", {
     headers: { Authorization: "Bearer " + token }
   });
 
-  const chat = await res.json();
-  if (!chat) return;
+  const chat = await chatRes.json();
+
+  // Condition 1: Admin = always show
+  // Condition 2: Buyer = show only if chat exists
+  if (isAdmin || chat) {
+    document.getElementById("chatButton").classList.remove("hidden");
+  }
+
+  if (!chat) return; // Chat doesn't exist yet → admin still sees empty chat
 
   window.USER_CHAT = chat;
 
-  document.getElementById("chatButton").classList.remove("hidden");
-
+  // Order summary
   const order = chat.orderDetails;
   document.getElementById("chatOrderSummary").innerHTML = `
     <strong>Order ID:</strong> ${order.orderId}<br>
@@ -28,6 +47,7 @@ document.getElementById("chatButton").onclick = () => {
 
 async function refreshMessages() {
   if (!window.USER_CHAT) return;
+
   const token = localStorage.getItem("authToken");
 
   const res = await fetch(
@@ -40,9 +60,9 @@ async function refreshMessages() {
   const box = document.getElementById("chatMessages");
   box.innerHTML = msgs
     .map(
-      (m) => `
+      m => `
       <div class="msg ${
-        m.sender === window.USER_CHAT.participants[0] ? "me" : "them"
+        m.sender === window.USER_CHAT.userEmail ? "me" : "them"
       }">
         ${m.content}<br>
         <small>${new Date(m.timestamp).toLocaleTimeString()}</small>
@@ -78,6 +98,6 @@ document.getElementById("chatSend").onclick = async () => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadChatVisibility();
+  loadChat();
   setInterval(refreshMessages, 2000);
 });
