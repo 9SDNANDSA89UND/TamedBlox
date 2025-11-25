@@ -6,6 +6,7 @@
   position: fixed;
   bottom: 26px;
   left: 26px;
+
   width: 62px;
   height: 62px;
 
@@ -17,11 +18,8 @@
   align-items: center;
   justify-content: center;
 
-  font-size: 28px;
-  font-weight: 900;
-  cursor: pointer;
-
   box-shadow: 0 0 14px rgba(78,245,138,0.45);
+  cursor: pointer;
   z-index: 99999;
 
   transition: 0.2s ease;
@@ -31,10 +29,16 @@
   transform: scale(1.08);
 }
 
+.chat-circle svg {
+  width: 28px;
+  height: 28px;
+  stroke: #0b0f14;
+  pointer-events: none;
+}
 
 
 /* ================================
-   CHAT WINDOW (MESSENGER STYLE)
+   CHAT WINDOW
 ================================ */
 
 .chat-window {
@@ -66,20 +70,33 @@
 }
 
 
+/* ================================
+   ORDER SUMMARY
+================================ */
+
+.chat-order-summary {
+  background: rgba(255,255,255,0.04);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #d6dde5;
+
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
 
 /* ================================
-   MESSAGES AREA
+   MESSAGES UI
 ================================ */
 
 .chat-messages {
   flex: 1;
   padding: 16px;
-  overflow-y: auto;
 
   display: flex;
   flex-direction: column;
   gap: 12px;
 
+  overflow-y: auto;
   font-size: 14px;
 }
 
@@ -102,7 +119,6 @@
   margin-left: auto;
   background: #4ef58a;
   color: #0b0f14;
-
   border-bottom-right-radius: 4px;
 }
 
@@ -119,24 +135,8 @@
 }
 
 
-
 /* ================================
-   ORDER SUMMARY (TOP PANEL)
-================================ */
-
-.chat-order-summary {
-  background: rgba(255,255,255,0.04);
-  padding: 12px 16px;
-  font-size: 13px;
-
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  color: #d6dde5;
-}
-
-
-
-/* ================================
-   INPUT AREA (MESSENGER STYLE)
+   INPUT AREA — Messenger Style
 ================================ */
 
 .chat-input-row {
@@ -151,13 +151,13 @@
   padding: 12px;
 
   background: #0b0f14;
-  border-radius: 12px;
   border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
 
   color: white;
   font-size: 14px;
 
-  transition: 0.15s;
+  transition: 0.15s ease;
 }
 
 .chat-input-row input:focus {
@@ -186,4 +186,6 @@
   transform: scale(1.06);
 }
 
-.hidden { display: none !important; }
+.hidden {
+  display: none !important;
+}
