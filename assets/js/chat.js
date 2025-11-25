@@ -1,22 +1,18 @@
-async function loadChat() {
+async function loadChatVisibility() {
   const token = localStorage.getItem("authToken");
   if (!token) return;
 
-  // Load user chat (or null)
   const res = await fetch("https://website-5eml.onrender.com/chats/my-chats", {
     headers: { Authorization: "Bearer " + token }
   });
 
   const chat = await res.json();
-  if (!chat) return; // Only customers with purchases get chat
+  if (!chat) return;
 
-  // Store globally
   window.USER_CHAT = chat;
 
-  // Show chat button
   document.getElementById("chatButton").classList.remove("hidden");
 
-  // Render order summary
   const order = chat.orderDetails;
   document.getElementById("chatOrderSummary").innerHTML = `
     <strong>Order ID:</strong> ${order.orderId}<br>
@@ -30,7 +26,6 @@ document.getElementById("chatButton").onclick = () => {
   document.getElementById("chatWindow").classList.toggle("hidden");
 };
 
-// Load messages every 2s
 async function refreshMessages() {
   if (!window.USER_CHAT) return;
   const token = localStorage.getItem("authToken");
@@ -43,12 +38,18 @@ async function refreshMessages() {
   const msgs = await res.json();
 
   const box = document.getElementById("chatMessages");
-  box.innerHTML = msgs.map(m => `
-    <div class="msg ${m.sender === window.USER_CHAT.participants[0] ? 'me' : 'them'}">
-      ${m.content}<br>
-      <small>${new Date(m.timestamp).toLocaleTimeString()}</small>
-    </div>
-  `).join("");
+  box.innerHTML = msgs
+    .map(
+      (m) => `
+      <div class="msg ${
+        m.sender === window.USER_CHAT.participants[0] ? "me" : "them"
+      }">
+        ${m.content}<br>
+        <small>${new Date(m.timestamp).toLocaleTimeString()}</small>
+      </div>
+    `
+    )
+    .join("");
 
   box.scrollTop = box.scrollHeight;
 }
@@ -76,8 +77,7 @@ document.getElementById("chatSend").onclick = async () => {
   refreshMessages();
 };
 
-// Start
 document.addEventListener("DOMContentLoaded", () => {
-  loadChat();
+  loadChatVisibility();
   setInterval(refreshMessages, 2000);
 });
