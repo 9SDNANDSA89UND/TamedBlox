@@ -28,7 +28,7 @@
 
 <body>
 
-  <!-- NAVBAR + AUTH MODALS -->
+  <!-- NAVBAR + MODALS -->
   <div id="navbar"></div>
   <div id="modals"></div>
 
@@ -53,7 +53,6 @@
     <h2 class="reviews-title">Customer Reviews</h2>
 
     <div class="reviews-grid">
-
       <div class="review-card">
         <div class="review-header">
           <img src="https://via.placeholder.com/50" class="review-pfp">
@@ -79,7 +78,6 @@
           Quick service and amazing prices.
         </div>
       </div>
-
     </div>
   </section>
 
@@ -87,7 +85,7 @@
   <div id="cartDrawer" class="cart-drawer">
     <div class="cart-header">
       <h2 class="cart-title">Cart</h2>
-      <span id="closeDrawer" style="cursor:pointer;font-size:22px;">×</span>
+      <span class="cart-clear" onclick="Cart.items=[];Cart.save();">Clear Cart</span>
     </div>
 
     <div id="drawerContent"></div>
@@ -112,25 +110,23 @@
     loadComponent("#footer", "components/footer.html");
   </script>
 
-
-  <!-- JS (BOTTOM ORDER FIXES CART + AUTH + CARD VISUALS) -->
+  <!-- JS -->
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/drawer.js"></script>
   <script src="assets/js/auth.js"></script>
 
-
   <!-- ⭐ NEW PREMIUM CHAT UI -->
   <div id="chatButton" class="chat-circle hidden">
     <svg xmlns="http://www.w3.org/2000/svg" 
          width="24" height="24" viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="2"
-         stroke-linecap="round" stroke-linejoin="round"
-         class="lucide lucide-message-circle-icon">
+         stroke="currentColor" stroke-width="2" stroke-linecap="round"
+         stroke-linejoin="round" class="lucide lucide-message-circle-icon">
       <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/>
     </svg>
   </div>
 
+  <!-- CHAT WINDOW -->
   <div id="chatWindow" class="chat-window hidden">
 
     <!-- Order Summary -->
@@ -142,7 +138,17 @@
     <!-- Input -->
     <div class="chat-input-row">
       <input id="chatInput" placeholder="Type a message...">
-      <button id="chatSend">➤</button>
+
+      <!-- NEW SEND ICON BUTTON -->
+      <button id="chatSend" class="chat-send-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" 
+             width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" 
+             stroke-linejoin="round" class="lucide lucide-send-horizontal">
+          <path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z"/>
+          <path d="M6 12h16"/>
+        </svg>
+      </button>
     </div>
 
   </div>
