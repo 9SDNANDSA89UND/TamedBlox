@@ -1,11 +1,18 @@
 /* ============================================================
-   TamedBlox — CHAT SYSTEM (PATCHED & SAFE)
-   - No duplicate API errors
-   - Works with admin system
-   - Safe toggle handling
+   TamedBlox — CHAT SYSTEM (SAFE, PATCHED, FINAL VERSION)
+   - Prevents duplicate loading
+   - Fixes API re-declare error
+   - Works with admin + user mode
 ============================================================ */
 
-// 🔥 FIX: Prevent "Identifier already declared" error
+// 🔥 Prevent double-loading of chat.js (fixes API duplicate AND all crashes)
+if (window.__CHAT_JS_LOADED__) {
+  console.warn("chat.js already loaded — skipping duplicate load.");
+  return;
+}
+window.__CHAT_JS_LOADED__ = true;
+
+// 🔥 Safe API assignment (cannot redeclare)
 window.API = window.API || "https://website-5eml.onrender.com";
 
 let ALL_CHATS = [];
@@ -17,7 +24,7 @@ let CURRENT_CHAT = null;
 document.addEventListener("DOMContentLoaded", () => {
   loadChat();
 
-  // Auto-refresh messages every 2s
+  // Auto-refresh messages
   setInterval(() => {
     if (CURRENT_CHAT?._id) refreshMessages();
   }, 2000);
@@ -39,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // Send message
+  // SEND MESSAGE
   const sendBtn = document.getElementById("chatSend");
   if (sendBtn) sendBtn.onclick = sendMessage;
 });
@@ -110,7 +117,7 @@ function renderAdminChatList() {
 }
 
 /* ============================================================
-   ADMIN — OPEN A CHAT
+   ADMIN — OPEN CHAT
 ============================================================ */
 async function openAdminChat(chatId) {
   const token = localStorage.getItem("authToken");
