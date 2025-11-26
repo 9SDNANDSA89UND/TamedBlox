@@ -1,9 +1,11 @@
 /* ============================================================
-   TamedBlox — CHAT SYSTEM (FINAL PATCHED + SAFE)
+   TamedBlox — CHAT SYSTEM (FINAL PATCHED + PURCHASE LOGIC)
    - Prevents duplicate loading
-   - Fixes API already declared
-   - Fixes illegal return statement
-   - Works with admin and user chat
+   - Fixes API redeclare
+   - Fixes illegal return
+   - Shows chat icon ONLY if user has purchased
+   - Works for logged-out purchased users
+   - Supports admin mode + user chats
 ============================================================ */
 
 // ========= SAFE WRAPPER (NO DUPLICATE LOAD) ========= //
@@ -19,9 +21,40 @@ let ALL_CHATS = [];
 let CURRENT_CHAT = null;
 
 /* ============================================================
+   PURCHASE-BASED CHAT BUBBLE VISIBILITY
+============================================================ */
+async function showChatBubbleIfPurchased() {
+  const bubble = document.getElementById("chatButton");
+  if (!bubble) return;
+
+  // --- Case 1: LocalStorage says they purchased
+  if (localStorage.getItem("HAS_PURCHASED") === "yes") {
+    bubble.classList.remove("hidden");
+    return;
+  }
+
+  // --- Case 2: Logged-in user w/ an active chat
+  const token = localStorage.getItem("authToken");
+  if (token) {
+    try {
+      const res = await fetch(`${API}/chats/my-chats`, {
+        headers: { Authorization: "Bearer " + token }
+      });
+
+      const chat = await res.json();
+      if (chat && chat._id) {
+        bubble.classList.remove("hidden");
+        localStorage.setItem("HAS_PURCHASED", "yes");
+      }
+    } catch {}
+  }
+}
+
+/* ============================================================
    INITIAL SETUP
 ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
+  showChatBubbleIfPurchased();
   loadChat();
 
   // Auto-refresh messages every 2 seconds
@@ -29,15 +62,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (CURRENT_CHAT?._id) refreshMessages();
   }, 2000);
 
-  // USER chat toggle button
+  // =========== USER CHAT BUTTON CLICK ===========
   const chatBtn = document.getElementById("chatButton");
   if (chatBtn) {
     chatBtn.onclick = () => {
+      const token = localStorage.getItem("authToken");
+
+      // If not logged in but HAS_PURCHASED → force login
+      if (!token) {
+        if (typeof openModal === "function") openModal("loginModal");
+        return;
+      }
+
+      // Logged-in → toggle chat
       document.getElementById("chatWindow").classList.toggle("hidden");
     };
   }
 
-  // ADMIN chat toggle button
+  // =========== ADMIN CHAT PANEL BUTTON ===========
   const adminBtn = document.getElementById("adminChatBtn");
   if (adminBtn) {
     adminBtn.onclick = () => {
@@ -46,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // Send message button
+  // =========== SEND MESSAGE BUTTON ===========
   const sendBtn = document.getElementById("chatSend");
   if (sendBtn) sendBtn.onclick = sendMessage;
 });
@@ -56,13 +98,13 @@ document.addEventListener("DOMContentLoaded", () => {
 ============================================================ */
 async function loadChat() {
   const token = localStorage.getItem("authToken");
-  if (!token) return;
+  if (!token) return; // logged-out user will still see bubble if purchased
 
   const userRes = await fetch(`${API}/auth/me`, {
     headers: { Authorization: "Bearer " + token }
   });
 
-  if (!userRes.ok) return; // not logged in
+  if (!userRes.ok) return; // token invalid
   const user = await userRes.json();
 
   /* ========= ADMIN MODE ========= */
@@ -73,6 +115,9 @@ async function loadChat() {
 
     ALL_CHATS = await allRes.json();
     renderAdminChatList();
+
+    // Admins ALWAYS see chat bubble
+    document.getElementById("chatButton")?.classList.remove("hidden");
     return;
   }
 
@@ -82,15 +127,16 @@ async function loadChat() {
   });
 
   const chat = await chatRes.json();
-  if (!chat) return;
 
-  CURRENT_CHAT = {
-    ...chat,
-    userEmail: user.email
-  };
+  // If user has a chat, show bubble + load chat
+  if (chat && chat._id) {
+    CURRENT_CHAT = { ...chat, userEmail: user.email };
+    localStorage.setItem("HAS_PURCHASED", "yes");
+    document.getElementById("chatButton")?.classList.remove("hidden");
 
-  renderOrderSummary(chat);
-  refreshMessages();
+    renderOrderSummary(chat);
+    refreshMessages();
+  }
 }
 
 /* ============================================================
@@ -102,7 +148,7 @@ function renderAdminChatList() {
 
   list.innerHTML = "";
 
-  ALL_CHATS.forEach(c => {
+  ALL_CHATS.forEach((c) => {
     list.innerHTML += `
       <div class="admin-chat-item" onclick="openAdminChat('${c._id}')">
         <strong>${c.orderDetails?.orderId || "No Order"}</strong><br>
@@ -153,7 +199,7 @@ function renderOrderSummary(chat) {
     <strong>Order ID:</strong> ${o.orderId}<br>
     <strong>Total:</strong> $${o.total} USD<br>
     <strong>Items:</strong><br>
-    ${o.items.map(i => `• ${i.qty}× ${i.name}`).join("<br>")}
+    ${o.items.map((i) => `• ${i.qty}× ${i.name}`).join("<br>")}
   `;
 }
 
@@ -166,7 +212,7 @@ function renderMessages(msgs) {
 
   box.innerHTML = msgs
     .map(
-      m => `
+      (m) => `
       <div class="msg ${m.sender === CURRENT_CHAT.userEmail ? "me" : "them"}">
         ${m.content}
         <br><small>${new Date(m.timestamp).toLocaleTimeString()}</small>
