@@ -1,7 +1,7 @@
-/* =====================================================
-   TamedBlox — CLEAN USD-ONLY PRICE SYSTEM (FINAL FIXED)
-   + SAFE CART INITIALIZATION (NO Cart.addItem errors)
-===================================================== */
+/* ============================================================
+   TamedBlox — PRODUCT SYSTEM (PATCHED & SAFE)
+   Works with new patched Cart.js + async navbar
+============================================================ */
 
 /* Format product numbers as USD strings */
 function formatUSD(amount) {
@@ -10,56 +10,55 @@ function formatUSD(amount) {
 
 let products = [];
 
-/* =====================================================
-   SAFE WAIT FUNCTION (WAIT FOR window.Cart)
-===================================================== */
+/* ============================================================
+   WAIT FOR CONDITION
+============================================================ */
 function waitFor(checkFn, callback, retry = 0) {
   if (checkFn()) return callback();
   if (retry > 50) {
-    console.warn("⚠️ Timeout waiting for:", checkFn);
+    console.warn("⚠️ Timeout waiting for condition:", checkFn);
     return;
   }
-  setTimeout(() => waitFor(checkFn, callback, retry + 1), 50);
+  setTimeout(() => waitFor(checkFn, callback, retry + 1), 40);
 }
 
-/* =====================================================
+/* ============================================================
    LOAD PRODUCTS
-===================================================== */
+============================================================ */
 async function loadProducts() {
   try {
     const res = await fetch("https://website-5eml.onrender.com/products");
     products = await res.json();
 
-    products.forEach(p => {
+    products.forEach((p) => {
       p.price = Number(p.price);
       p.oldPrice = p.oldPrice ? Number(p.oldPrice) : null;
     });
 
     renderProducts(products);
-
   } catch (err) {
     console.error("❌ Failed to load products:", err);
   }
 }
 
-/* =====================================================
+/* ============================================================
    DISCOUNT CALCULATOR
-===================================================== */
+============================================================ */
 function getDiscountPercent(price, oldPrice) {
   if (!oldPrice || oldPrice <= price) return 0;
   return Math.round(((oldPrice - price) / oldPrice) * 100);
 }
 
-/* =====================================================
-   PRODUCT RENDERING
-===================================================== */
+/* ============================================================
+   RENDER PRODUCTS
+============================================================ */
 function renderProducts(list) {
   const grid = document.getElementById("productGrid");
   if (!grid) return;
 
   grid.innerHTML = "";
 
-  list.forEach(p => {
+  list.forEach((p) => {
     const discount = getDiscountPercent(p.price, p.oldPrice);
 
     grid.innerHTML += `
@@ -81,7 +80,7 @@ function renderProducts(list) {
           ${p.oldPrice ? `<span class="old-price">${formatUSD(p.oldPrice)}</span>` : ""}
         </div>
 
-        <!-- ⭐ FIXED: Safe add-to-cart handler -->
+        <!-- Buttons use data attributes instead of raw JS in HTML -->
         <button class="buy-btn" data-name="${p.name}">
           Add to Cart
         </button>
@@ -94,34 +93,37 @@ function renderProducts(list) {
   bindCartButtons();
 }
 
-/* =====================================================
+/* ============================================================
    BIND ADD-TO-CART BUTTONS (SAFE)
-===================================================== */
+============================================================ */
 function bindCartButtons() {
   const buttons = document.querySelectorAll(".buy-btn");
 
-  if (!buttons.length) return;
+  if (!buttons.length) {
+    return setTimeout(bindCartButtons, 40);
+  }
 
   waitFor(
-    () => window.Cart && window.Cart.addItem,
+    () => window.Cart && typeof window.Cart.addItem === "function",
     () => {
-      buttons.forEach(btn => {
+      buttons.forEach((btn) => {
         btn.onclick = () => {
           const name = btn.getAttribute("data-name");
           const imgElement = btn.closest(".card").querySelector(".product-img");
           addToCart(name, imgElement);
         };
       });
-      console.log("✅ Add-to-cart buttons bound successfully.");
+
+      console.log("🛒 Add-to-cart buttons are active.");
     }
   );
 }
 
-/* =====================================================
-   ADD TO CART (NOW 100% SAFE)
-===================================================== */
+/* ============================================================
+   ADD TO CART (PATCHED)
+============================================================ */
 function addToCart(name, imgElement) {
-  const product = products.find(p => p.name === name);
+  const product = products.find((p) => p.name === name);
   if (!product) return console.error("❌ Product not found:", name);
 
   const fixedProduct = {
@@ -130,32 +132,33 @@ function addToCart(name, imgElement) {
     oldPrice: product.oldPrice ? Number(product.oldPrice) : null
   };
 
-  // ⭐ Only runs after window.Cart is ready (guaranteed)
   window.Cart.addItem(fixedProduct, imgElement);
 }
 
-/* =====================================================
+/* ============================================================
    SEARCH BAR
-===================================================== */
+============================================================ */
 function setupSearch() {
   const input = document.getElementById("searchInput");
   if (!input) return;
 
   input.addEventListener("input", () => {
     const q = input.value.toLowerCase();
-    const filtered = products.filter(p => p.name.toLowerCase().includes(q));
+    const filtered = products.filter((p) =>
+      p.name.toLowerCase().includes(q)
+    );
     renderProducts(filtered);
   });
 }
 
-/* =====================================================
-   3D CARD TILT
-===================================================== */
+/* ============================================================
+   CARD TILT EFFECT
+============================================================ */
 function initCardTilt() {
   const cards = document.querySelectorAll(".card");
 
-  cards.forEach(card => {
-    card.addEventListener("mousemove", e => {
+  cards.forEach((card) => {
+    card.addEventListener("mousemove", (e) => {
       const r = card.getBoundingClientRect();
       const x = e.clientX - r.left;
       const y = e.clientY - r.top;
@@ -172,18 +175,18 @@ function initCardTilt() {
   });
 }
 
-/* =====================================================
-   INITIALIZER
-===================================================== */
+/* ============================================================
+   INIT EVERYTHING
+============================================================ */
 document.addEventListener("DOMContentLoaded", async () => {
   await loadProducts();
   setupSearch();
 
   waitFor(
-    () => window.Cart && window.Cart.init,
+    () => window.Cart && typeof window.Cart.init === "function",
     () => {
       window.Cart.init();
-      console.log("🛒 Cart system fully initialized.");
+      console.log("🛒 Cart initialized.");
     }
   );
 });
