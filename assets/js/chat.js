@@ -1,18 +1,18 @@
 /* ============================================================
-   TamedBlox — CHAT SYSTEM (SAFE, PATCHED, FINAL VERSION)
+   TamedBlox — CHAT SYSTEM (FINAL PATCHED + SAFE)
    - Prevents duplicate loading
-   - Fixes API re-declare error
-   - Works with admin + user mode
+   - Fixes API already declared
+   - Fixes illegal return statement
+   - Works with admin and user chat
 ============================================================ */
 
-// 🔥 Prevent double-loading of chat.js (fixes API duplicate AND all crashes)
+// ========= SAFE WRAPPER (NO DUPLICATE LOAD) ========= //
 if (window.__CHAT_JS_LOADED__) {
   console.warn("chat.js already loaded — skipping duplicate load.");
-  return;
-}
-window.__CHAT_JS_LOADED__ = true;
+} else {
+  window.__CHAT_JS_LOADED__ = true;
 
-// 🔥 Safe API assignment (cannot redeclare)
+// ========= SAFE API DEFINE (NO REDECLARE) ========= //
 window.API = window.API || "https://website-5eml.onrender.com";
 
 let ALL_CHATS = [];
@@ -24,12 +24,12 @@ let CURRENT_CHAT = null;
 document.addEventListener("DOMContentLoaded", () => {
   loadChat();
 
-  // Auto-refresh messages
+  // Auto-refresh messages every 2 seconds
   setInterval(() => {
     if (CURRENT_CHAT?._id) refreshMessages();
   }, 2000);
 
-  // USER chat circle button
+  // USER chat toggle button
   const chatBtn = document.getElementById("chatButton");
   if (chatBtn) {
     chatBtn.onclick = () => {
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // ADMIN navbar chat button
+  // ADMIN chat toggle button
   const adminBtn = document.getElementById("adminChatBtn");
   if (adminBtn) {
     adminBtn.onclick = () => {
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  // SEND MESSAGE
+  // Send message button
   const sendBtn = document.getElementById("chatSend");
   if (sendBtn) sendBtn.onclick = sendMessage;
 });
@@ -62,12 +62,10 @@ async function loadChat() {
     headers: { Authorization: "Bearer " + token }
   });
 
-  if (!userRes.ok) return;
+  if (!userRes.ok) return; // not logged in
   const user = await userRes.json();
 
-  /* ================================
-       ADMIN MODE
-  ================================= */
+  /* ========= ADMIN MODE ========= */
   if (user.admin === true) {
     const allRes = await fetch(`${API}/chats/all`, {
       headers: { Authorization: "Bearer " + token }
@@ -78,9 +76,7 @@ async function loadChat() {
     return;
   }
 
-  /* ================================
-       USER MODE
-  ================================= */
+  /* ========= USER MODE ========= */
   const chatRes = await fetch(`${API}/chats/my-chats`, {
     headers: { Authorization: "Bearer " + token }
   });
@@ -98,7 +94,7 @@ async function loadChat() {
 }
 
 /* ============================================================
-   ADMIN — LIST OF CHATS
+   ADMIN — RENDER CHAT LIST
 ============================================================ */
 function renderAdminChatList() {
   const list = document.getElementById("adminChatList");
@@ -117,7 +113,7 @@ function renderAdminChatList() {
 }
 
 /* ============================================================
-   ADMIN — OPEN CHAT
+   ADMIN — OPEN SPECIFIC CHAT
 ============================================================ */
 async function openAdminChat(chatId) {
   const token = localStorage.getItem("authToken");
@@ -134,13 +130,13 @@ async function openAdminChat(chatId) {
   const msgs = await res.json();
   renderMessages(msgs);
 
-  const chatWin = document.getElementById("chatWindow");
-  chatWin.classList.add("admin-mode");
-  chatWin.classList.remove("hidden");
+  const win = document.getElementById("chatWindow");
+  win.classList.add("admin-mode");
+  win.classList.remove("hidden");
 }
 
 /* ============================================================
-   USER — ORDER SUMMARY
+   USER — RENDER ORDER SUMMARY
 ============================================================ */
 function renderOrderSummary(chat) {
   const el = document.getElementById("chatOrderSummary");
@@ -162,7 +158,7 @@ function renderOrderSummary(chat) {
 }
 
 /* ============================================================
-   RENDER MESSAGES
+   RENDER CHAT MESSAGES
 ============================================================ */
 function renderMessages(msgs) {
   const box = document.getElementById("chatMessages");
@@ -183,7 +179,7 @@ function renderMessages(msgs) {
 }
 
 /* ============================================================
-   REFRESH MESSAGES
+   AUTO-REFRESH MESSAGES
 ============================================================ */
 async function refreshMessages() {
   const token = localStorage.getItem("authToken");
@@ -222,3 +218,8 @@ async function sendMessage() {
 
   refreshMessages();
 }
+
+/* ============================================================
+   END SAFE WRAPPER
+============================================================ */
+} // end wrapper
