@@ -6,7 +6,6 @@
   <title>TamedBlox — Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Favicon -->
   <link rel="icon" href="https://i.postimg.cc/KYrZ46jD/Tamed-Dino.png" type="image/png">
 
   <!-- CSS -->
@@ -26,34 +25,27 @@
 
 <body>
 
-  <!-- NAVBAR + MODALS -->
+  <!-- NAV & MODALS -->
   <div id="navbar"></div>
   <div id="modals"></div>
 
   <script>
     loadComponent("#navbar", "components/navbar.html");
     loadComponent("#modals", "components/modals.html");
-
-    // Footer loads separately
-    document.addEventListener("DOMContentLoaded", () => {
-      loadComponent("#footer", "components/footer.html");
-    });
   </script>
 
   <!-- HERO -->
   <section class="container" style="margin-top: 40px">
     <h1 style="font-size: 32px; font-weight: 900">Featured Products</h1>
-    <p style="margin-top: 10px; color: #b7bec9">Best-selling items from TamedBlox.</p>
+    <p style="margin-top: 10px; color: #b7bec9;">Best-selling items from TamedBlox.</p>
   </section>
 
-  <!-- PRODUCT GRID -->
   <div id="productGrid" class="product-grid"></div>
 
   <!-- REVIEWS -->
   <section class="reviews-section">
     <h2 class="reviews-title">Customer Reviews</h2>
     <div class="reviews-grid">
-
       <div class="review-card">
         <div class="review-header">
           <img src="https://via.placeholder.com/50" class="review-pfp" />
@@ -75,7 +67,6 @@
         </div>
         <div class="review-body">Quick service and amazing prices.</div>
       </div>
-
     </div>
   </section>
 
@@ -85,9 +76,7 @@
       <h2 class="cart-title">Cart</h2>
       <span id="closeDrawer" style="cursor:pointer;font-size:22px;">×</span>
     </div>
-
     <div id="drawerContent"></div>
-
     <div class="cart-footer">
       <div class="cart-total-line">
         <span>Total</span>
@@ -101,22 +90,21 @@
 
   <!-- FOOTER -->
   <div id="footer"></div>
+  <script>loadComponent("#footer", "components/footer.html");</script>
 
-  <!-- CORE JS (these load BEFORE chat/auth) -->
-  <script src="assets/js/app.js"></script>
-  <script src="assets/js/cart.js"></script>
+  <!-- CORE SCRIPTS (IN CORRECT ORDER) -->
+  <script src="assets/js/cart.js"></script>   <!-- MUST load BEFORE app.js -->
+  <script src="assets/js/app.js"></script>    <!-- app uses window.Cart -->
   <script src="assets/js/drawer.js"></script>
 
-  <!-- AUTH + CHAT JS (load once, NO duplicates) -->
+  <!-- AUTH & CHAT -->
   <script src="assets/js/auth.js"></script>
   <script src="assets/js/chat.js"></script>
 
-  <!-- ADMIN CHAT UI ELEMENTS -->
-
+  <!-- ADMIN CHAT ELEMENTS -->
   <div id="chatButton" class="chat-circle hidden">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-      stroke="currentColor" fill="none" stroke-width="2"
-      stroke-linecap="round" stroke-linejoin="round">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor"
+      fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path
         d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
     </svg>
@@ -146,5 +134,4 @@
   </div>
 
 </body>
-
 </html>
