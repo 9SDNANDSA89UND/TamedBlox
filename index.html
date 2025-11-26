@@ -31,25 +31,12 @@
   <div id="modals"></div>
 
   <script>
-    // Load navbar and modals
-    Promise.all([
-      loadComponent("#navbar", "components/navbar.html"),
-      loadComponent("#modals", "components/modals.html"),
-    ]).then(() => {
-      console.log("🔥 Navbar + modals loaded. Loading scripts...");
+    loadComponent("#navbar", "components/navbar.html");
+    loadComponent("#modals", "components/modals.html");
 
-      // AFTER navbar exists → load auth.js
-      const auth = document.createElement("script");
-      auth.src = "assets/js/auth.js";
-      document.body.appendChild(auth);
-
-      // AFTER auth loads → load chat.js
-      auth.onload = () => {
-        console.log("🔥 auth.js loaded. Now chat.js...");
-        const chat = document.createElement("script");
-        chat.src = "assets/js/chat.js";
-        document.body.appendChild(chat);
-      };
+    // Footer loads separately
+    document.addEventListener("DOMContentLoaded", () => {
+      loadComponent("#footer", "components/footer.html");
     });
   </script>
 
@@ -69,7 +56,7 @@
 
       <div class="review-card">
         <div class="review-header">
-          <img src="assets/img/user1.png" class="review-pfp" />
+          <img src="https://via.placeholder.com/50" class="review-pfp" />
           <div>
             <div class="review-name">Alex R</div>
             <div class="review-rating">★★★★★</div>
@@ -80,7 +67,7 @@
 
       <div class="review-card">
         <div class="review-header">
-          <img src="assets/img/user2.png" class="review-pfp" />
+          <img src="https://via.placeholder.com/50" class="review-pfp" />
           <div>
             <div class="review-name">Nova</div>
             <div class="review-rating">★★★★★</div>
@@ -114,16 +101,18 @@
 
   <!-- FOOTER -->
   <div id="footer"></div>
-  <script>
-    loadComponent("#footer", "components/footer.html");
-  </script>
 
-  <!-- CORE JS (load before auth/chat) -->
+  <!-- CORE JS (these load BEFORE chat/auth) -->
   <script src="assets/js/app.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/drawer.js"></script>
 
-  <!-- ADMIN PANEL + CHAT WINDOW HTML -->
+  <!-- AUTH + CHAT JS (load once, NO duplicates) -->
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/chat.js"></script>
+
+  <!-- ADMIN CHAT UI ELEMENTS -->
+
   <div id="chatButton" class="chat-circle hidden">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
       stroke="currentColor" fill="none" stroke-width="2"
