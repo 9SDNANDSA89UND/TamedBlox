@@ -1,6 +1,6 @@
 /* ============================================================
    TAMEDBLOX — ADVANCED CHAT SYSTEM (ADMIN MULTI-CHAT + USER)
-   Now using backend ADMIN_NAME instead of hardcoded email
+   Updated to use ADMIN_EMAIL everywhere
 ============================================================ */
 
 const API = "https://website-5eml.onrender.com";
@@ -33,7 +33,6 @@ async function loadChat() {
   const token = localStorage.getItem("authToken");
   if (!token) return;
 
-  // Get logged in user info
   const userRes = await fetch(`${API}/auth/me`, {
     headers: { Authorization: "Bearer " + token }
   });
@@ -41,14 +40,12 @@ async function loadChat() {
 
   const user = await userRes.json();
 
-  // Backend sends admin name here
-  const ADMIN_NAME = user.adminName;   
-  const isAdmin =
-    user.email === ADMIN_NAME ||
-    user.username === ADMIN_NAME;
+  // Backend now sends adminEmail
+  const ADMIN_EMAIL = user.adminEmail;
+  const isAdmin = user.email === ADMIN_EMAIL;
 
   /* ======================================================
-     ADMIN MODE (Multi-chat panel)
+     ADMIN MODE — MULTI-CHAT VIEW
   ====================================================== */
   if (isAdmin) {
     document.getElementById("chatButton").classList.remove("hidden");
@@ -60,11 +57,11 @@ async function loadChat() {
     ALL_CHATS = await allRes.json();
 
     renderAdminChatList();
-    return; // Admin doesn't auto-open a chat
+    return;
   }
 
   /* ======================================================
-     USER MODE (Single chat)
+     USER MODE — SINGLE CHAT
   ====================================================== */
   const chatRes = await fetch(`${API}/chats/my-chats`, {
     headers: { Authorization: "Bearer " + token }
@@ -101,7 +98,7 @@ function renderAdminChatList() {
 }
 
 /* ============================================================
-   ADMIN — OPEN SELECTED CHAT
+   ADMIN — OPEN CHAT
 ============================================================ */
 async function openAdminChat(chatId) {
   const token = localStorage.getItem("authToken");
