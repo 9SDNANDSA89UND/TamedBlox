@@ -6,12 +6,10 @@ function initAuth() {
   const loginBtn = document.getElementById("openLogin");
   const signupBtn = document.getElementById("openSignup");
 
-  // Navbar loads dynamically → wait for it
   if (!loginBtn || !signupBtn) {
     return setTimeout(initAuth, 80);
   }
 
-  /* ========= MODAL HELPERS ========= */
   window.openModal = (id) => {
     document.getElementById(id)?.classList.remove("hidden");
   };
@@ -20,13 +18,10 @@ function initAuth() {
     document.getElementById(id)?.classList.add("hidden");
   };
 
-  /* ========= OPEN MODALS ========= */
   loginBtn.onclick = () => openModal("loginModal");
   signupBtn.onclick = () => openModal("signupModal");
 
-  /* =====================================
-       LOGIN SUBMIT
-  ====================================== */
+  /* LOGIN */
   document.getElementById("loginSubmit").onclick = async () => {
     const email = loginEmail.value;
     const password = loginPassword.value;
@@ -38,7 +33,6 @@ function initAuth() {
     });
 
     const data = await res.json();
-
     if (!data.success) {
       loginError.innerText = data.error || "Invalid email or password.";
       return;
@@ -49,9 +43,7 @@ function initAuth() {
     location.reload();
   };
 
-  /* =====================================
-       SIGNUP SUBMIT
-  ====================================== */
+  /* SIGNUP */
   document.getElementById("signupSubmit").onclick = async () => {
     const username = signupUsername.value;
     const email = signupEmail.value;
@@ -70,46 +62,37 @@ function initAuth() {
     });
 
     const data = await res.json();
-
     if (!data.success) {
       signupError.innerText = data.error || "Signup failed.";
       return;
     }
 
-    localStorage.setItem("authToken", data.token);
     closeModal("signupModal");
     location.reload();
   };
 
   applyLoggedInUI();
-  console.log("Auth initialized.");
 }
 
-
 /* =====================================
-   FIXED LOGGED-IN UI + ADMIN BUTTON
+   LOGGED-IN UI + ADMIN BUTTON FIXED
 ===================================== */
-function applyLoggedInUI() {
+async function applyLoggedInUI() {
   const token = localStorage.getItem("authToken");
   if (!token) return;
 
   const navRight = document.querySelector(".nav-right");
+  if (!navRight) return setTimeout(applyLoggedInUI, 80);
 
-  // Navbar might not be loaded yet
-  if (!navRight) {
-    return setTimeout(applyLoggedInUI, 80);
-  }
-
-  // Remove login/signup buttons
+  // Remove login/signup
   document.getElementById("openLogin")?.remove();
   document.getElementById("openSignup")?.remove();
 
-  // Account button
+  // Account + Logout buttons
   const accountBtn = document.createElement("button");
   accountBtn.className = "nav-account-btn";
   accountBtn.innerText = "Account";
 
-  // Logout button
   const logoutBtn = document.createElement("button");
   logoutBtn.className = "nav-logout-btn";
   logoutBtn.innerText = "Logout";
@@ -121,36 +104,30 @@ function applyLoggedInUI() {
   navRight.appendChild(accountBtn);
   navRight.appendChild(logoutBtn);
 
-  /* ==========================================================
-     ⭐ ADMIN DETECTION — SHOW "Admin Chats" BUTTON
-  ========================================================== */
-  fetch("https://website-5eml.onrender.com/auth/me", {
+  /* === Check if admin safely === */
+  const userRes = await fetch("https://website-5eml.onrender.com/auth/me", {
     headers: { Authorization: "Bearer " + token }
-  })
-    .then(res => res.json())
-    .then(user => {
-      if (user.email === user.adminEmail) {
-        console.log("👑 Admin detected — enabling admin chat button");
+  });
+  const user = await userRes.json();
 
-        const adminBtn = document.getElementById("adminChatBtn");
-        if (adminBtn) adminBtn.style.display = "flex";
-      }
-    });
+  if (user.admin === true) {
+    const adminBtn = document.getElementById("adminChatBtn");
+    if (adminBtn) adminBtn.style.display = "flex";
+  }
 }
 
-
 /* =====================================
-   PASSWORD EYE ICON TOGGLE
+   PASSWORD VISIBILITY TOGGLE
 ===================================== */
 document.addEventListener("click", (e) => {
-  const toggle = e.target.closest(".toggle-password");
-  if (!toggle) return;
+  const t = e.target.closest(".toggle-password");
+  if (!t) return;
 
-  const inputId = toggle.getAttribute("data-target");
+  const inputId = t.getAttribute("data-target");
   const input = document.getElementById(inputId);
 
-  const eyeOpen = toggle.querySelector(".eye-open");
-  const eyeClosed = toggle.querySelector(".eye-closed");
+  const eyeOpen = t.querySelector(".eye-open");
+  const eyeClosed = t.querySelector(".eye-closed");
 
   if (input.type === "password") {
     input.type = "text";
@@ -163,6 +140,5 @@ document.addEventListener("click", (e) => {
   }
 });
 
-
-/* Start auth once DOM loads */
+/* Start */
 document.addEventListener("DOMContentLoaded", initAuth);
