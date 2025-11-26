@@ -1,168 +1,169 @@
-/* =====================================================
-   FRONTEND AUTH SYSTEM (SAFE + ADMIN FIXED)
-   - Works with async navbar loading
-   - Uses backend "admin: true/false"
-   - No false admin detection
-   - No null onclick errors
-===================================================== */
+/* ============================================================
+   TamedBlox — AUTH SYSTEM (FINAL PATCHED VERSION)
+   - Auto-login after signup
+   - Auto-login after login
+   - Navbar UI updates
+   - Admin button injection
+   - Safe async navbar loader
+============================================================ */
 
-function initAuth() {
+window.API = window.API || "https://website-5eml.onrender.com";
+
+/* ============================================================
+   WAIT FOR NAVBAR BEFORE BINDING BUTTONS
+============================================================ */
+function waitForNavbar(callback) {
   const loginBtn = document.getElementById("openLogin");
   const signupBtn = document.getElementById("openSignup");
 
-  // 🔥 Navbar loads asynchronously — wait until buttons exist
   if (!loginBtn || !signupBtn) {
-    return setTimeout(initAuth, 50);
+    return setTimeout(() => waitForNavbar(callback), 50);
   }
 
-  /* ========= MODAL HELPERS ========= */
-  window.openModal = (id) => {
-    const modal = document.getElementById(id);
-    if (modal) modal.classList.remove("hidden");
-  };
-
-  window.closeModal = (id) => {
-    const modal = document.getElementById(id);
-    if (modal) modal.classList.add("hidden");
-  };
-
-  /* ========= OPEN LOGIN/SIGNUP MODALS ========= */
-  loginBtn.onclick = () => openModal("loginModal");
-  signupBtn.onclick = () => openModal("signupModal");
-
-  /* =====================================
-        LOGIN SUBMIT
-  ====================================== */
-  document.getElementById("loginSubmit").onclick = async () => {
-    const email = loginEmail.value.trim();
-    const password = loginPassword.value.trim();
-
-    const res = await fetch("https://website-5eml.onrender.com/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password })
-    });
-
-    const data = await res.json();
-
-    if (!data.success) {
-      loginError.innerText = data.error || "Invalid credentials.";
-      return;
-    }
-
-    localStorage.setItem("authToken", data.token);
-    closeModal("loginModal");
-    location.reload();
-  };
-
-  /* =====================================
-        SIGNUP SUBMIT
-  ====================================== */
-  document.getElementById("signupSubmit").onclick = async () => {
-    const username = signupUsername.value.trim();
-    const email = signupEmail.value.trim();
-    const password = signupPassword.value.trim();
-    const confirm = signupPasswordConfirm.value.trim();
-
-    if (password !== confirm) {
-      signupError.innerText = "Passwords do not match.";
-      return;
-    }
-
-    const res = await fetch("https://website-5eml.onrender.com/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password })
-    });
-
-    const data = await res.json();
-
-    if (!data.success) {
-      signupError.innerText = data.error || "Signup failed.";
-      return;
-    }
-
-    closeModal("signupModal");
-    location.reload();
-  };
-
-  applyLoggedInUI();
+  callback();
 }
 
-/* =====================================================
-   APPLY LOGGED-IN UI + ADMIN DETECTION (SAFE)
-===================================================== */
+/* ============================================================
+   INITIALIZE AUTH LOGIC
+============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  waitForNavbar(() => {
+    bindAuthButtons();
+    applyLoggedInUI();
+  });
+});
+
+/* ============================================================
+   BIND LOGIN / SIGNUP BUTTONS
+============================================================ */
+function bindAuthButtons() {
+  const loginBtn = document.getElementById("openLogin");
+  const signupBtn = document.getElementById("openSignup");
+
+  if (loginBtn) loginBtn.onclick = () => openModal("loginModal");
+  if (signupBtn) signupBtn.onclick = () => openModal("signupModal");
+
+  const loginSubmit = document.getElementById("loginSubmit");
+  const signupSubmit = document.getElementById("signupSubmit");
+
+  if (loginSubmit) loginSubmit.onclick = loginUser;
+  if (signupSubmit) signupSubmit.onclick = signupUser;
+}
+
+/* ============================================================
+   LOGIN HANDLER
+============================================================ */
+async function loginUser() {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
+  const errorEl = document.getElementById("loginError");
+
+  errorEl.innerText = "";
+
+  const res = await fetch(`${API}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  const data = await res.json();
+
+  if (!data.success) {
+    errorEl.innerText = data.error || "Invalid email or password.";
+    return;
+  }
+
+  // ⭐ Auto-login
+  localStorage.setItem("authToken", data.token);
+
+  closeModal("loginModal");
+  location.reload();
+}
+
+/* ============================================================
+   SIGNUP HANDLER (AUTO-LOGIN)
+============================================================ */
+async function signupUser() {
+  const username = document.getElementById("signupUsername").value.trim();
+  const email = document.getElementById("signupEmail").value.trim();
+  const password = document.getElementById("signupPassword").value.trim();
+  const confirm = document.getElementById("signupPasswordConfirm").value.trim();
+  const errorEl = document.getElementById("signupError");
+
+  errorEl.innerText = "";
+
+  if (password !== confirm) {
+    errorEl.innerText = "Passwords do not match.";
+    return;
+  }
+
+  const res = await fetch(`${API}/auth/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, email, password })
+  });
+
+  const data = await res.json();
+
+  if (!data.success) {
+    errorEl.innerText = data.error || "Signup failed.";
+    return;
+  }
+
+  // ⭐ Auto-login after signup
+  localStorage.setItem("authToken", data.token);
+
+  closeModal("signupModal");
+  location.reload();
+}
+
+/* ============================================================
+   UPDATE NAVBAR FOR LOGGED-IN USERS
+============================================================ */
 async function applyLoggedInUI() {
   const token = localStorage.getItem("authToken");
   if (!token) return;
 
+  const loginBtn = document.getElementById("openLogin");
+  const signupBtn = document.getElementById("openSignup");
+
+  if (loginBtn) loginBtn.style.display = "none";
+  if (signupBtn) signupBtn.style.display = "none";
+
   const navRight = document.querySelector(".nav-right");
-  if (!navRight) return setTimeout(applyLoggedInUI, 50);
+  if (!navRight) return;
 
-  // Remove default login/signup buttons
-  document.getElementById("openLogin")?.remove();
-  document.getElementById("openSignup")?.remove();
+  // Fetch user details
+  const res = await fetch(`${API}/auth/me`, {
+    headers: { Authorization: "Bearer " + token }
+  });
 
-  // Create account button
+  if (!res.ok) return; // Invalid token
+  const user = await res.json();
+
+  // ⭐ Display username + logout
   const accountBtn = document.createElement("button");
-  accountBtn.className = "nav-account-btn";
-  accountBtn.innerText = "Account";
-
-  // Create logout button
-  const logoutBtn = document.createElement("button");
-  logoutBtn.className = "nav-logout-btn";
-  logoutBtn.innerText = "Logout";
-  logoutBtn.onclick = () => {
-    localStorage.removeItem("authToken");
-    location.reload();
-  };
-
+  accountBtn.className = "nav-rect-btn";
+  accountBtn.innerHTML = `👤 ${user.username}`;
   navRight.appendChild(accountBtn);
+
+  const logoutBtn = document.createElement("button");
+  logoutBtn.className = "nav-rect-btn nav-accent-btn";
+  logoutBtn.innerHTML = "Logout";
+  logoutBtn.onclick = logoutUser;
   navRight.appendChild(logoutBtn);
 
-  /* === ADMIN CHECK (SAFE + CORRECT) === */
-  try {
-    const res = await fetch("https://website-5eml.onrender.com/auth/me", {
-      headers: { Authorization: "Bearer " + token }
-    });
-
-    const user = await res.json();
-
-    // Backend now returns: { email, username, admin: true/false }
-    if (user.admin === true) {
-      const adminBtn = document.getElementById("adminChatBtn");
-      if (adminBtn) adminBtn.style.display = "flex";
-    }
-  } catch (e) {
-    console.error("Failed to fetch user info:", e);
+  // ⭐ Admin Chat Button
+  if (user.admin === true) {
+    const adminBtn = document.getElementById("adminChatBtn");
+    if (adminBtn) adminBtn.style.display = "flex";
   }
 }
 
-/* =====================================================
-   PASSWORD VISIBILITY TOGGLE
-===================================================== */
-document.addEventListener("click", (e) => {
-  const toggle = e.target.closest(".toggle-password");
-  if (!toggle) return;
-
-  const inputId = toggle.getAttribute("data-target");
-  const input = document.getElementById(inputId);
-
-  const eyeOpen = toggle.querySelector(".eye-open");
-  const eyeClosed = toggle.querySelector(".eye-closed");
-
-  if (input.type === "password") {
-    input.type = "text";
-    eyeOpen.style.display = "none";
-    eyeClosed.style.display = "block";
-  } else {
-    input.type = "password";
-    eyeOpen.style.display = "block";
-    eyeClosed.style.display = "none";
-  }
-});
-
-/* =====================================================
-   START AUTH
-===================================================== */
-document.addEventListener("DOMContentLoaded", initAuth);
+/* ============================================================
+   LOGOUT HANDLER
+============================================================ */
+function logoutUser() {
+  localStorage.removeItem("authToken");
+  location.reload();
+}
