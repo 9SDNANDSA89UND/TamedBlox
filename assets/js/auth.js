@@ -1,13 +1,26 @@
 /* ============================================================
    TamedBlox — AUTH SYSTEM (FINAL PATCHED VERSION)
-   - Auto-login after signup
-   - Auto-login after login
-   - Navbar UI updates
-   - Admin button injection
-   - Safe async navbar loader
 ============================================================ */
 
 window.API = window.API || "https://website-5eml.onrender.com";
+
+/* ============================================================
+   SAFE FALLBACKS (Fix Option A)
+   Prevents "openModal is not defined" errors
+============================================================ */
+if (!window.openModal) {
+  window.openModal = function (id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove("hidden");
+  };
+}
+
+if (!window.closeModal) {
+  window.closeModal = function (id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.add("hidden");
+  };
+}
 
 /* ============================================================
    WAIT FOR NAVBAR BEFORE BINDING BUTTONS
@@ -138,25 +151,26 @@ async function applyLoggedInUI() {
     headers: { Authorization: "Bearer " + token }
   });
 
-  if (!res.ok) return; // Invalid token
+  if (!res.ok) return; // token expired or invalid
   const user = await res.json();
 
-  // ⭐ Display username + logout
+  // ⭐ Display username
   const accountBtn = document.createElement("button");
   accountBtn.className = "nav-rect-btn";
-  accountBtn.innerHTML = `👤 ${user.username}`;
+  accountBtn.innerText = `👤 ${user.username}`;
   navRight.appendChild(accountBtn);
 
+  // ⭐ Logout button
   const logoutBtn = document.createElement("button");
   logoutBtn.className = "nav-rect-btn nav-accent-btn";
-  logoutBtn.innerHTML = "Logout";
+  logoutBtn.innerText = "Logout";
   logoutBtn.onclick = logoutUser;
   navRight.appendChild(logoutBtn);
 
   // ⭐ Admin Chat Button
-  if (user.admin === true) {
-    const adminBtn = document.getElementById("adminChatBtn");
-    if (adminBtn) adminBtn.style.display = "flex";
+  const adminBtn = document.getElementById("adminChatBtn");
+  if (user.admin === true && adminBtn) {
+    adminBtn.style.display = "flex";
   }
 }
 
