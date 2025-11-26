@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="assets/css/reviews.css" />
   <link rel="stylesheet" href="assets/css/chat.css" />
 
+  <!-- Component Loader -->
   <script>
     async function loadComponent(selector, file) {
       const el = document.querySelector(selector);
@@ -48,7 +49,7 @@
     <div class="reviews-grid">
       <div class="review-card">
         <div class="review-header">
-          <img src="https://via.placeholder.com/50" class="review-pfp" />
+          <img src="https://dummyimage.com/50x50/222/fff.png&text=+" class="review-pfp" />
           <div>
             <div class="review-name">Alex R</div>
             <div class="review-rating">★★★★★</div>
@@ -59,7 +60,7 @@
 
       <div class="review-card">
         <div class="review-header">
-          <img src="https://via.placeholder.com/50" class="review-pfp" />
+          <img src="https://dummyimage.com/50x50/222/fff.png&text=+" class="review-pfp" />
           <div>
             <div class="review-name">Nova</div>
             <div class="review-rating">★★★★★</div>
@@ -90,18 +91,20 @@
 
   <!-- FOOTER -->
   <div id="footer"></div>
-  <script>loadComponent("#footer", "components/footer.html");</script>
+  <script>
+    loadComponent("#footer", "components/footer.html");
+  </script>
 
-  <!-- CORE SCRIPTS (IN CORRECT ORDER) -->
+  <!-- CORE SCRIPTS -->
   <script src="assets/js/cart.js"></script>   <!-- MUST load BEFORE app.js -->
-  <script src="assets/js/app.js"></script>    <!-- app uses window.Cart -->
+  <script src="assets/js/app.js"></script>
   <script src="assets/js/drawer.js"></script>
 
   <!-- AUTH & CHAT -->
   <script src="assets/js/auth.js"></script>
   <script src="assets/js/chat.js"></script>
 
-  <!-- ADMIN CHAT ELEMENTS -->
+  <!-- USER CHAT BUTTON -->
   <div id="chatButton" class="chat-circle hidden">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor"
       fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -110,11 +113,13 @@
     </svg>
   </div>
 
+  <!-- ADMIN PANEL -->
   <div id="adminChatPanel" class="admin-panel hidden">
     <div class="admin-panel-header">Active Chats</div>
     <div id="adminChatList" class="admin-chat-list"></div>
   </div>
 
+  <!-- CHAT WINDOW -->
   <div id="chatWindow" class="chat-window hidden">
     <div id="chatOrderSummary" class="chat-order-summary"></div>
     <div id="chatMessages" class="chat-messages"></div>
