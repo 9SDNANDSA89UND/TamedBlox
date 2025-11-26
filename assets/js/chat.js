@@ -1,12 +1,15 @@
 /* ============================================================
-   TAMEDBLOX — ADVANCED CHAT SYSTEM (ADMIN MULTI-CHAT + USER)
-   Updated to use ADMIN_EMAIL everywhere
+   TAMEDBLOX — FIXED CHAT SYSTEM (ADMIN + USER)
+   - No auto-opening admin panel
+   - Admin panel toggled from navbar button only
+   - User chat button still works
+   - Stripe webhook chat retry support
 ============================================================ */
 
 const API = "https://website-5eml.onrender.com";
 
-let ALL_CHATS = [];        // Admin chat list
-let CURRENT_CHAT = null;   // Chat currently open
+let ALL_CHATS = [];
+let CURRENT_CHAT = null;
 
 /* ============================================================
    PAGE INIT
@@ -15,42 +18,57 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadChat();
 
+  // Auto-refresh messages every 2 seconds
   setInterval(() => {
     if (CURRENT_CHAT?._id) refreshMessages();
   }, 2000);
 
-  document.getElementById("chatButton").onclick = () => {
-    document.getElementById("chatWindow").classList.toggle("hidden");
-  };
+  // USER: Chat circle toggle
+  const userChatBtn = document.getElementById("chatButton");
+  if (userChatBtn) {
+    userChatBtn.onclick = () => {
+      document.getElementById("chatWindow").classList.toggle("hidden");
+    };
+  }
 
+  // ADMIN: Navbar toggle button
+  const adminBtn = document.getElementById("adminChatBtn");
+  if (adminBtn) {
+    adminBtn.onclick = () => {
+      const panel = document.getElementById("adminChatPanel");
+      panel.classList.toggle("hidden");
+    };
+  }
+
+  // Send message
   document.getElementById("chatSend").onclick = sendMessage;
 });
 
 /* ============================================================
    MAIN LOADER — USER OR ADMIN
 ============================================================ */
-async function loadChat() {
+async function loadChat(retry = 0) {
   const token = localStorage.getItem("authToken");
   if (!token) return;
 
   const userRes = await fetch(`${API}/auth/me`, {
     headers: { Authorization: "Bearer " + token }
   });
-  if (!userRes.ok) return;
 
+  if (!userRes.ok) return;
   const user = await userRes.json();
 
-  // Backend now sends adminEmail
   const ADMIN_EMAIL = user.adminEmail;
   const isAdmin = user.email === ADMIN_EMAIL;
 
-  /* ======================================================
-     ADMIN MODE — MULTI-CHAT VIEW
-  ====================================================== */
+  /* ================================
+     ADMIN MODE
+  ================================= */
   if (isAdmin) {
-    document.getElementById("chatButton").classList.remove("hidden");
-    document.getElementById("adminChatPanel").classList.remove("hidden");
+    // Do NOT auto-open panel (panel is hidden until navbar button is clicked)
+    console.log("Admin logged in — admin mode active");
 
+    // Fetch all chats
     const allRes = await fetch(`${API}/chats/all`, {
       headers: { Authorization: "Bearer " + token }
     });
@@ -60,17 +78,25 @@ async function loadChat() {
     return;
   }
 
-  /* ======================================================
-     USER MODE — SINGLE CHAT
-  ====================================================== */
+  /* ================================
+     USER MODE
+  ================================= */
   const chatRes = await fetch(`${API}/chats/my-chats`, {
     headers: { Authorization: "Bearer " + token }
   });
 
-  if (!chatRes.ok) return;
-  const chat = await chatRes.json();
-  if (!chat) return;
+  let chat = await chatRes.json();
 
+  // Stripe webhook delay → retry loading
+  if (!chat) {
+    if (retry < 6) {
+      console.log("⏳ Waiting for Stripe webhook… retry:", retry + 1);
+      return setTimeout(() => loadChat(retry + 1), 500);
+    }
+    return;
+  }
+
+  // Load chat fully
   CURRENT_CHAT = {
     ...chat,
     userEmail: user.email
@@ -78,6 +104,10 @@ async function loadChat() {
 
   renderOrderSummary(chat);
   refreshMessages();
+
+  // User chat button appears
+  const circle = document.getElementById("chatButton");
+  if (circle) circle.classList.remove("hidden");
 }
 
 /* ============================================================
@@ -85,6 +115,8 @@ async function loadChat() {
 ============================================================ */
 function renderAdminChatList() {
   const list = document.getElementById("adminChatList");
+  if (!list) return;
+
   list.innerHTML = "";
 
   ALL_CHATS.forEach((c) => {
@@ -115,7 +147,10 @@ async function openAdminChat(chatId) {
   const msgs = await res.json();
   renderMessages(msgs);
 
-  document.getElementById("chatWindow").classList.remove("hidden");
+  // Admin chat window becomes visible
+  const chatWin = document.getElementById("chatWindow");
+  chatWin.classList.add("admin-mode");
+  chatWin.classList.remove("hidden");
 }
 
 /* ============================================================
@@ -123,9 +158,10 @@ async function openAdminChat(chatId) {
 ============================================================ */
 function renderOrderSummary(chat) {
   const el = document.getElementById("chatOrderSummary");
+  if (!el) return;
 
   if (!chat.orderDetails) {
-    el.innerHTML = "";
+    el.innerHTML = `<strong>No order linked.</strong>`;
     return;
   }
 
@@ -144,6 +180,7 @@ function renderOrderSummary(chat) {
 ============================================================ */
 function renderMessages(msgs) {
   const box = document.getElementById("chatMessages");
+  if (!box) return;
 
   box.innerHTML = msgs
     .map(
@@ -181,7 +218,12 @@ async function refreshMessages() {
 ============================================================ */
 async function sendMessage() {
   const msg = document.getElementById("chatInput").value.trim();
-  if (!msg || !CURRENT_CHAT?._id) return;
+  if (!msg) return;
+
+  if (!CURRENT_CHAT || !CURRENT_CHAT._id) {
+    console.error("❌ No chat loaded yet.");
+    return;
+  }
 
   document.getElementById("chatInput").value = "";
 
