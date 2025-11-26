@@ -1,30 +1,41 @@
-/* =====================================
-   AUTH HANDLERS (FRONTEND)
-===================================== */
+/* =====================================================
+   FRONTEND AUTH SYSTEM (SAFE + ADMIN FIXED)
+   - Works with async navbar loading
+   - Uses backend "admin: true/false"
+   - No false admin detection
+   - No null onclick errors
+===================================================== */
 
 function initAuth() {
   const loginBtn = document.getElementById("openLogin");
   const signupBtn = document.getElementById("openSignup");
 
+  // 🔥 Navbar loads asynchronously — wait until buttons exist
   if (!loginBtn || !signupBtn) {
-    return setTimeout(initAuth, 80);
+    return setTimeout(initAuth, 50);
   }
 
+  /* ========= MODAL HELPERS ========= */
   window.openModal = (id) => {
-    document.getElementById(id)?.classList.remove("hidden");
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.remove("hidden");
   };
 
   window.closeModal = (id) => {
-    document.getElementById(id)?.classList.add("hidden");
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.add("hidden");
   };
 
+  /* ========= OPEN LOGIN/SIGNUP MODALS ========= */
   loginBtn.onclick = () => openModal("loginModal");
   signupBtn.onclick = () => openModal("signupModal");
 
-  /* LOGIN */
+  /* =====================================
+        LOGIN SUBMIT
+  ====================================== */
   document.getElementById("loginSubmit").onclick = async () => {
-    const email = loginEmail.value;
-    const password = loginPassword.value;
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value.trim();
 
     const res = await fetch("https://website-5eml.onrender.com/auth/login", {
       method: "POST",
@@ -33,8 +44,9 @@ function initAuth() {
     });
 
     const data = await res.json();
+
     if (!data.success) {
-      loginError.innerText = data.error || "Invalid email or password.";
+      loginError.innerText = data.error || "Invalid credentials.";
       return;
     }
 
@@ -43,12 +55,14 @@ function initAuth() {
     location.reload();
   };
 
-  /* SIGNUP */
+  /* =====================================
+        SIGNUP SUBMIT
+  ====================================== */
   document.getElementById("signupSubmit").onclick = async () => {
-    const username = signupUsername.value;
-    const email = signupEmail.value;
-    const password = signupPassword.value;
-    const confirm = signupPasswordConfirm.value;
+    const username = signupUsername.value.trim();
+    const email = signupEmail.value.trim();
+    const password = signupPassword.value.trim();
+    const confirm = signupPasswordConfirm.value.trim();
 
     if (password !== confirm) {
       signupError.innerText = "Passwords do not match.";
@@ -62,6 +76,7 @@ function initAuth() {
     });
 
     const data = await res.json();
+
     if (!data.success) {
       signupError.innerText = data.error || "Signup failed.";
       return;
@@ -74,25 +89,26 @@ function initAuth() {
   applyLoggedInUI();
 }
 
-/* =====================================
-   LOGGED-IN UI + ADMIN BUTTON FIXED
-===================================== */
+/* =====================================================
+   APPLY LOGGED-IN UI + ADMIN DETECTION (SAFE)
+===================================================== */
 async function applyLoggedInUI() {
   const token = localStorage.getItem("authToken");
   if (!token) return;
 
   const navRight = document.querySelector(".nav-right");
-  if (!navRight) return setTimeout(applyLoggedInUI, 80);
+  if (!navRight) return setTimeout(applyLoggedInUI, 50);
 
-  // Remove login/signup
+  // Remove default login/signup buttons
   document.getElementById("openLogin")?.remove();
   document.getElementById("openSignup")?.remove();
 
-  // Account + Logout buttons
+  // Create account button
   const accountBtn = document.createElement("button");
   accountBtn.className = "nav-account-btn";
   accountBtn.innerText = "Account";
 
+  // Create logout button
   const logoutBtn = document.createElement("button");
   logoutBtn.className = "nav-logout-btn";
   logoutBtn.innerText = "Logout";
@@ -104,30 +120,36 @@ async function applyLoggedInUI() {
   navRight.appendChild(accountBtn);
   navRight.appendChild(logoutBtn);
 
-  /* === Check if admin safely === */
-  const userRes = await fetch("https://website-5eml.onrender.com/auth/me", {
-    headers: { Authorization: "Bearer " + token }
-  });
-  const user = await userRes.json();
+  /* === ADMIN CHECK (SAFE + CORRECT) === */
+  try {
+    const res = await fetch("https://website-5eml.onrender.com/auth/me", {
+      headers: { Authorization: "Bearer " + token }
+    });
 
-  if (user.admin === true) {
-    const adminBtn = document.getElementById("adminChatBtn");
-    if (adminBtn) adminBtn.style.display = "flex";
+    const user = await res.json();
+
+    // Backend now returns: { email, username, admin: true/false }
+    if (user.admin === true) {
+      const adminBtn = document.getElementById("adminChatBtn");
+      if (adminBtn) adminBtn.style.display = "flex";
+    }
+  } catch (e) {
+    console.error("Failed to fetch user info:", e);
   }
 }
 
-/* =====================================
+/* =====================================================
    PASSWORD VISIBILITY TOGGLE
-===================================== */
+===================================================== */
 document.addEventListener("click", (e) => {
-  const t = e.target.closest(".toggle-password");
-  if (!t) return;
+  const toggle = e.target.closest(".toggle-password");
+  if (!toggle) return;
 
-  const inputId = t.getAttribute("data-target");
+  const inputId = toggle.getAttribute("data-target");
   const input = document.getElementById(inputId);
 
-  const eyeOpen = t.querySelector(".eye-open");
-  const eyeClosed = t.querySelector(".eye-closed");
+  const eyeOpen = toggle.querySelector(".eye-open");
+  const eyeClosed = toggle.querySelector(".eye-closed");
 
   if (input.type === "password") {
     input.type = "text";
@@ -140,5 +162,7 @@ document.addEventListener("click", (e) => {
   }
 });
 
-/* Start */
+/* =====================================================
+   START AUTH
+===================================================== */
 document.addEventListener("DOMContentLoaded", initAuth);
