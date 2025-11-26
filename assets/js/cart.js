@@ -1,218 +1,211 @@
 /* ============================================================
-   TAMEDBLOX — FIXED CHAT SYSTEM (RELIABLE + ORDER INFO)
-   - Retries loading chat until Stripe webhook finishes
-   - Always shows order summary at top
-   - Messages send correctly every time
+   TamedBlox — CART SYSTEM (FULLY PATCHED & SAFE)
+   - No more null onclick errors
+   - No crashes before Cart is created
+   - Safe async navbar + drawer initialization
 ============================================================ */
-
-const API = "https://website-5eml.onrender.com";
-
-let ALL_CHATS = [];
-let CURRENT_CHAT = null;
 
 /* ============================================================
-   PAGE INIT
+   WAIT FOR ELEMENT HELPERS
 ============================================================ */
-document.addEventListener("DOMContentLoaded", () => {
-  loadChat();
+function waitForElement(id, callback) {
+  const el = document.getElementById(id);
 
-  // Auto-refresh messages
-  setInterval(() => {
-    if (CURRENT_CHAT?._id) refreshMessages();
-  }, 2000);
-
-  document.getElementById("chatButton").onclick = () => {
-    document.getElementById("chatWindow").classList.toggle("hidden");
-  };
-
-  document.getElementById("chatSend").onclick = sendMessage;
-});
+  if (el) return callback(el);
+  setTimeout(() => waitForElement(id, callback), 40);
+}
 
 /* ============================================================
-   MAIN LOADER — USER OR ADMIN
+   SAFE CART DRAWER INITIALIZATION
 ============================================================ */
-async function loadChat(retry = 0) {
-  const token = localStorage.getItem("authToken");
-  if (!token) return;
+function initCartDrawer() {
+  waitForElement("cartBtn", (cartBtn) => {
+    waitForElement("cartOverlay", (overlay) => {
+      const drawer = document.getElementById("cartDrawer");
 
-  const userRes = await fetch(`${API}/auth/me`, {
-    headers: { Authorization: "Bearer " + token }
+      cartBtn.onclick = () => {
+        drawer.classList.add("open");
+        overlay.style.display = "block";
+      };
+
+      overlay.onclick = () => {
+        drawer.classList.remove("open");
+        overlay.style.display = "none";
+      };
+
+      console.log("🛒 Cart drawer initialized.");
+    });
   });
+}
 
-  if (!userRes.ok) return;
-  const user = await userRes.json();
+initCartDrawer();
 
-  const ADMIN_EMAIL = user.adminEmail;
-  const isAdmin = user.email === ADMIN_EMAIL;
+/* ============================================================
+   FORMAT USD
+============================================================ */
+function formatUSD(amount) {
+  return `$${Number(amount).toFixed(2)} USD`;
+}
 
-  /* ======================================================
-     ADMIN MODE — MULTI-CHAT VIEW
-  ====================================================== */
-  if (isAdmin) {
-    document.getElementById("chatButton").classList.remove("hidden");
-    document.getElementById("adminChatPanel").classList.remove("hidden");
+/* ============================================================
+   CART OBJECT (NEVER CRASHES NOW)
+============================================================ */
+window.Cart = {
+  items: [],
 
-    const allRes = await fetch(`${API}/chats/all`, {
-      headers: { Authorization: "Bearer " + token }
+  init() {
+    const saved = localStorage.getItem("tamedblox_cart");
+    this.items = saved ? JSON.parse(saved) : [];
+
+    this.updateDot();
+    this.updateDrawer();
+  },
+
+  save() {
+    localStorage.setItem("tamedblox_cart", JSON.stringify(this.items));
+    this.updateDot();
+    this.updateDrawer();
+  },
+
+  /* ========================================================
+       FLY TO CART ANIMATION
+  ======================================================== */
+  flyToCart(imgSrc, imgElement) {
+    const cartIcon = document.getElementById("cartBtn");
+
+    if (!cartIcon || !imgElement) return;
+
+    const startRect = imgElement.getBoundingClientRect();
+    const endRect = cartIcon.getBoundingClientRect();
+
+    const flyImg = document.createElement("img");
+    flyImg.src = imgSrc;
+    flyImg.className = "fly-img";
+
+    flyImg.style.left = startRect.left + "px";
+    flyImg.style.top = startRect.top + "px";
+    document.body.appendChild(flyImg);
+
+    // Trail particle effect
+    let trail = setInterval(() => {
+      const particle = document.createElement("div");
+      particle.className = "fly-particle";
+
+      const rect = flyImg.getBoundingClientRect();
+      particle.style.left = rect.left + "px";
+      particle.style.top = rect.top + "px";
+
+      document.body.appendChild(particle);
+
+      requestAnimationFrame(() => {
+        particle.style.opacity = "0";
+        particle.style.transform = "scale(0.3)";
+      });
+
+      setTimeout(() => particle.remove(), 400);
+    }, 40);
+
+    // Fly animation
+    requestAnimationFrame(() => {
+      flyImg.style.transform =
+        `translate(${endRect.left - startRect.left}px, ${endRect.top - startRect.top}px) scale(0.2)`;
+      flyImg.style.opacity = "0";
     });
 
-    ALL_CHATS = await allRes.json();
-    renderAdminChatList();
-    return;
-  }
+    // Cart bounce
+    setTimeout(() => {
+      cartIcon.style.animation = "cartBounce 0.3s ease";
+      setTimeout(() => (cartIcon.style.animation = ""), 300);
+    }, 700);
 
-  /* ======================================================
-     USER MODE — FETCH USER CHAT
-  ====================================================== */
-  const chatRes = await fetch(`${API}/chats/my-chats`, {
-    headers: { Authorization: "Bearer " + token }
-  });
+    // Cleanup
+    setTimeout(() => {
+      clearInterval(trail);
+      flyImg.remove();
+    }, 750);
+  },
 
-  const chat = await chatRes.json();
+  /* ========================================================
+       CART FUNCTIONS
+  ======================================================== */
+  addItem(product, imgElement) {
+    const existing = this.items.find((i) => i.name === product.name);
 
-  // Stripe webhook may take 1–3 seconds → retry
-  if (!chat) {
-    if (retry < 6) {
-      console.log("⏳ Waiting for Stripe webhook… retry:", retry + 1);
-      return setTimeout(() => loadChat(retry + 1), 500);
+    if (existing) {
+      existing.qty++;
+    } else {
+      this.items.push({
+        name: product.name,
+        price: Number(product.price),
+        image: product.image,
+        qty: 1
+      });
     }
-    return;
+
+    this.save();
+    this.flyToCart(product.image, imgElement);
+  },
+
+  changeQty(name, amount) {
+    const item = this.items.find((i) => i.name === name);
+    if (!item) return;
+
+    item.qty += amount;
+    if (item.qty <= 0)
+      this.items = this.items.filter((i) => i.name !== name);
+
+    this.save();
+  },
+
+  remove(name) {
+    this.items = this.items.filter((i) => i.name !== name);
+    this.save();
+  },
+
+  updateDot() {
+    waitForElement("cartDot", (dot) => {
+      dot.style.display = this.items.length > 0 ? "block" : "none";
+    });
+  },
+
+  updateDrawer() {
+    waitForElement("drawerContent", (drawer) => {
+      if (this.items.length === 0) {
+        drawer.innerHTML = `<p style="color:#9ca4b1;">Your cart is empty.</p>`;
+        document.getElementById("drawerTotal").innerText = formatUSD(0);
+        return;
+      }
+
+      let html = "";
+      let total = 0;
+
+      this.items.forEach((item) => {
+        total += item.price * item.qty;
+
+        html += `
+          <div class="cart-item">
+            <img src="${item.image}" class="cart-img">
+
+            <div class="cart-info">
+              <div class="cart-name">${item.name}</div>
+              <div class="cart-price">${formatUSD(item.price)}</div>
+            </div>
+
+            <div class="cart-qty-controls">
+              <div class="cart-qty-row">
+                <button class="qty-btn" onclick="Cart.changeQty('${item.name}', -1)">−</button>
+                <span class="qty-display">${item.qty}</span>
+                <button class="qty-btn" onclick="Cart.changeQty('${item.name}', 1)">+</button>
+              </div>
+
+              <button class="qty-btn cart-remove" onclick="Cart.remove('${item.name}')">×</button>
+            </div>
+          </div>
+        `;
+      });
+
+      drawer.innerHTML = html;
+      document.getElementById("drawerTotal").innerText = formatUSD(total);
+    });
   }
-
-  CURRENT_CHAT = {
-    ...chat,
-    userEmail: user.email
-  };
-
-  renderOrderSummary(chat);
-  refreshMessages();
-
-  // Show chat button automatically
-  document.getElementById("chatButton").classList.remove("hidden");
-}
-
-/* ============================================================
-   ADMIN — RENDER CHAT LIST
-============================================================ */
-function renderAdminChatList() {
-  const list = document.getElementById("adminChatList");
-  list.innerHTML = "";
-
-  ALL_CHATS.forEach((c) => {
-    list.innerHTML += `
-      <div class="admin-chat-item" onclick="openAdminChat('${c._id}')">
-        <strong>${c.orderDetails?.orderId || "No Order"}</strong><br>
-        ${c.participants[0]}
-      </div>
-    `;
-  });
-}
-
-/* ============================================================
-   ADMIN — OPEN CHAT
-============================================================ */
-async function openAdminChat(chatId) {
-  const token = localStorage.getItem("authToken");
-
-  CURRENT_CHAT = {
-    _id: chatId,
-    userEmail: "admin"
-  };
-
-  const res = await fetch(`${API}/chats/messages/${chatId}`, {
-    headers: { Authorization: "Bearer " + token }
-  });
-
-  const msgs = await res.json();
-  renderMessages(msgs);
-
-  document.getElementById("chatWindow").classList.remove("hidden");
-}
-
-/* ============================================================
-   USER — RENDER ORDER SUMMARY (Always at top)
-============================================================ */
-function renderOrderSummary(chat) {
-  const el = document.getElementById("chatOrderSummary");
-
-  if (!chat.orderDetails) {
-    el.innerHTML = `<strong>No order linked.</strong>`;
-    return;
-  }
-
-  const order = chat.orderDetails;
-
-  el.innerHTML = `
-    <strong>Order ID:</strong> ${order.orderId}<br>
-    <strong>Total:</strong> $${order.total} USD<br>
-    <strong>Items:</strong><br>
-    ${order.items.map(i => `• ${i.qty}× ${i.name}`).join("<br>")}
-  `;
-}
-
-/* ============================================================
-   RENDER MESSAGES
-============================================================ */
-function renderMessages(msgs) {
-  const box = document.getElementById("chatMessages");
-
-  box.innerHTML = msgs
-    .map(
-      (m) => `
-      <div class="msg ${m.sender === CURRENT_CHAT.userEmail ? "me" : "them"}">
-        ${m.content}<br>
-        <small>${new Date(m.timestamp).toLocaleTimeString()}</small>
-      </div>
-    `
-    )
-    .join("");
-
-  box.scrollTop = box.scrollHeight;
-}
-
-/* ============================================================
-   REFRESH MESSAGES
-============================================================ */
-async function refreshMessages() {
-  const token = localStorage.getItem("authToken");
-  if (!CURRENT_CHAT?._id) return;
-
-  const res = await fetch(`${API}/chats/messages/${CURRENT_CHAT._id}`, {
-    headers: { Authorization: "Bearer " + token }
-  });
-
-  if (!res.ok) return;
-
-  const msgs = await res.json();
-  renderMessages(msgs);
-}
-
-/* ============================================================
-   SEND MESSAGE — FIXED (always works)
-============================================================ */
-async function sendMessage() {
-  const msg = document.getElementById("chatInput").value.trim();
-  if (!msg) return;
-  if (!CURRENT_CHAT || !CURRENT_CHAT._id) {
-    console.error("❌ No chat loaded yet.");
-    return;
-  }
-
-  document.getElementById("chatInput").value = "";
-
-  const token = localStorage.getItem("authToken");
-
-  await fetch(`${API}/chats/send`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token
-    },
-    body: JSON.stringify({
-      chatId: CURRENT_CHAT._id,
-      content: msg
-    })
-  });
-
-  refreshMessages();
-}
+};
