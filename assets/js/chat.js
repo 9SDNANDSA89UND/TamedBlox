@@ -1,48 +1,66 @@
-const API = "https://website-5eml.onrender.com";
+/* ============================================================
+   TamedBlox — CHAT SYSTEM (PATCHED & SAFE)
+   - No duplicate API errors
+   - Works with admin system
+   - Safe toggle handling
+============================================================ */
+
+// 🔥 FIX: Prevent "Identifier already declared" error
+window.API = window.API || "https://website-5eml.onrender.com";
 
 let ALL_CHATS = [];
 let CURRENT_CHAT = null;
 
+/* ============================================================
+   INITIAL SETUP
+============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
   loadChat();
 
-  // Auto-refresh
+  // Auto-refresh messages every 2s
   setInterval(() => {
     if (CURRENT_CHAT?._id) refreshMessages();
   }, 2000);
 
-  // USER CHAT BUTTON
-  const userChatBtn = document.getElementById("chatButton");
-  if (userChatBtn) {
-    userChatBtn.onclick = () => {
+  // USER chat circle button
+  const chatBtn = document.getElementById("chatButton");
+  if (chatBtn) {
+    chatBtn.onclick = () => {
       document.getElementById("chatWindow").classList.toggle("hidden");
     };
   }
 
-  // ADMIN NAVBAR BUTTON
+  // ADMIN navbar chat button
   const adminBtn = document.getElementById("adminChatBtn");
   if (adminBtn) {
     adminBtn.onclick = () => {
-      document.getElementById("adminChatPanel").classList.toggle("hidden");
+      const panel = document.getElementById("adminChatPanel");
+      panel.classList.toggle("hidden");
     };
   }
 
-  document.getElementById("chatSend").onclick = sendMessage;
+  // Send message
+  const sendBtn = document.getElementById("chatSend");
+  if (sendBtn) sendBtn.onclick = sendMessage;
 });
 
-/* MAIN LOADER */
+/* ============================================================
+   LOAD CHAT BASED ON USER ROLE
+============================================================ */
 async function loadChat() {
   const token = localStorage.getItem("authToken");
   if (!token) return;
 
-  const res = await fetch(`${API}/auth/me`, {
+  const userRes = await fetch(`${API}/auth/me`, {
     headers: { Authorization: "Bearer " + token }
   });
 
-  if (!res.ok) return;
-  const user = await res.json();
+  if (!userRes.ok) return;
+  const user = await userRes.json();
 
-  /* ===== ADMIN MODE ===== */
+  /* ================================
+       ADMIN MODE
+  ================================= */
   if (user.admin === true) {
     const allRes = await fetch(`${API}/chats/all`, {
       headers: { Authorization: "Bearer " + token }
@@ -53,7 +71,9 @@ async function loadChat() {
     return;
   }
 
-  /* ===== USER MODE ===== */
+  /* ================================
+       USER MODE
+  ================================= */
   const chatRes = await fetch(`${API}/chats/my-chats`, {
     headers: { Authorization: "Bearer " + token }
   });
@@ -70,9 +90,13 @@ async function loadChat() {
   refreshMessages();
 }
 
-/* ADMIN LIST */
+/* ============================================================
+   ADMIN — LIST OF CHATS
+============================================================ */
 function renderAdminChatList() {
   const list = document.getElementById("adminChatList");
+  if (!list) return;
+
   list.innerHTML = "";
 
   ALL_CHATS.forEach(c => {
@@ -85,7 +109,9 @@ function renderAdminChatList() {
   });
 }
 
-/* ADMIN OPEN CHAT */
+/* ============================================================
+   ADMIN — OPEN A CHAT
+============================================================ */
 async function openAdminChat(chatId) {
   const token = localStorage.getItem("authToken");
 
@@ -106,9 +132,12 @@ async function openAdminChat(chatId) {
   chatWin.classList.remove("hidden");
 }
 
-/* ORDER SUMMARY */
+/* ============================================================
+   USER — ORDER SUMMARY
+============================================================ */
 function renderOrderSummary(chat) {
   const el = document.getElementById("chatOrderSummary");
+  if (!el) return;
 
   if (!chat.orderDetails) {
     el.innerHTML = "<strong>No order linked.</strong>";
@@ -125,16 +154,19 @@ function renderOrderSummary(chat) {
   `;
 }
 
-/* RENDER MESSAGES */
+/* ============================================================
+   RENDER MESSAGES
+============================================================ */
 function renderMessages(msgs) {
   const box = document.getElementById("chatMessages");
+  if (!box) return;
 
   box.innerHTML = msgs
     .map(
       m => `
       <div class="msg ${m.sender === CURRENT_CHAT.userEmail ? "me" : "them"}">
-        ${m.content}<br>
-        <small>${new Date(m.timestamp).toLocaleTimeString()}</small>
+        ${m.content}
+        <br><small>${new Date(m.timestamp).toLocaleTimeString()}</small>
       </div>
     `
     )
@@ -143,7 +175,9 @@ function renderMessages(msgs) {
   box.scrollTop = box.scrollHeight;
 }
 
-/* REFRESH */
+/* ============================================================
+   REFRESH MESSAGES
+============================================================ */
 async function refreshMessages() {
   const token = localStorage.getItem("authToken");
   if (!CURRENT_CHAT?._id) return;
@@ -156,7 +190,9 @@ async function refreshMessages() {
   renderMessages(msgs);
 }
 
-/* SEND */
+/* ============================================================
+   SEND MESSAGE
+============================================================ */
 async function sendMessage() {
   const msg = document.getElementById("chatInput").value.trim();
   if (!msg || !CURRENT_CHAT?._id) return;
