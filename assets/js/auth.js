@@ -72,13 +72,7 @@ function initAuth() {
     const data = await res.json();
 
     if (!data.success) {
-      if (data.error === "Email already exists") {
-        signupError.innerText = "That email is already in use.";
-      } else if (data.error === "Username already exists") {
-        signupError.innerText = "That username is already taken.";
-      } else {
-        signupError.innerText = data.error || "Signup failed.";
-      }
+      signupError.innerText = data.error || "Signup failed.";
       return;
     }
 
@@ -87,14 +81,13 @@ function initAuth() {
     location.reload();
   };
 
-  // Apply logged-in UI separately (fixes logout-on-refresh)
   applyLoggedInUI();
-
   console.log("Auth initialized.");
 }
 
+
 /* =====================================
-   FIXED LOGGED-IN UI (NO MORE RESET)
+   FIXED LOGGED-IN UI + ADMIN BUTTON
 ===================================== */
 function applyLoggedInUI() {
   const token = localStorage.getItem("authToken");
@@ -102,12 +95,12 @@ function applyLoggedInUI() {
 
   const navRight = document.querySelector(".nav-right");
 
-  // Navbar not loaded yet? → retry until it exists
+  // Navbar might not be loaded yet
   if (!navRight) {
     return setTimeout(applyLoggedInUI, 80);
   }
 
-  // Remove login/signup
+  // Remove login/signup buttons
   document.getElementById("openLogin")?.remove();
   document.getElementById("openSignup")?.remove();
 
@@ -127,12 +120,28 @@ function applyLoggedInUI() {
 
   navRight.appendChild(accountBtn);
   navRight.appendChild(logoutBtn);
+
+  /* ==========================================================
+     ⭐ ADMIN DETECTION — SHOW "Admin Chats" BUTTON
+  ========================================================== */
+  fetch("https://website-5eml.onrender.com/auth/me", {
+    headers: { Authorization: "Bearer " + token }
+  })
+    .then(res => res.json())
+    .then(user => {
+      if (user.email === user.adminEmail) {
+        console.log("👑 Admin detected — enabling admin chat button");
+
+        const adminBtn = document.getElementById("adminChatBtn");
+        if (adminBtn) adminBtn.style.display = "flex";
+      }
+    });
 }
 
-/* =====================================
-   SVG EYE ICON TOGGLE (SHOW/HIDE PASSWORD)
-===================================== */
 
+/* =====================================
+   PASSWORD EYE ICON TOGGLE
+===================================== */
 document.addEventListener("click", (e) => {
   const toggle = e.target.closest(".toggle-password");
   if (!toggle) return;
@@ -143,7 +152,6 @@ document.addEventListener("click", (e) => {
   const eyeOpen = toggle.querySelector(".eye-open");
   const eyeClosed = toggle.querySelector(".eye-closed");
 
-  // Swap visibility
   if (input.type === "password") {
     input.type = "text";
     eyeOpen.style.display = "none";
@@ -155,5 +163,6 @@ document.addEventListener("click", (e) => {
   }
 });
 
-/* Start auth once DOM is fully loaded */
+
+/* Start auth once DOM loads */
 document.addEventListener("DOMContentLoaded", initAuth);
