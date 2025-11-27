@@ -618,3 +618,70 @@ footer,
     font-size: 16px !important;
   }
 }
+
+
+/* ============================================================
+   MOBILE-ONLY SQUARE HAMBURGER + CENTER LOGO FIX
+============================================================ */
+@media (max-width: 760px) {
+
+  .nav-hamburger-wrapper {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 99999;
+  }
+
+  .nav-toggle-label {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+
+    width: 46px !important;
+    height: 46px !important;
+
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: 12px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .nav-toggle-label span,
+  .nav-toggle-label span::before,
+  .nav-toggle-label span::after {
+    background: #ffffff !important;
+    width: 24px;
+    height: 3px;
+    border-radius: 3px;
+    content: "";
+  }
+
+  .nav-toggle-label span::before {
+    transform: translateY(-7px);
+  }
+
+  .nav-toggle-label span::after {
+    transform: translateY(7px);
+  }
+
+  .nav-center {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .nav-cart-fixed {
+    position: absolute !important;
+    right: 16px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 99999 !important;
+  }
+
+  .nav-right {
+    top: 105px !important;
+  }
+}
