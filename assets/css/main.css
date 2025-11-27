@@ -704,3 +704,22 @@ footer,
     height: 22px;
   }
 }
+
+
+/* ==========================================
+   TWEAKS: DESKTOP CART SLIGHTLY RIGHT, MOBILE HAMBURGER FAR LEFT
+========================================== */
+
+/* PC only: nudge cart a bit to the right within the button row */
+@media (min-width: 761px) {
+  .nav-cart {
+    margin-left: 6px; /* tiny nudge to the right */
+  }
+}
+
+/* Mobile only: move hamburger wrapper to the far left edge */
+@media (max-width: 760px) {
+  .nav-hamburger-wrapper {
+    left: 4px !important; /* closer to screen edge */
+  }
+}
