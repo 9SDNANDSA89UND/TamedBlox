@@ -1,246 +1,193 @@
-/* ====================================================
-   TAMEDBLOX — PREMIUM CHAT UI (ADMIN + USER)
-   UPDATED TO TOP-LEFT ADMIN PANEL
-==================================================== */
+/* ============================================================
+   TamedBlox Chat System — FINAL CSS
+   ✔ Chat window bottom-right
+   ✔ Admin panel top-left
+   ✔ No overlap
+============================================================ */
 
-/* ===========================
-   CHAT FLOATING BUTTON (USER MODE)
-=========================== */
-.chat-circle {
+/* ---------------------------
+   CHAT OPEN BUTTON
+---------------------------- */
+#chatButton {
   position: fixed;
-  bottom: 24px;
-  left: 24px;
-  width: 58px;
-  height: 58px;
+  bottom: 20px;
+  right: 20px; /* moved from left to right */
+  width: 55px;
+  height: 55px;
   background: #4ef58a;
   border-radius: 50%;
+  box-shadow: 0 0 25px #4ef58a44;
   display: flex;
-  align-items: center;
   justify-content: center;
-  box-shadow: 0 0 16px rgba(78, 245, 138, 0.55);
+  align-items: center;
+  color: #0c1117;
+  font-size: 22px;
   cursor: pointer;
-  z-index: 99999;
-  transition: 0.18s ease;
+  z-index: 2000; /* above admin panel */
+  transition: transform 0.2s ease;
 }
 
-.chat-circle:hover {
+#chatButton:hover {
   transform: scale(1.08);
 }
 
-.chat-circle svg {
-  width: 24px;
-  height: 24px;
-  stroke: #0b0f14;
+.hidden {
+  display: none !important;
 }
 
-/* ===========================
-   USER CHAT WINDOW (UNTOUCHED)
-=========================== */
-.chat-window {
+/* ---------------------------
+   USER / ADMIN CHAT WINDOW
+---------------------------- */
+#chatWindow {
   position: fixed;
-  bottom: 95px;
-  left: 24px;
-
-  width: 330px;
-  height: 430px;
-
-  background: rgba(15, 18, 24, 0.72);
-  border-radius: 18px;
-  backdrop-filter: blur(18px);
-
-  border: 1px solid rgba(78, 245, 138, 0.28);
-  box-shadow:
-    0 0 25px rgba(78, 245, 138, 0.22),
-    0 8px 20px rgba(0, 0, 0, 0.45);
-
+  bottom: 90px;
+  right: 20px; /* chat opens bottom-right */
+  width: 360px;
+  height: 480px;
+  background: #0f141a;
+  border: 1px solid #4ef58a33;
+  border-radius: 16px;
+  padding: 0;
   overflow: hidden;
-  z-index: 99997;
   display: flex;
   flex-direction: column;
-
-  animation: chatFade 0.22s ease;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 25px #000a;
+  z-index: 2001; /* ABOVE admin panel */
+  animation: fadeIn 0.2s ease;
 }
 
-@keyframes chatFade {
-  from { opacity: 0; transform: translateY(10px); }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ORDER SUMMARY */
-.chat-order-summary {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 12px 16px;
-  font-size: 13px;
-  color: #dfe8f1;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-/* MESSAGES */
+/* ---------------------------
+   CHAT MESSAGE AREA
+---------------------------- */
 .chat-messages {
   flex: 1;
-  padding: 16px;
+  padding: 15px;
   overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  color: #d3dbe6;
 }
 
 .msg {
-  max-width: 80%;
   padding: 10px 14px;
-  border-radius: 14px;
-  line-height: 1.4;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  max-width: 75%;
   font-size: 14px;
-  animation: bubbleIn 0.2s ease;
-}
-
-@keyframes bubbleIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.msg.me {
-  margin-left: auto;
-  background: #4ef58a;
-  color: #0b0f14;
-  border-bottom-right-radius: 4px;
-  box-shadow: 0 0 8px rgba(78, 245, 138, 0.4);
-}
-
-.msg.them {
-  background: rgba(255, 255, 255, 0.08);
-  border-bottom-left-radius: 4px;
+  line-height: 1.3;
 }
 
 .msg small {
-  font-size: 10px;
-  opacity: 0.65;
-  display: block;
-  margin-top: 4px;
+  opacity: 0.5;
+  font-size: 11px;
 }
 
-/* INPUT AREA */
+/* sender (you) */
+.msg.me {
+  background: #4ef58a22;
+  border: 1px solid #4ef58a55;
+  margin-left: auto;
+  text-align: right;
+}
+
+/* receiver */
+.msg.them {
+  background: #161c23;
+  border: 1px solid #ffffff09;
+  text-align: left;
+}
+
+/* ---------------------------
+   CHAT FOOTER INPUT
+---------------------------- */
 .chat-input-row {
   display: flex;
-  padding: 12px;
-  background: rgba(0, 0, 0, 0.35);
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 10px;
+  background: #0c1117;
+  border-top: 1px solid #4ef58a22;
 }
 
-.chat-input-row input {
+#chatInput {
   flex: 1;
-  padding: 12px;
-  background: rgba(20, 25, 30, 0.8);
-  backdrop-filter: blur(6px);
+  background: #00000044;
+  border: 1px solid #ffffff11;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
+  padding: 10px 13px;
+  color: #fff;
+  outline: none;
   font-size: 14px;
 }
 
-.chat-input-row input:focus {
-  outline: none;
-  border-color: #4ef58a;
-  box-shadow: 0 0 8px rgba(78, 245, 138, 0.35);
-}
-
-/* SEND BUTTON */
 .chat-send-btn {
-  width: 54px;
-  margin-left: 8px;
+  margin-left: 10px;
   background: #4ef58a;
-  border-radius: 12px;
   border: none;
+  border-radius: 12px;
+  width: 44px;
+  height: 44px;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   cursor: pointer;
-  transition: 0.18s ease;
-}
-
-.chat-send-btn svg {
-  width: 22px;
-  height: 22px;
-  stroke: #0b0f14;
+  box-shadow: 0 0 10px #4ef58a55;
 }
 
 .chat-send-btn:hover {
-  transform: scale(1.06);
-  box-shadow: 0 0 12px rgba(78, 245, 138, 0.45);
+  opacity: 0.85;
 }
 
-/* ===========================
-   ADMIN MODE — TOP LEFT PANEL
-=========================== */
-.admin-panel {
+/* ---------------------------
+   ORDER SUMMARY
+---------------------------- */
+#chatOrderSummary {
+  padding: 12px 15px;
+  border-bottom: 1px solid #ffffff11;
+  color: #d3dbe6;
+  background: #0c1117;
+  font-size: 14px;
+}
+
+/* ---------------------------
+   ADMIN CHAT PANEL
+---------------------------- */
+#adminChatPanel {
   position: fixed;
-  top: 80px;      /* BELOW NAVBAR */
-  left: 20px;
-
-  width: 260px;
-  height: calc(100vh - 100px);
-
-  background: rgba(15, 18, 24, 0.92);
-  border: 1px solid rgba(78, 245, 138, 0.35);
-  border-radius: 14px;
-  backdrop-filter: blur(14px);
-
-  box-shadow: 0 0 18px rgba(78, 245, 138, 0.25);
-  z-index: 99999;
+  top: 100px;
+  left: 20px; /* admin panel stays on left */
+  width: 320px;
+  max-height: 520px;
+  background: #0f141a;
+  border: 1px solid #4ef58a33;
+  border-radius: 16px;
+  box-shadow: 0 0 25px #000a;
   overflow-y: auto;
+  z-index: 1500; /* BELOW chat window */
+  backdrop-filter: blur(10px);
 }
 
+/* ADMIN title bar */
 .admin-panel-header {
   padding: 14px;
-  font-size: 16px;
   font-weight: 900;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  font-size: 16px;
+  color: #4ef58a;
+  background: #0c1117;
+  border-bottom: 1px solid #4ef58a22;
 }
 
-.admin-chat-list {
-  padding: 12px;
-}
-
+/* chat list items */
 .admin-chat-item {
-  background: rgba(255,255,255,0.05);
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 12px;
+  padding: 12px 15px;
+  border-bottom: 1px solid #ffffff08;
+  color: #c8d0db;
   cursor: pointer;
-  font-size: 13px;
-  border: 1px solid transparent;
-  transition: 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .admin-chat-item:hover {
-  border-color: #4ef58a;
-  box-shadow: 0 0 12px rgba(78, 245, 138, 0.35);
-}
-
-/* ===========================
-   ADMIN CHAT WINDOW (RIGHT OF PANEL)
-=========================== */
-.chat-window.admin-mode {
-  top: 80px;
-  left: 300px; /* next to admin panel */
-  bottom: auto;
-
-  width: 370px;
-  height: 520px;
-
-  background: rgba(15, 18, 24, 0.75);
-  border-radius: 18px;
-  backdrop-filter: blur(18px);
-  border: 1px solid rgba(78, 245, 138, 0.28);
-
-  box-shadow:
-    0 0 25px rgba(78, 245, 138, 0.22),
-    0 8px 20px rgba(0, 0, 0, 0.45);
-
-  z-index: 99998;
-}
-
-/* UTILITY */
-.hidden {
-  display: none !important;
+  background: #4ef58a22;
 }
