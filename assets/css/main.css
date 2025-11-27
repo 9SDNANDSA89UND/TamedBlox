@@ -670,3 +670,37 @@ footer,
     font-size: 15px !important;
   }
 }
+
+
+/* ==========================================
+   GLOBAL: HIDE NAV TOGGLE CHECKBOX (NO BLUE TICK)
+========================================== */
+#navToggle {
+  display: none !important;
+}
+
+/* ==========================================
+   DESKTOP CART ENHANCEMENT (FAR-LEFT IN BUTTON ROW)
+========================================== */
+@media (min-width: 761px) {
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Make cart more visible and first in order */
+  .nav-cart {
+    order: -1;
+    width: 60px;
+    padding: 10px;
+    background: rgba(78,245,138,0.16);
+    border-color: rgba(78,245,138,0.6);
+    box-shadow: 0 0 12px rgba(78,245,138,0.4);
+  }
+
+  .nav-cart svg {
+    width: 22px;
+    height: 22px;
+  }
+}
