@@ -1,6 +1,12 @@
 <nav class="nav">
   <div class="nav-inner">
 
+    <!-- MOBILE HAMBURGER -->
+    <input type="checkbox" id="navToggle" class="nav-toggle">
+    <label for="navToggle" class="nav-toggle-label">
+      <span></span>
+    </label>
+
     <!-- CENTER LOGO -->
     <div class="nav-center">
       <div class="logo">
@@ -9,11 +15,11 @@
       </div>
     </div>
 
-    <!-- RIGHT BUTTONS -->
-    <div class="nav-right">
+    <!-- RIGHT BUTTONS (responsive) -->
+    <div class="nav-right nav-buttons">
 
-      <!-- LOGIN (removed automatically when logged in) -->
-      <button id="openLogin" class="nav-rect-btn">
+      <!-- LOGIN -->
+      <button id="openLogin" class="nav-rect-btn auth-guest">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
              viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -25,7 +31,7 @@
       </button>
 
       <!-- SIGNUP -->
-      <button id="openSignup" class="nav-rect-btn nav-accent-btn">
+      <button id="openSignup" class="nav-rect-btn nav-accent-btn auth-guest">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
              viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -37,8 +43,8 @@
         <span>Sign Up</span>
       </button>
 
-      <!-- ⭐ ADMIN CHAT BUTTON (injected by auth.js for admins only) -->
-      <button id="adminChatBtn" class="nav-rect-btn" style="display:none;">
+      <!-- ⭐ ADMIN CHAT BUTTON (only shown when admin) -->
+      <button id="adminChatBtn" class="nav-rect-btn admin-only" style="display:none;">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
              viewBox="0 0 24 24" fill="none" stroke="currentColor"
              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -60,7 +66,6 @@
       </button>
 
     </div>
-
   </div>
 </nav>
 
@@ -85,7 +90,7 @@
 
 <div id="cartOverlay" class="cart-overlay"></div>
 
-<!-- ⭐ AUTO-FIX FOR SVG ICONS (if lucide exists) -->
+<!-- Auto-fix SVG icons -->
 <script>
 setTimeout(() => {
   if (typeof lucide !== "undefined") {
