@@ -1,9 +1,9 @@
 /* ============================================================
-   TamedBlox Chat System — FIXED VERSION
-   ✔ Correct message bubble logic
-   ✔ Admin sending fixed
-   ✔ Anonymous sending fixed
-   ✔ SSE stable
+   TamedBlox Chat System — FINAL FIXED VERSION
+   ✔ Instant sending (no invisible messages)
+   ✔ Correct bubble colors
+   ✔ Admin/user/anon logic correct
+   ✔ SSE real-time sync
 ============================================================ */
 
 console.log("%c[TAMEDBLOX CHAT] Loaded", "color:#4ef58a;font-weight:900;");
@@ -14,7 +14,7 @@ let CURRENT_CHAT = null;
 let IS_ADMIN = false;
 
 /* ============================================================
-   SSE: LIVE MESSAGE STREAM
+   SSE STREAM
 ============================================================ */
 let evtSrc = null;
 
@@ -41,11 +41,11 @@ function qs(id) {
 }
 
 /* ============================================================
-   MESSAGE BUBBLE FIX (ADMIN + USER + ANON)
+   BUBBLE DETECTION FIX
 ============================================================ */
-function isMine(msg) {
-  if (IS_ADMIN && msg.sender === "admin") return true;
-  if (!IS_ADMIN && msg.sender === CURRENT_CHAT.userEmail) return true;
+function isMine(m) {
+  if (IS_ADMIN && m.sender === "admin") return true;
+  if (!IS_ADMIN && m.sender === CURRENT_CHAT.userEmail) return true;
   return false;
 }
 
@@ -66,7 +66,7 @@ function appendMessage(msg) {
 }
 
 /* ============================================================
-   LOAD CHAT MESSAGES
+   LOAD MESSAGES
 ============================================================ */
 async function loadMessages(chatId) {
   const res = await fetch(`${API}/chats/messages/${chatId}`);
@@ -78,7 +78,7 @@ async function loadMessages(chatId) {
 }
 
 /* ============================================================
-   LOAD CHAT (LOGGED-IN USER)
+   LOAD CHAT FOR LOGGED-IN USER
 ============================================================ */
 async function loadChatForUser(token) {
   const me = await fetch(`${API}/auth/me`, {
@@ -116,7 +116,7 @@ async function loadChatForUser(token) {
 }
 
 /* ============================================================
-   LOAD CHAT BY chatId (ANONYMOUS PURCHASE)
+   LOAD CHAT BY ID (ANONYMOUS)
 ============================================================ */
 async function loadChatById(chatId) {
   try {
@@ -207,7 +207,7 @@ function renderOrderSummary(chat) {
 }
 
 /* ============================================================
-   SEND MESSAGE — FIXED FOR ADMIN + USER + ANON
+   SEND MESSAGE — ⭐ INSTANT ✔
 ============================================================ */
 async function sendMessage() {
   const input = qs("chatInput");
@@ -216,12 +216,19 @@ async function sendMessage() {
 
   input.value = "";
 
-  const token = localStorage.getItem("authToken");
+  // ⭐ LOCAL INSTANT MESSAGE (no more invisible messages)
+  const localMessage = {
+    sender: IS_ADMIN ? "admin" : CURRENT_CHAT.userEmail,
+    content: msg,
+    timestamp: new Date()
+  };
 
+  appendMessage(localMessage); // show immediately
+
+  const token = localStorage.getItem("authToken");
   const headers = { "Content-Type": "application/json" };
 
   if (IS_ADMIN) {
-    // Always force admin token
     headers.Authorization = "Bearer " + token;
   } else if (token) {
     headers.Authorization = "Bearer " + token;
@@ -229,7 +236,7 @@ async function sendMessage() {
     headers["x-purchase-verified"] = "true";
   }
 
-  await fetch(`${API}/chats/send`, {
+  fetch(`${API}/chats/send`, {
     method: "POST",
     headers,
     body: JSON.stringify({
@@ -240,7 +247,7 @@ async function sendMessage() {
 }
 
 /* ============================================================
-   UI FUNCTIONS
+   UI
 ============================================================ */
 function enableAdminUI() {
   qs("adminChatPanel").classList.remove("hidden");
@@ -261,7 +268,7 @@ function initChatUI() {
 }
 
 /* ============================================================
-   MAIN START LOGIC
+   MAIN
 ============================================================ */
 document.addEventListener("DOMContentLoaded", async () => {
   initChatUI();
@@ -269,7 +276,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("authToken");
   let loaded = false;
 
-  /* 1 — Coming from Stripe */
+  // Coming back from Stripe
   const urlParams = new URLSearchParams(location.search);
   if (urlParams.get("chat") === "open" && urlParams.get("session_id")) {
     const sid = urlParams.get("session_id");
@@ -283,12 +290,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  /* 2 — Logged-in user chat */
+  // Logged-in user
   if (!loaded && token) {
     loaded = await loadChatForUser(token);
   }
 
-  /* 3 — No access → hide chat UI */
+  // No chat access
   if (!loaded) {
     qs("chatButton").classList.add("hidden");
     qs("chatWindow").classList.add("hidden");
