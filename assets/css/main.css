@@ -723,3 +723,25 @@ footer,
     left: 4px !important; /* closer to screen edge */
   }
 }
+
+
+/* ==========================================
+   FINAL TWEAKS: POSITION HAMBURGER & CART
+========================================== */
+
+/* Desktop: move cart a bit further right from other buttons */
+@media (min-width: 761px) {
+  .nav-cart {
+    margin-left: 14px !important;
+  }
+}
+
+/* Mobile: force the hamburger trigger itself to the far left */
+@media (max-width: 760px) {
+  .nav-toggle-label {
+    position: absolute !important;
+    left: 4px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+}
