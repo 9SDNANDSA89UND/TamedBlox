@@ -32,9 +32,6 @@ a {
   font-size: 26px;
   font-weight: 900;
   user-select: none;
-  display: flex;
-  white-space: nowrap;
-  gap: 0;
 }
 
 .logo-white { color: #ffffff; }
@@ -65,16 +62,11 @@ a {
   position: relative;
 }
 
-/*** FIXED: Center logo ONLY, without affecting cart/hamburger ***/
 .nav-center {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  pointer-events: none;
   text-align: center;
+  width: 100%;
 }
 
-/* Buttons on right */
 .nav-right {
   position: absolute;
   right: 20px;
@@ -84,7 +76,7 @@ a {
 }
 
 /* ==========================================
-   NAV BUTTONS
+   NAV BUTTONS (LOGIN, SIGNUP, CART)
 ========================================== */
 .nav-rect-btn {
   display: flex;
@@ -119,17 +111,11 @@ a {
   background: rgba(78,245,138,0.28);
 }
 
-/* Cart button */
+/* Cart button special */
 .nav-cart {
   width: 48px;
   padding: 10px;
   justify-content: center;
-  display: flex;
-  align-items: center;
-
-  /*** FIXED — always stays RIGHT ***/
-  position: absolute;
-  right: 20px;
 }
 
 .nav-rect-btn svg {
@@ -152,7 +138,7 @@ a {
 }
 
 /* ==========================================
-   ACCOUNT + LOGOUT BUTTONS
+   🔥 NEW ACCOUNT + LOGOUT BUTTONS (WITH SVG)
 ========================================== */
 .nav-account-btn,
 .nav-logout-btn {
@@ -173,6 +159,7 @@ a {
   transition: 0.2s ease;
 }
 
+/* SVG icons */
 .nav-account-btn svg,
 .nav-logout-btn svg {
   width: 18px;
@@ -182,6 +169,7 @@ a {
   transition: 0.2s ease;
 }
 
+/* Green hover for Account */
 .nav-account-btn:hover {
   background: rgba(78, 245, 138, 0.18);
   border-color: rgba(78, 245, 138, 0.45);
@@ -193,6 +181,7 @@ a {
   opacity: 1;
 }
 
+/* Red hover for Logout */
 .nav-logout-btn:hover {
   background: rgba(255, 60, 60, 0.18);
   border-color: rgba(255, 60, 60, 0.45);
@@ -204,7 +193,7 @@ a {
   opacity: 1;
 }
 
-/* Space next to cart */
+/* Spacing next to Cart */
 .nav-right .nav-account-btn,
 .nav-right .nav-logout-btn {
   margin-left: 4px;
@@ -484,7 +473,7 @@ a {
 }
 
 /* ==========================================
-   BUTTON CLICK FIXES
+   IMPORTANT FIXES FOR BUTTON CLICK ISSUES
 ========================================== */
 footer,
 .footer,
@@ -506,7 +495,7 @@ footer,
 }
 
 /* ==========================================
-   CART OVERLAY
+   FIX: CART OVERLAY CLOSING
 ========================================== */
 .cart-overlay {
   position: fixed;
@@ -522,7 +511,7 @@ footer,
 }
 
 /* ==========================================
-   FLY-TO-CART IMAGE ANIMATION
+   ⭐ FLY-TO-CART IMAGE ANIMATION
 ========================================== */
 .fly-img {
   position: fixed;
@@ -535,6 +524,9 @@ footer,
   transition: transform 0.9s cubic-bezier(.2,.85,.4,1), opacity 0.9s ease;
 }
 
+/* ==========================================
+   ⭐ BOUNCE ANIMATION WHEN IMAGE LANDS
+========================================== */
 @keyframes cartBounce {
   0%   { transform: scale(1); }
   40%  { transform: scale(1.25); }
@@ -543,7 +535,7 @@ footer,
 }
 
 /* ==========================================
-   WHITE TRAIL PARTICLES
+   ⭐ WHITE TRAIL PARTICLES
 ========================================== */
 .fly-particle {
   position: fixed;
@@ -558,73 +550,198 @@ footer,
 }
 
 /* ==========================================
-   DESKTOP HAMBURGER HIDE
+   DESKTOP: hide hamburger wrapper (desktop untouched)
 ========================================== */
 @media (min-width: 761px) {
+  .nav-hamburger-wrapper,
   .nav-toggle-label {
     display: none !important;
   }
 }
 
 /* ============================================================
-   MOBILE NAVBAR FIXES
+   MOBILE-ONLY NAVBAR FIXES
 ============================================================ */
 @media (max-width: 760px) {
 
   .nav-inner {
-    height: 60px;
+    height: 60px !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
-  /* Hamburger left */
-  .nav-toggle-label {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  /* Center logo */
+  /* center logo */
   .nav-center {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* Cart on right */
+  /* square hamburger left */
+  .nav-hamburger-wrapper {
+    position: absolute !important;
+    left: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 46px !important;
+    height: 46px !important;
+    z-index: 99999 !important;
+  }
+
+  #navToggle {
+    display: none !important;
+  }
+
+  .nav-toggle-label {
+    width: 46px !important;
+    height: 46px !important;
+    background: rgba(255,255,255,0.07) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    box-shadow: none !important;
+  }
+
+  .nav-toggle-label span,
+  .nav-toggle-label span::before,
+  .nav-toggle-label span::after {
+    width: 24px !important;
+    height: 3px !important;
+    background: white !important;
+    border-radius: 4px !important;
+    content: "" !important;
+  }
+
+  .nav-toggle-label span::before { transform: translateY(-7px) !important; }
+  .nav-toggle-label span::after  { transform: translateY(7px) !important; }
+
+  /* cart icon right */
   .nav-cart {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
+    position: absolute !important;
+    right: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 46px !important;
+    height: 46px !important;
+    padding: 0 !important;
+    background: rgba(255,255,255,0.07) !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    z-index: 99999 !important;
   }
 
-  /* Dropdown */
+  /* dropdown becomes vertical menu on LEFT */
   .nav-right {
-    position: absolute;
-    top: 62px;
-    left: 0;
+    position: absolute !important;
+    top: 62px !important;
+    left: 0 !important;
     right: 0;
-    width: 100%;
-    background: #0f141a;
-    padding: 18px 0;
-    border-top: 1px solid rgba(255,255,255,0.10);
+    width: 100% !important;
+    background: #0f141a !important;
+    padding: 18px 0 !important;
+    border-top: 1px solid rgba(255,255,255,0.10) !important;
     display: none;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    z-index: 9999 !important;
   }
 
   #navToggle:checked ~ .nav-right {
-    display: flex;
+    display: flex !important;
+  }
+
+  .nav-right .nav-rect-btn {
+    width: auto !important;
+    margin-left: 18px !important;
+    margin-right: 18px !important;
+    justify-content: flex-start !important;
+    padding: 10px 14px !important;
+    font-size: 15px !important;
   }
 }
 
-/* ============================================================
-   LANDSCAPE MODE FIX
-============================================================ */
-@media (max-height: 500px) {
-  .nav-center {
-    top: 50%;
-    transform: translate(-50%, -50%);
+
+/* ==========================================
+   GLOBAL: HIDE NAV TOGGLE CHECKBOX (NO BLUE TICK)
+========================================== */
+#navToggle {
+  display: none !important;
+}
+
+/* ==========================================
+   DESKTOP CART ENHANCEMENT (FAR-LEFT IN BUTTON ROW)
+========================================== */
+@media (min-width: 761px) {
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Make cart more visible and first in order */
+  .nav-cart {
+    order: -1;
+    width: 60px;
+    padding: 10px;
+    background: rgba(78,245,138,0.16);
+    border-color: rgba(78,245,138,0.6);
+    box-shadow: 0 0 12px rgba(78,245,138,0.4);
+  }
+
+  .nav-cart svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+
+/* ==========================================
+   TWEAKS: DESKTOP CART SLIGHTLY RIGHT, MOBILE HAMBURGER FAR LEFT
+========================================== */
+
+/* PC only: nudge cart a bit to the right within the button row */
+@media (min-width: 761px) {
+  .nav-cart {
+    margin-left: 6px; /* tiny nudge to the right */
+  }
+}
+
+/* Mobile only: move hamburger wrapper to the far left edge */
+@media (max-width: 760px) {
+  .nav-hamburger-wrapper {
+    left: 4px !important; /* closer to screen edge */
+  }
+}
+
+
+/* ==========================================
+   FINAL TWEAKS: POSITION HAMBURGER & CART
+========================================== */
+
+/* Desktop: move cart a bit further right from other buttons */
+@media (min-width: 761px) {
+  .nav-cart {
+    margin-left: 14px !important;
+  }
+}
+
+/* Mobile: force the hamburger trigger itself to the far left */
+@media (max-width: 760px) {
+  .nav-toggle-label {
+    position: absolute !important;
+    left: 4px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
   }
 }
