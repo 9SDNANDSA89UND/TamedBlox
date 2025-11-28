@@ -1,12 +1,12 @@
 /* ============================================================
    TamedBlox — Chat System (FINAL PATCHED VERSION)
-   ✔ Admin panel fixed
-   ✔ Proper z-index stack
-   ✔ Clean UI
+   ✔ Admin panel z-index fixed
+   ✔ Mobile landscape mode fixed
+   ✔ Fully responsive chat UI
 ============================================================ */
 
 /* ============================================================
-   CHAT BUTTON (Floating Circle)
+   FLOATING CHAT BUTTON
 ============================================================ */
 .chat-circle {
   position: fixed;
@@ -39,7 +39,7 @@
 }
 
 /* ============================================================
-   ADMIN PANEL (Fixed Sidebar)
+   ADMIN PANEL (RIGHT SIDEBAR)
 ============================================================ */
 .admin-panel {
   position: fixed !important;
@@ -92,7 +92,7 @@
 }
 
 /* ============================================================
-   CHAT WINDOW (User + Admin)
+   MAIN CHAT WINDOW
 ============================================================ */
 .chat-window {
   position: fixed !important;
@@ -188,6 +188,7 @@
   border-radius: 10px;
 
   color: white;
+  font-size: 15px;
 }
 
 #chatInput:focus {
@@ -215,7 +216,7 @@
 }
 
 /* ============================================================
-   RESPONSIVE FIXES
+   RESPONSIVE FIXES — MOBILE & LANDSCAPE MODE
 ============================================================ */
 @media (max-width: 768px) {
   .chat-window {
@@ -232,5 +233,28 @@
 
   .chat-circle {
     right: 20px;
+  }
+}
+
+/* ============================================================
+   LANDSCAPE MODE FIX (short screens / horizontal phones)
+============================================================ */
+@media (max-height: 500px) {
+  .chat-window {
+    top: 10px !important;
+    bottom: 10px !important;
+
+    right: 10px !important;
+    left: 10px !important;
+
+    height: auto !important;
+    max-height: calc(100vh - 20px) !important;
+
+    border-radius: 14px;
+  }
+
+  .chat-messages {
+    max-height: calc(100vh - 200px) !important;
+    overflow-y: auto !important;
   }
 }
