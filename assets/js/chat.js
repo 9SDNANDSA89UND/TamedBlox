@@ -273,7 +273,7 @@ async function closeTicket() {
 }
 
 /* ============================================================
-   SEND MESSAGE
+   SEND MESSAGE — WITH MOBILE FIXES
 ============================================================ */
 async function sendMessage() {
   const input = qs("chatInput");
@@ -307,6 +307,24 @@ async function sendMessage() {
       content: msg
     })
   });
+
+  forceScrollBottom();
+}
+
+/* ============================================================
+   ⭐ MOBILE SEND FIX
+============================================================ */
+function mobileSendFix(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  sendMessage();
+}
+
+function forceScrollBottom() {
+  const box = qs("chatMessages");
+  setTimeout(() => {
+    box.scrollTop = box.scrollHeight;
+  }, 50);
 }
 
 /* ============================================================
@@ -333,8 +351,16 @@ function showChatWindow() {
 }
 
 function initChatUI() {
+
+  // Desktop click
   qs("chatSend").onclick = sendMessage;
 
+  // Mobile (iOS + Android)
+  qs("chatSend").addEventListener("touchstart", mobileSendFix, { passive: false });
+  qs("chatSend").addEventListener("touchend", mobileSendFix, { passive: false });
+  qs("chatSend").addEventListener("pointerup", mobileSendFix);
+
+  // Chat button toggle
   qs("chatButton").onclick = () => {
     qs("chatWindow").classList.toggle("hidden");
   };
