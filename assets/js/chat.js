@@ -1,10 +1,8 @@
 /* ============================================================
-   TamedBlox Chat System — FINAL MERGED VERSION (2025)
-   ✔ Guest chat auto-create
-   ✔ PC/Mobile/iOS/iPad safe message sending
-   ✔ Admin delete button included
-   ✔ Messages never disappear
-   ✔ SSE real-time updates
+   TamedBlox Chat — FINAL PURCHASE-ONLY VERSION (2025)
+   ✔ Chat only shows for logged-in users, buyers, admins
+   ✔ Guests DO NOT see chat window
+   ✔ SSE + admin delete + mobile send fix
 ============================================================ */
 
 console.log("%c[TAMEDBLOX CHAT] Loaded", "color:#4ef58a;font-weight:900;");
@@ -42,13 +40,10 @@ function startSSE(chatId) {
 
       appendMessage(msg);
 
-    } catch (err) {
-      console.warn("SSE error:", err);
-    }
+    } catch {}
   };
 
   evtSrc.onerror = () => {
-    console.warn("SSE disconnected, retrying…");
     setTimeout(() => startSSE(chatId), 1500);
   };
 }
@@ -81,7 +76,6 @@ function createMsgHTML(msg) {
 
 function appendMessage(msg) {
   if (msg.timestamp === LAST_SENT_TIMESTAMP) return;
-
   const box = qs("chatMessages");
   if (!box) return;
 
@@ -92,7 +86,6 @@ function appendMessage(msg) {
 async function loadMessages(chatId) {
   const res = await fetch(`${API}/chats/messages/${chatId}`);
   const msgs = await res.json();
-
   qs("chatMessages").innerHTML = msgs.map(createMsgHTML).join("");
   qs("chatMessages").scrollTop = qs("chatMessages").scrollHeight;
 }
@@ -106,7 +99,6 @@ async function loadChatForUser(token) {
   });
 
   if (!me.ok) return false;
-
   const user = await me.json();
   IS_ADMIN = !!user.admin;
 
@@ -118,12 +110,11 @@ async function loadChatForUser(token) {
   const res = await fetch(`${API}/chats/my-chats`, {
     headers: { Authorization: "Bearer " + token }
   });
-
   const chat = await res.json();
+
   if (!chat || !chat._id) return false;
 
   CURRENT_CHAT = { _id: chat._id, userEmail: user.email };
-
   renderOrderSummary(chat);
   await loadMessages(chat._id);
   showChatWindow();
@@ -133,40 +124,20 @@ async function loadChatForUser(token) {
 }
 
 /* ============================================================
-   LOAD CHAT BY ID (Stripe)
+   LOAD CHAT BY ID (Stripe return)
 ============================================================ */
 async function loadChatById(chatId) {
   const res = await fetch(`${API}/chats/by-id/${chatId}`);
   const chat = await res.json();
-
   if (!chat || !chat._id) return false;
 
   CURRENT_CHAT = { _id: chat._id, userEmail: chat.userEmail || "customer" };
-
   renderOrderSummary(chat);
+
   await loadMessages(chat._id);
   showChatWindow();
   startSSE(chat._id);
 
-  return true;
-}
-
-/* ============================================================
-   CREATE GUEST CHAT
-============================================================ */
-async function createGuestChat() {
-  const res = await fetch(`${API}/chats/create-guest-chat`, { method: "POST" });
-  const data = await res.json();
-
-  if (!data || !data.chatId) return false;
-
-  CURRENT_CHAT = {
-    _id: data.chatId,
-    userEmail: "customer"
-  };
-
-  showChatWindow();
-  startSSE(data.chatId);
   return true;
 }
 
@@ -191,18 +162,18 @@ function renderOrderSummary(chat) {
 }
 
 /* ============================================================
-   ADMIN CHAT MANAGEMENT
+   ADMIN PANEL
 ============================================================ */
 async function loadAdminChats(token) {
   const res = await fetch(`${API}/chats/all`, {
     headers: { Authorization: "Bearer " + token }
   });
-
   const list = await res.json();
+
   const wrap = qs("adminChatList");
   wrap.innerHTML = "";
 
-  list.forEach((chat) => {
+  list.forEach(chat => {
     wrap.innerHTML += `
       <div class="admin-chat-item" data-id="${chat._id}">
         <strong>${chat.orderDetails?.orderId || "Order"}</strong><br>
@@ -211,7 +182,7 @@ async function loadAdminChats(token) {
     `;
   });
 
-  document.querySelectorAll(".admin-chat-item").forEach((el) => {
+  document.querySelectorAll(".admin-chat-item").forEach(el => {
     el.onclick = () => openAdminChat(el.getAttribute("data-id"));
   });
 }
@@ -222,15 +193,11 @@ async function openAdminChat(chatId) {
   const res = await fetch(`${API}/chats/by-id/${chatId}`, {
     headers: { Authorization: "Bearer " + token }
   });
-
   const chat = await res.json();
 
-  CURRENT_CHAT = {
-    _id: chatId,
-    userEmail: "admin"
-  };
-
+  CURRENT_CHAT = { _id: chatId, userEmail: "admin" };
   renderOrderSummary(chat);
+
   await loadMessages(chatId);
   showChatWindow();
   startSSE(chatId);
@@ -240,11 +207,11 @@ function enableAdminUI() {
   qs("adminChatPanel").classList.remove("hidden");
   qs("chatButton").classList.remove("hidden");
 
-  // Only create delete button once
   if (!qs("deleteTicketBtn")) {
     const btn = document.createElement("button");
     btn.id = "deleteTicketBtn";
     btn.innerText = "Delete Ticket";
+
     btn.style = `
       background:#ff4b4b;
       color:white;
@@ -252,18 +219,18 @@ function enableAdminUI() {
       margin:10px;
       border-radius:10px;
       width:90%;
-      cursor:pointer;
       font-weight:900;
+      cursor:pointer;
       border:none;
     `;
-    btn.onclick = closeTicket;
 
+    btn.onclick = closeTicket;
     qs("chatWindow").insertBefore(btn, qs("chatOrderSummary"));
   }
 }
 
 /* ============================================================
-   DELETE TICKET (ADMIN)
+   DELETE TICKET
 ============================================================ */
 async function closeTicket() {
   if (!CURRENT_CHAT) return;
@@ -271,7 +238,7 @@ async function closeTicket() {
   const token = localStorage.getItem("authToken");
   if (!IS_ADMIN) return alert("Only admins can delete tickets.");
 
-  if (!confirm("Are you sure you want to delete this ticket?")) return;
+  if (!confirm("Delete this ticket?")) return;
 
   await fetch(`${API}/chats/close`, {
     method: "POST",
@@ -282,37 +249,44 @@ async function closeTicket() {
     body: JSON.stringify({ chatId: CURRENT_CHAT._id })
   });
 
-  const el = document.querySelector(`[data-id="${CURRENT_CHAT._id}"]`);
-  if (el) el.remove();
-
+  document.querySelector(`[data-id="${CURRENT_CHAT._id}"]`)?.remove();
   qs("chatWindow").classList.add("hidden");
-
   alert("Ticket deleted.");
 }
 
 /* ============================================================
-   SEND MESSAGE (PC + MOBILE + GUEST SAFE)
+   SEND MESSAGE (BLOCKS NON-BUYERS)
 ============================================================ */
 async function sendMessage() {
   const input = qs("chatInput");
   let msg = input.value.trim();
   input.value = "";
 
-  if (!msg || !CURRENT_CHAT) return;
+  if (!msg) return;
+
+  const token = localStorage.getItem("authToken");
+  const hasPurchased = localStorage.getItem("HAS_PURCHASED") === "yes";
+
+  // ❌ Guests with no purchase cannot send messages
+  if (!token && !hasPurchased && !IS_ADMIN) {
+    alert("You must complete a purchase before chatting with support.");
+    return;
+  }
+
+  if (!CURRENT_CHAT) return;
 
   const timestamp = new Date().toISOString();
 
-  const localMessage = {
+  const local = {
     sender: IS_ADMIN ? "admin" : (CURRENT_CHAT.userEmail || "customer"),
     content: msg,
     timestamp
   };
 
   LAST_SENT_TIMESTAMP = timestamp;
-  appendMessage(localMessage);
+  appendMessage(local);
 
   const headers = { "Content-Type": "application/json" };
-  const token = localStorage.getItem("authToken");
 
   if (token) {
     headers.Authorization = "Bearer " + token;
@@ -342,14 +316,14 @@ function showChatWindow() {
 }
 
 function initChatUI() {
-  const sendBtn = qs("chatSend");
+  const send = qs("chatSend");
 
-  sendBtn.onclick = (e) => {
+  send.onclick = (e) => {
     e.preventDefault();
     sendMessage();
   };
 
-  sendBtn.addEventListener("touchend", (e) => {
+  send.addEventListener("touchend", (e) => {
     e.preventDefault();
     sendMessage();
   }, { passive: false });
@@ -369,16 +343,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   let loaded = false;
 
   const urlParams = new URLSearchParams(location.search);
+
+  // Stripe return → opens chat
   if (urlParams.get("chat") === "open" && urlParams.get("session_id")) {
     const sid = urlParams.get("session_id");
-
     const res = await fetch(`${API}/pay/session-info/${sid}`);
     const data = await res.json();
 
-    if (data.chatId) loaded = await loadChatById(data.chatId);
+    if (data.chatId) {
+      localStorage.setItem("HAS_PURCHASED", "yes");
+      loaded = await loadChatById(data.chatId);
+    }
   }
 
-  if (!loaded && token) loaded = await loadChatForUser(token);
+  // Logged-in user
+  if (!loaded && token) {
+    loaded = await loadChatForUser(token);
+  }
 
-  if (!loaded) await createGuestChat();
+  // ❌ Guests with NO purchase → hide chat completely
+  if (!loaded) {
+    qs("chatWindow").classList.add("hidden");
+    qs("chatButton").classList.add("hidden");
+  }
 });
