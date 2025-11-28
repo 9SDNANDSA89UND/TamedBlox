@@ -1,9 +1,10 @@
 /* ============================================================
-   TamedBlox Chat System — FINAL GUEST CHAT PATCH (2025)
+   TamedBlox Chat System — FINAL MERGED VERSION (2025)
    ✔ Guest chat auto-create
-   ✔ All devices: PC, iOS, Android, iPad
+   ✔ PC/Mobile/iOS/iPad safe message sending
+   ✔ Admin delete button included
    ✔ Messages never disappear
-   ✔ Admin + User + Guest all supported
+   ✔ SSE real-time updates
 ============================================================ */
 
 console.log("%c[TAMEDBLOX CHAT] Loaded", "color:#4ef58a;font-weight:900;");
@@ -32,43 +33,48 @@ function startSSE(chatId) {
       const msg = JSON.parse(e.data);
 
       if (msg.deleted) {
-        alert("This ticket has been deleted by an admin.");
+        alert("This ticket has been deleted.");
         qs("chatWindow").classList.add("hidden");
+        qs("chatInput").disabled = true;
+        qs("chatSend").disabled = true;
         return;
       }
 
       appendMessage(msg);
 
-    } catch (err) {}
+    } catch (err) {
+      console.warn("SSE error:", err);
+    }
   };
 
   evtSrc.onerror = () => {
+    console.warn("SSE disconnected, retrying…");
     setTimeout(() => startSSE(chatId), 1500);
   };
 }
 
 /* ============================================================
-   MESSAGE UTILS
+   MESSAGE UTILITIES
 ============================================================ */
-function isMine(m) {
+function isMine(msg) {
   const me = IS_ADMIN ? "admin" : (CURRENT_CHAT.userEmail || "customer");
-  return m.sender === me;
+  return msg.sender === me;
 }
 
-function createMsgHTML(m) {
-  if (m.system) {
+function createMsgHTML(msg) {
+  if (msg.system) {
     return `
-      <div class="msg them" style="opacity:0.6;">
-        ${m.content}
-        <br><small>${new Date(m.timestamp).toLocaleTimeString()}</small>
+      <div class="msg them" style="opacity:.6;">
+        ${msg.content}
+        <br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small>
       </div>
     `;
   }
 
   return `
-    <div class="msg ${isMine(m) ? "me" : "them"}">
-      ${m.content}
-      <br><small>${new Date(m.timestamp).toLocaleTimeString()}</small>
+    <div class="msg ${isMine(msg) ? "me" : "them"}">
+      ${msg.content}
+      <br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small>
     </div>
   `;
 }
@@ -116,20 +122,18 @@ async function loadChatForUser(token) {
   const chat = await res.json();
   if (!chat || !chat._id) return false;
 
-  CURRENT_CHAT = {
-    _id: chat._id,
-    userEmail: user.email
-  };
+  CURRENT_CHAT = { _id: chat._id, userEmail: user.email };
 
   renderOrderSummary(chat);
   await loadMessages(chat._id);
   showChatWindow();
   startSSE(chat._id);
+
   return true;
 }
 
 /* ============================================================
-   LOAD CHAT (Stripe return)
+   LOAD CHAT BY ID (Stripe)
 ============================================================ */
 async function loadChatById(chatId) {
   const res = await fetch(`${API}/chats/by-id/${chatId}`);
@@ -137,26 +141,21 @@ async function loadChatById(chatId) {
 
   if (!chat || !chat._id) return false;
 
-  CURRENT_CHAT = {
-    _id: chat._id,
-    userEmail: chat.userEmail || "customer"
-  };
+  CURRENT_CHAT = { _id: chat._id, userEmail: chat.userEmail || "customer" };
 
   renderOrderSummary(chat);
   await loadMessages(chat._id);
   showChatWindow();
   startSSE(chat._id);
+
   return true;
 }
 
 /* ============================================================
-   GUEST CHAT CREATION
+   CREATE GUEST CHAT
 ============================================================ */
 async function createGuestChat() {
-  const res = await fetch(`${API}/chats/create-guest-chat`, {
-    method: "POST"
-  });
-
+  const res = await fetch(`${API}/chats/create-guest-chat`, { method: "POST" });
   const data = await res.json();
 
   if (!data || !data.chatId) return false;
@@ -192,7 +191,7 @@ function renderOrderSummary(chat) {
 }
 
 /* ============================================================
-   ADMIN CHAT STUFF
+   ADMIN CHAT MANAGEMENT
 ============================================================ */
 async function loadAdminChats(token) {
   const res = await fetch(`${API}/chats/all`, {
@@ -240,10 +239,59 @@ async function openAdminChat(chatId) {
 function enableAdminUI() {
   qs("adminChatPanel").classList.remove("hidden");
   qs("chatButton").classList.remove("hidden");
+
+  // Only create delete button once
+  if (!qs("deleteTicketBtn")) {
+    const btn = document.createElement("button");
+    btn.id = "deleteTicketBtn";
+    btn.innerText = "Delete Ticket";
+    btn.style = `
+      background:#ff4b4b;
+      color:white;
+      padding:10px;
+      margin:10px;
+      border-radius:10px;
+      width:90%;
+      cursor:pointer;
+      font-weight:900;
+      border:none;
+    `;
+    btn.onclick = closeTicket;
+
+    qs("chatWindow").insertBefore(btn, qs("chatOrderSummary"));
+  }
 }
 
 /* ============================================================
-   SEND MESSAGE (WORKS FOR GUESTS TOO)
+   DELETE TICKET (ADMIN)
+============================================================ */
+async function closeTicket() {
+  if (!CURRENT_CHAT) return;
+
+  const token = localStorage.getItem("authToken");
+  if (!IS_ADMIN) return alert("Only admins can delete tickets.");
+
+  if (!confirm("Are you sure you want to delete this ticket?")) return;
+
+  await fetch(`${API}/chats/close`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({ chatId: CURRENT_CHAT._id })
+  });
+
+  const el = document.querySelector(`[data-id="${CURRENT_CHAT._id}"]`);
+  if (el) el.remove();
+
+  qs("chatWindow").classList.add("hidden");
+
+  alert("Ticket deleted.");
+}
+
+/* ============================================================
+   SEND MESSAGE (PC + MOBILE + GUEST SAFE)
 ============================================================ */
 async function sendMessage() {
   const input = qs("chatInput");
@@ -282,7 +330,7 @@ async function sendMessage() {
         content: msg
       })
     }).catch(() => {});
-  }, 30);
+  }, 20);
 }
 
 /* ============================================================
@@ -320,7 +368,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("authToken");
   let loaded = false;
 
-  // Stripe return
   const urlParams = new URLSearchParams(location.search);
   if (urlParams.get("chat") === "open" && urlParams.get("session_id")) {
     const sid = urlParams.get("session_id");
@@ -333,6 +380,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (!loaded && token) loaded = await loadChatForUser(token);
 
-  // Guest? → Create chat
   if (!loaded) await createGuestChat();
 });
