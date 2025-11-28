@@ -1,9 +1,5 @@
 /* ============================================================
-   TamedBlox Chat System — FINAL DELETE-ENABLED FRONTEND (PATCHED)
-   ✔ Admin chats open reliably
-   ✔ Admin chat list updates when admin button is clicked
-   ✔ SSE stable reconnecting
-   ✔ Duplicate message protection
+   TamedBlox Chat System — FINAL + ADMIN BUTTON PATCHED
 ============================================================ */
 
 console.log("%c[TAMEDBLOX CHAT] Loaded", "color:#4ef58a;font-weight:900;");
@@ -179,7 +175,7 @@ async function loadChatById(chatId) {
 }
 
 /* ============================================================
-   ADMIN MODE — LOAD ACTIVE CHATS (PATCHED)
+   ADMIN MODE — LOAD ACTIVE CHATS
 ============================================================ */
 async function loadAdminChats(token) {
   const res = await fetch(`${API}/chats/all`, {
@@ -201,14 +197,13 @@ async function loadAdminChats(token) {
     `;
   });
 
-  // Bind click listeners (PATCHED)
   document.querySelectorAll(".admin-chat-item").forEach((el) => {
     el.onclick = () => openAdminChat(el.getAttribute("data-id"));
   });
 }
 
 /* ============================================================
-   OPEN ADMIN CHAT (PATCHED)
+   OPEN ADMIN CHAT
 ============================================================ */
 async function openAdminChat(chatId) {
   const token = localStorage.getItem("authToken");
@@ -256,7 +251,7 @@ function renderOrderSummary(chat) {
 }
 
 /* ============================================================
-   ADMIN HARD DELETE TICKET
+   ADMIN HARD DELETE
 ============================================================ */
 async function closeTicket() {
   if (!CURRENT_CHAT) return;
@@ -273,14 +268,12 @@ async function closeTicket() {
     body: JSON.stringify({ chatId: CURRENT_CHAT._id })
   });
 
-  // Remove chat tile
   document.querySelector(`[data-id="${CURRENT_CHAT._id}"]`)?.remove();
-
   qs("chatWindow").classList.add("hidden");
 }
 
 /* ============================================================
-   SEND MESSAGE (PATCHED)
+   SEND MESSAGE
 ============================================================ */
 async function sendMessage() {
   const input = qs("chatInput");
@@ -348,7 +341,31 @@ function initChatUI() {
 }
 
 /* ============================================================
-   MAIN INIT (PATCHED)
+   ⭐ ADMIN BUTTON PATCH — ALWAYS BINDS EVEN IF NAVBAR LOADS LATE
+============================================================ */
+function bindAdminButton() {
+  const btn = document.getElementById("adminChatBtn");
+  if (!btn) return setTimeout(bindAdminButton, 50);
+
+  btn.onclick = async () => {
+    const panel = document.getElementById("adminChatPanel");
+    if (!panel) return;
+
+    panel.classList.toggle("hidden");
+
+    const token = localStorage.getItem("authToken");
+    if (IS_ADMIN && token) {
+      await loadAdminChats(token);
+    }
+  };
+
+  console.log("Admin Chat button bound.");
+}
+
+setTimeout(bindAdminButton, 150);
+
+/* ============================================================
+   MAIN INIT
 ============================================================ */
 document.addEventListener("DOMContentLoaded", async () => {
   initChatUI();
