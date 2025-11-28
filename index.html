@@ -6,7 +6,7 @@
   <title>TamedBlox — Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <link rel="icon" href="https://i.postimg.cc/KYrZ46jD/Tamed-Dino.png" type="image/png">
+  <link rel="icon" href="https://i.postimg.cc/KYrZ46jTamed-Dino.png" type="image/png">
 
   <!-- CSS -->
   <link rel="stylesheet" href="assets/css/main.css" />
@@ -26,7 +26,7 @@
 
 <body>
 
-  <!-- NAV & MODALS -->
+  <!-- NAVBAR + AUTH MODALS -->
   <div id="navbar"></div>
   <div id="modals"></div>
 
@@ -41,6 +41,7 @@
     <p style="margin-top: 10px; color: #b7bec9;">Best-selling items from TamedBlox.</p>
   </section>
 
+  <!-- PRODUCT GRID -->
   <div id="productGrid" class="product-grid"></div>
 
   <!-- REVIEWS -->
@@ -95,25 +96,9 @@
     loadComponent("#footer", "components/footer.html");
   </script>
 
-  <!-- CORE SCRIPTS -->
-  <script src="assets/js/cart.js"></script>   <!-- MUST load BEFORE app.js -->
-  <script src="assets/js/app.js"></script>
-  <script src="assets/js/drawer.js"></script>
-
-  <!-- AUTH & CHAT -->
-  <script src="assets/js/auth.js"></script>
-  <script src="assets/js/chat.js"></script>
-
-  <!-- USER CHAT BUTTON -->
-  <div id="chatButton" class="chat-circle hidden">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor"
-      fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path
-        d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
-    </svg>
-  </div>
-
-  <!-- ADMIN PANEL -->
+  <!-- ======================= -->
+  <!-- 🔥 PATCHED ADMIN CHAT UI -->
+  <!-- ======================= -->
   <div id="adminChatPanel" class="admin-panel hidden">
     <div class="admin-panel-header">Active Chats</div>
     <div id="adminChatList" class="admin-chat-list"></div>
@@ -137,6 +122,34 @@
       </button>
     </div>
   </div>
+
+  <!-- CHAT BUTTON -->
+  <div id="chatButton" class="chat-circle hidden">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor"
+      fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path
+        d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
+    </svg>
+  </div>
+
+  <!-- ======================= -->
+  <!-- 🔥 JAVASCRIPT (CORRECT ORDER) -->
+  <!-- ======================= -->
+
+  <!-- CART MUST LOAD FIRST -->
+  <script src="assets/js/cart.js"></script>
+
+  <!-- PRODUCT + UI SYSTEM -->
+  <script src="assets/js/app.js"></script>
+
+  <!-- DRAWER SYSTEM -->
+  <script src="assets/js/drawer.js"></script>
+
+  <!-- AUTH (login/signup/admin) -->
+  <script src="assets/js/auth.js"></script>
+
+  <!-- CHAT SYSTEM (patched) -->
+  <script src="assets/js/chat.js"></script>
 
 </body>
 </html>
