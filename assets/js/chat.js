@@ -1,6 +1,9 @@
 /* ============================================================
-   TamedBlox Chat System — FINAL FULL PATCHED VERSION
-   Mobile guest fix + iPad send fix + correct colors
+   TamedBlox Chat System — FINAL FULL PATCHED VERSION (2025)
+   ✔ Guests can send messages without purchases
+   ✔ iOS/iPad touch/send bug fully fixed
+   ✔ SSE stable + no duplicate messages
+   ✔ Correct bubble colors for guests, users, and admin
 ============================================================ */
 
 console.log("%c[TAMEDBLOX CHAT] Loaded", "color:#4ef58a;font-weight:900;");
@@ -10,14 +13,14 @@ window.API = "https://website-5eml.onrender.com";
 let CURRENT_CHAT = null;
 let IS_ADMIN = false;
 
-// Prevent SSE duplication
+// Prevent duplicate append
 let LAST_SENT_TIMESTAMP = null;
 
-// Required for iPad touch event propagation
+// Allow iPad focus fix
 document.addEventListener("touchend", () => {}, { passive: false });
 
 /* ============================================================
-   SSE STREAM HANDLER
+   SSE STREAM HANDLING
 ============================================================ */
 let evtSrc = null;
 
@@ -30,11 +33,9 @@ function startSSE(chatId) {
     try {
       const msg = JSON.parse(e.data);
 
-      // Hard-delete ticket
       if (msg.deleted === true) {
         alert("This ticket has been deleted.");
         qs("chatWindow").classList.add("hidden");
-
         qs("chatInput").disabled = true;
         qs("chatSend").disabled = true;
         return;
@@ -48,7 +49,7 @@ function startSSE(chatId) {
   };
 
   evtSrc.onerror = () => {
-    console.warn("SSE connection lost, retrying...");
+    console.warn("SSE disconnected, retrying…");
     setTimeout(() => startSSE(chatId), 1500);
   };
 }
@@ -56,21 +57,16 @@ function startSSE(chatId) {
 /* ============================================================
    HELPERS
 ============================================================ */
-function qs(id) {
-  return document.getElementById(id);
-}
+function qs(id) { return document.getElementById(id); }
 
-/* ============================================================
-   WHO OWNS MESSAGE? (Correct bubble color)
-============================================================ */
+/* Determine if message is mine (admin/user/guest) */
 function isMine(m) {
-  // Fallback sender logic so guests match correctly
   const me = IS_ADMIN ? "admin" : (CURRENT_CHAT.userEmail || "customer");
   return m.sender === me;
 }
 
 /* ============================================================
-   MESSAGE HTML TEMPLATES
+   MESSAGE HTML
 ============================================================ */
 function createMsgHTML(m) {
   if (m.system) {
@@ -90,9 +86,7 @@ function createMsgHTML(m) {
   `;
 }
 
-/* ============================================================
-   SAFE APPEND — NO DUPLICATES
-============================================================ */
+/* Append message safely */
 function appendMessage(msg) {
   if (msg.timestamp === LAST_SENT_TIMESTAMP) return;
 
@@ -104,7 +98,7 @@ function appendMessage(msg) {
 }
 
 /* ============================================================
-   LOAD MESSAGES (INITIAL)
+   LOAD ALL MESSAGES
 ============================================================ */
 async function loadMessages(chatId) {
   const res = await fetch(`${API}/chats/messages/${chatId}`);
@@ -154,7 +148,7 @@ async function loadChatForUser(token) {
 }
 
 /* ============================================================
-   LOAD CHAT BY ID (Stripe return)
+   LOAD CHAT BY ID (Stripe returning)
 ============================================================ */
 async function loadChatById(chatId) {
   try {
@@ -181,7 +175,7 @@ async function loadChatById(chatId) {
 }
 
 /* ============================================================
-   LOAD ALL ADMIN CHATS
+   ADMIN — Load All Chats
 ============================================================ */
 async function loadAdminChats(token) {
   const res = await fetch(`${API}/chats/all`, {
@@ -209,7 +203,7 @@ async function loadAdminChats(token) {
 }
 
 /* ============================================================
-   OPEN ADMIN CHAT
+   ADMIN — Open Chat
 ============================================================ */
 async function openAdminChat(chatId) {
   const token = localStorage.getItem("authToken");
@@ -237,7 +231,7 @@ async function openAdminChat(chatId) {
 }
 
 /* ============================================================
-   ORDER SUMMARY BOX
+   ORDER SUMMARY
 ============================================================ */
 function renderOrderSummary(chat) {
   const o = chat.orderDetails;
@@ -257,7 +251,7 @@ function renderOrderSummary(chat) {
 }
 
 /* ============================================================
-   ADMIN HARD DELETE
+   ADMIN — DELETE TICKET
 ============================================================ */
 async function closeTicket() {
   if (!CURRENT_CHAT) return;
@@ -279,52 +273,49 @@ async function closeTicket() {
 }
 
 /* ============================================================
-   SEND MESSAGE — FULL PATCHED VERSION
-   (Fixes guests, iPad, iPhone, Android)
+   SEND MESSAGE (FULLY PATCHED)
+   ✔ Guests allowed
+   ✔ No purchase needed
 ============================================================ */
 async function sendMessage() {
   const input = qs("chatInput");
 
-  // iPad input finalization bug fix
-  let msg = input.value;
-  msg = msg.trim();
-  input.value = msg;
+  let msg = input.value.trim();
+  input.value = "";
 
   if (!msg || !CURRENT_CHAT) return;
 
-  const sendContent = msg;
-  input.value = "";
-
   const timestamp = new Date().toISOString();
 
+  // LOCAL instant message render
   const localMessage = {
     sender: IS_ADMIN ? "admin" : (CURRENT_CHAT.userEmail || "customer"),
-    content: sendContent,
+    content: msg,
     timestamp
   };
 
   LAST_SENT_TIMESTAMP = timestamp;
   appendMessage(localMessage);
 
-  const token = localStorage.getItem("authToken");
+  // Build request headers
   const headers = { "Content-Type": "application/json" };
+  const token = localStorage.getItem("authToken");
 
-  // Guest-safe fallback headers
   if (token) {
     headers.Authorization = "Bearer " + token;
   } else {
-    headers["x-purchase-verified"] = "true";
+    // Allow ALL guests to send messages
     headers["x-guest"] = "true";
   }
 
-  // iOS Safari bug fix: delay the fetch
+  // Fix iOS Safari bug by delaying fetch slightly
   setTimeout(() => {
     fetch(`${API}/chats/send`, {
       method: "POST",
       headers,
       body: JSON.stringify({
         chatId: CURRENT_CHAT._id,
-        content: sendContent
+        content: msg
       })
     }).catch(() => {});
   }, 40);
@@ -333,23 +324,21 @@ async function sendMessage() {
 }
 
 /* ============================================================
-   MOBILE/TABLET SEND FIXES
+   MOBILE SEND FIXES
 ============================================================ */
-function mobileSendFix(event) {
-  event.preventDefault();
-  event.stopPropagation();
+function mobileSendFix(e) {
+  e.preventDefault();
+  e.stopPropagation();
   sendMessage();
 }
 
 function forceScrollBottom() {
   const box = qs("chatMessages");
-  setTimeout(() => {
-    box.scrollTop = box.scrollHeight;
-  }, 60);
+  setTimeout(() => box.scrollTop = box.scrollHeight, 60);
 }
 
 /* ============================================================
-   ADMIN UI SETUP
+   ADMIN UI
 ============================================================ */
 function enableAdminUI() {
   qs("adminChatPanel").classList.remove("hidden");
@@ -375,10 +364,8 @@ function showChatWindow() {
    INIT CHAT UI
 ============================================================ */
 function initChatUI() {
-  // Desktop click
   qs("chatSend").onclick = sendMessage;
 
-  // Mobile + iPad fixes
   qs("chatSend").addEventListener("touchstart", mobileSendFix, { passive: false });
   qs("chatSend").addEventListener("touchend", mobileSendFix, { passive: false });
   qs("chatSend").addEventListener("pointerup", mobileSendFix);
@@ -390,7 +377,7 @@ function initChatUI() {
 }
 
 /* ============================================================
-   ADMIN BUTTON PATCH
+   ADMIN BUTTON INIT
 ============================================================ */
 function bindAdminButton() {
   const btn = document.getElementById("adminChatBtn");
@@ -398,17 +385,14 @@ function bindAdminButton() {
 
   btn.onclick = async () => {
     const panel = document.getElementById("adminChatPanel");
-    if (!panel) return;
 
     panel.classList.toggle("hidden");
 
     const token = localStorage.getItem("authToken");
-    if (IS_ADMIN && token) {
-      await loadAdminChats(token);
-    }
+    if (IS_ADMIN && token) loadAdminChats(token);
   };
 
-  console.log("Admin Chat button bound.");
+  console.log("Admin chat button bound");
 }
 
 setTimeout(bindAdminButton, 150);
@@ -422,11 +406,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const token = localStorage.getItem("authToken");
   let loaded = false;
 
-  // Returning from Stripe
+  // Stripe redirect → auto-open chat
   const urlParams = new URLSearchParams(location.search);
   if (urlParams.get("chat") === "open" && urlParams.get("session_id")) {
     const sid = urlParams.get("session_id");
-
     const res = await fetch(`${API}/pay/session-info/${sid}`);
     const data = await res.json();
 
@@ -436,10 +419,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  if (!loaded && token) {
-    loaded = await loadChatForUser(token);
-  }
+  // If not Stripe and user is logged in
+  if (!loaded && token) loaded = await loadChatForUser(token);
 
+  // No chat? Hide UI
   if (!loaded) {
     qs("chatButton").classList.add("hidden");
     qs("chatWindow").classList.add("hidden");
