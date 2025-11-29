@@ -1,8 +1,5 @@
 /* ============================================================
    TamedBlox — Chat System (FINAL PATCHED VERSION)
-   ✔ Admin panel z-index fixed
-   ✔ Mobile landscape mode fixed
-   ✔ Fully responsive chat UI
 ============================================================ */
 
 window.API = "https://website-5eml.onrender.com";
@@ -175,7 +172,7 @@ async function openAdminChat(chatId) {
 }
 
 /* ============================================================
-   SEND MESSAGE
+   SEND MESSAGE  (NO MORE DUPLICATES)
 ============================================================ */
 async function sendMessage() {
   const input = qs("chatInput");
@@ -186,11 +183,8 @@ async function sendMessage() {
 
   if (!text || !CURRENT_CHAT) return;
 
-  appendMessage({
-    sender: IS_ADMIN ? "admin" : CURRENT_CHAT.userEmail,
-    content: text,
-    timestamp: new Date()
-  });
+  // ❗ REMOVED appendMessage() — prevents duplicated messages
+  // SSE will append the message when backend broadcasts it
 
   try {
     const token = localStorage.getItem("authToken");
@@ -241,16 +235,16 @@ function bindChatButton() {
 }
 
 /* ============================================================
-   MAIN INIT — ✔ FIXED SEND BUTTON HERE
+   MAIN INIT — FIXED SEND BUTTON + NO DUPLICATES
 ============================================================ */
 document.addEventListener("DOMContentLoaded", async () => {
-  // ⭐ FIX — send button actually sends
+
+  // ⭐ FIX — Send button NOW sends messages
   waitForElement("chatSend", (btn) => {
     btn.onclick = () => sendMessage();
   });
 
   const session = await loadSession();
-
   if (!session.loggedIn) return;
 
   IS_ADMIN = session.admin;
