@@ -1,23 +1,31 @@
 /* =============================================================
-   TamedBlox — ULTRA PREMIUM CARD SYSTEM (Shining Edition)
+   TamedBlox — ULTRA PREMIUM CARD SYSTEM (2025 Tag Shine Edition)
+   ✔ Vibrant cards (static + hover)
+   ✔ Filled rarity tags & discount tags
+   ✔ Shining sweep animation on tags ONLY
 ============================================================= */
 
+/* =============================================================
+   PRODUCT GRID
+============================================================= */
 .product-grid {
   max-width: 1380px;
   margin: 60px auto;
   padding: 0 20px;
+
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   gap: 36px;
 }
 
-/* ============================
+/* =============================================================
    CARD BASE
-============================ */
+============================================================= */
 .card {
   background: rgba(15, 20, 26, 0.82);
   border-radius: 22px;
   padding: 20px 20px 26px;
+
   border: 1px solid rgba(78, 245, 138, 0.35);
 
   box-shadow:
@@ -33,55 +41,26 @@
   overflow: hidden;
 }
 
-/* FULL CARD SHINE EFFECT */
-.card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.17) 50%,
-    transparent 100%
-  );
-
-  transform: translateX(-130%) rotate(10deg);
-  animation: cardShine 4s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes cardShine {
-  0% {
-    transform: translateX(-130%) rotate(10deg);
-  }
-  45% {
-    transform: translateX(130%) rotate(10deg);
-  }
-  100% {
-    transform: translateX(130%) rotate(10deg);
-  }
-}
-
-/* Hover */
 .card:hover {
   transform: translateY(-8px) scale(1.02);
   border-color: rgba(78, 245, 138, 0.65);
+
   box-shadow:
     0 0 26px rgba(78, 245, 138, 0.48),
     0 0 12px rgba(78, 245, 138, 0.28),
     inset 0 0 14px rgba(255, 255, 255, 0.07);
 }
 
-/* ============================
+/* =============================================================
    PRODUCT IMAGE
-============================ */
+============================================================= */
 .product-img {
   width: 100%;
   height: 250px;
-  border-radius: 14px;
   object-fit: contain;
-  background: rgba(255,255,255,0.05);
+
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
 
   box-shadow:
     inset 0 0 25px rgba(78, 245, 138, 0.32),
@@ -89,6 +68,7 @@
 
   padding: 12px;
   margin-bottom: 18px;
+
   transition: transform 0.25s ease;
 }
 
@@ -96,9 +76,9 @@
   transform: scale(1.05);
 }
 
-/* ============================
-   BADGE ROW
-============================ */
+/* =============================================================
+   BADGES ROW
+============================================================= */
 .card-badges {
   position: absolute;
   top: 16px;
@@ -110,82 +90,115 @@
   align-items: center;
 }
 
-/* ============================
-   SECRET TAG (FILLED)
-============================ */
-.tag-secret {
-  padding: 7px 18px;
+/* =============================================================
+   TAG BASE — all tags share these for shine effect
+============================================================= */
+.tag-secret,
+.tag-god,
+.tag-og,
+.discount-tag {
+  position: relative;
+  overflow: hidden;
+  border-radius: 40px;
   font-size: 13px;
   font-weight: 900;
+}
 
+/* =============================================================
+   FILLED TAG STYLES
+============================================================= */
+
+/* SECRET */
+.tag-secret {
+  padding: 7px 18px;
   background: #00e4ff;
   color: #0b0f14;
 
-  border-radius: 40px;
-  border: none;
-
   box-shadow:
     0 0 12px rgba(0, 228, 255, 0.55),
-    inset 0 0 8px rgba(255,255,255,0.2);
+    inset 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
-/* GOD TAG */
+/* GOD */
 .tag-god {
   padding: 7px 18px;
-  font-size: 13px;
-  font-weight: 900;
   background: #ff48ff;
   color: #0b0f14;
-  border-radius: 40px;
 
   box-shadow:
-    0 0 12px rgba(255,72,255,0.55),
-    inset 0 0 8px rgba(255,255,255,0.2);
+    0 0 12px rgba(255, 72, 255, 0.55),
+    inset 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
-/* OG TAG */
+/* OG */
 .tag-og {
   padding: 7px 18px;
-  font-size: 13px;
-  font-weight: 900;
   background: #ffcf6f;
   color: #0b0f14;
-  border-radius: 40px;
 
   box-shadow:
-    0 0 12px rgba(255,207,111,0.55),
-    inset 0 0 8px rgba(255,255,255,0.2);
+    0 0 12px rgba(255, 207, 111, 0.55),
+    inset 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
-/* ============================
-   DISCOUNT TAG
-============================ */
+/* DISCOUNT */
 .discount-tag {
   padding: 7px 18px;
   background: #4ef58a;
   color: #0b0f14;
 
-  border-radius: 40px;
-  font-size: 13px;
-  font-weight: 900;
-
   box-shadow:
-    0 0 14px rgba(78,245,138,0.55),
-    inset 0 0 10px rgba(0,0,0,0.15);
+    0 0 14px rgba(78, 245, 138, 0.55),
+    inset 0 0 10px rgba(0, 0, 0, 0.15);
 }
 
 .discount-tag svg {
   width: 16px;
   height: 16px;
+  stroke: #0b0f14;
 }
 
-/* ============================
-   PRODUCT TITLE
-============================ */
+/* =============================================================
+   TAG SHINE EFFECT
+============================================================= */
+.tag-secret::after,
+.tag-god::after,
+.tag-og::after,
+.discount-tag::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -130%;
+  width: 100%;
+  height: 100%;
+
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.55) 50%,
+    transparent 100%
+  );
+
+  transform: skewX(-20deg);
+  animation: tagShine 3s ease-in-out infinite;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+@keyframes tagShine {
+  0% { left: -130%; }
+  50% { left: 130%; }
+  100% { left: 130%; }
+}
+
+/* =============================================================
+   PRODUCT NAME
+============================================================= */
 .card h3 {
   margin-top: 12px;
   font-size: 18px;
   font-weight: 900;
+
   color: #f8fff6;
 
   text-shadow: 0 0 6px rgba(78, 245, 138, 0.25);
@@ -195,9 +208,9 @@
   text-overflow: ellipsis;
 }
 
-/* ============================
-   PRICE
-============================ */
+/* =============================================================
+   PRICE SECTION
+============================================================= */
 .price-box {
   display: flex;
   align-items: center;
@@ -221,9 +234,9 @@
   text-decoration: line-through;
 }
 
-/* ============================
+/* =============================================================
    ADD TO CART BUTTON
-============================ */
+============================================================= */
 .buy-btn {
   width: 100%;
   padding: 15px 0;
@@ -238,7 +251,7 @@
   font-weight: 900;
 
   box-shadow: 0 0 14px rgba(78,245,138,0.45);
-  transition: all 0.18s ease;
+  transition: 0.18s ease;
 }
 
 .buy-btn:hover {
