@@ -27,14 +27,15 @@
   <link rel="stylesheet" href="assets/css/modal.css" />
   <link rel="stylesheet" href="assets/css/reviews.css" />
   <link rel="stylesheet" href="assets/css/chat.css" />
-  <link rel="stylesheet" href="assets/css/search.css" /> <!-- ⭐ NEW -->
+  <link rel="stylesheet" href="assets/css/search.css" />
 
   <script>
     async function loadComponent(selector, file) {
       const el = document.querySelector(selector);
-      if (el) el.innerHTML = await fetch(file).then((r) => r.text());
+      if (el) el.innerHTML = await fetch(file).then(r => r.text());
     }
   </script>
+
 </head>
 
 <body>
@@ -53,32 +54,94 @@
     <h1 style="font-size: 32px; font-weight: 900">Featured Products</h1>
     <p style="margin-top: 10px; color: #b7bec9;">Best-selling items from TamedBlox.</p>
 
-    <!-- ⭐ SEARCH BAR (ICON INSIDE) -->
+    <!-- ⭐ SEARCH BAR -->
     <div class="search-container">
-      <input
-        id="searchInput"
-        placeholder="Search products..."
-        class="search-input"
-      />
+      <input id="searchInput" placeholder="Search products..." class="search-input" />
 
       <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-        viewBox="0 0 24 24" fill="none" stroke="#7bffb1" stroke-width="2"
+        viewBox="0 0 24 24" fill="none" stroke="#38ff99" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <path d="m21 21-4.34-4.34" />
         <circle cx="11" cy="11" r="8" />
       </svg>
     </div>
 
+    <!-- ENTER triggers search -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const input = document.getElementById("searchInput");
-        input.addEventListener("keypress", (e) => {
+        input.addEventListener("keypress", e => {
           if (e.key === "Enter") {
             input.dispatchEvent(new KeyboardEvent("keyup", { key: "Enter" }));
           }
         });
       });
     </script>
+
+    <!-- ⭐ SORT BY -->
+    <div class="sort-container">
+
+      <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        viewBox="0 0 24 24" fill="none" stroke="#38ff99" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="m3 8 4-4 4 4"/>
+        <path d="M7 4v16"/>
+        <path d="M15 4h5l-5 6h5"/>
+        <path d="M15 20v-3.5a2.5 2.5 0 0 1 5 0V20"/>
+        <path d="M20 18h-5"/>
+      </svg>
+
+      <select id="sortSelect" class="sort-select">
+        <option value="default">Sort by…</option>
+        <option value="az">Name A → Z</option>
+        <option value="za">Name Z → A</option>
+        <option value="low">Price Low → High</option>
+        <option value="high">Price High → Low</option>
+      </select>
+
+    </div>
+
+    <!-- SORT LOGIC -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const sortSelect = document.getElementById("sortSelect");
+
+        sortSelect.addEventListener("change", () => {
+          const cards = [...document.querySelectorAll(".product-card")];
+          const grid = document.getElementById("productGrid");
+          const value = sortSelect.value;
+
+          const extractPrice = (card) => {
+            const priceEl = card.querySelector(".product-price");
+            if (!priceEl) return Infinity;
+            return parseFloat(priceEl.innerText.replace("$", ""));
+          };
+
+          const extractName = (card) => {
+            return card.querySelector(".product-title")?.innerText.toLowerCase() || "";
+          };
+
+          let sorted = cards;
+
+          if (value === "az") {
+            sorted = cards.sort((a, b) => extractName(a).localeCompare(extractName(b)));
+          }
+          if (value === "za") {
+            sorted = cards.sort((a, b) => extractName(b).localeCompare(extractName(a)));
+          }
+          if (value === "low") {
+            sorted = cards.sort((a, b) => extractPrice(a) - extractPrice(b));
+          }
+          if (value === "high") {
+            sorted = cards.sort((a, b) => extractPrice(b) - extractPrice(a));
+          }
+
+          grid.innerHTML = "";
+          sorted.forEach(c => grid.appendChild(c));
+        });
+      });
+    </script>
+
   </section>
 
   <!-- PRODUCT GRID -->
@@ -88,6 +151,7 @@
   <section class="reviews-section">
     <h2 class="reviews-title">Customer Reviews</h2>
     <div class="reviews-grid">
+
       <div class="review-card">
         <div class="review-header">
           <img src="https://dummyimage.com/50x50/222/fff.png&text=+" class="review-pfp" />
@@ -109,6 +173,7 @@
         </div>
         <div class="review-body">Quick service and great support.</div>
       </div>
+
     </div>
   </section>
 
@@ -134,7 +199,7 @@
   <div id="footer"></div>
   <script>loadComponent("#footer", "components/footer.html");</script>
 
-  <!-- ADMIN CHAT PANEL -->
+  <!-- ADMIN CHAT -->
   <div id="adminChatPanel" class="admin-panel hidden">
     <div class="admin-panel-header">Active Chats</div>
     <div id="adminChatList" class="admin-chat-list"></div>
@@ -145,17 +210,8 @@
     <div id="chatOrderSummary" class="chat-order-summary"></div>
 
     <button id="deleteTicketBtn" class="delete-ticket-btn"
-      style="
-        width: 100%;
-        background: #ff3b3b;
-        border: none;
-        padding: 10px;
-        margin-bottom: 8px;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        color: white;
-      ">
+      style="width: 100%; background:#ff3b3b; border:none; padding: 10px;
+      margin-bottom:8px; border-radius:8px; font-weight:bold; color:white;">
       Delete Ticket
     </button>
 
@@ -174,7 +230,7 @@
     </div>
   </div>
 
-  <!-- FLOATING CHAT BUTTON -->
+  <!-- CHAT FLOAT BUTTON -->
   <div id="chatButton" class="chat-circle hidden">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
       stroke="currentColor" fill="none" stroke-width="2"
@@ -183,7 +239,7 @@
     </svg>
   </div>
 
-  <!-- SCRIPTS -->
+  <!-- JS -->
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/app.js"></script>
   <script src="assets/js/drawer.js"></script>
