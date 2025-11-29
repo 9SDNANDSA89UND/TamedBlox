@@ -1,5 +1,10 @@
 /* ============================================================
-   TamedBlox — Chat System (FINAL PATCHED VERSION)
+   TamedBlox — Chat System (Universal Working Version)
+   ✔ Works for logged-in customers
+   ✔ Works for guests
+   ✔ Works after Stripe checkout
+   ✔ Admin panel works
+   ✔ No duplicate messages
 ============================================================ */
 
 window.API = "https://website-5eml.onrender.com";
@@ -11,7 +16,7 @@ let evtSrc = null;
 const qs = (id) => document.getElementById(id);
 
 /* ============================================================
-   SAFE DOM WAITER — guarantees navbar exists before binding
+   WAIT FOR ELEMENT
 ============================================================ */
 function waitForElement(id, cb) {
   const el = document.getElementById(id);
@@ -24,17 +29,15 @@ function waitForElement(id, cb) {
 ============================================================ */
 async function loadSession() {
   const token = localStorage.getItem("authToken");
-  if (!token) return { loggedIn: false, admin: false };
+  if (!token) return { loggedIn: false };
 
   try {
     const res = await fetch(`${API}/auth/me`, {
       headers: { Authorization: "Bearer " + token }
     });
-
     if (!res.ok) return { loggedIn: false };
 
     const user = await res.json();
-
     return {
       loggedIn: true,
       admin: user.admin === true,
@@ -64,28 +67,35 @@ function startSSE(chatId) {
 }
 
 /* ============================================================
-   RENDER MESSAGES
+   RENDER MESSAGE
 ============================================================ */
 function appendMessage(msg) {
   const box = qs("chatMessages");
   if (!box || !msg) return;
 
-  const mine = IS_ADMIN ? "admin" : CURRENT_CHAT?.userEmail;
+  const mine = IS_ADMIN ? "admin" : (CURRENT_CHAT?.userEmail || "customer");
+  const sender = msg.sender || "customer";
 
   const div = document.createElement("div");
-  div.className = `msg ${msg.system ? "system" : msg.sender === mine ? "me" : "them"}`;
-  div.innerHTML = `${msg.content}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small>`;
+  div.className = `msg ${
+    msg.system ? "system" : sender === mine ? "me" : "them"
+  }`;
+
+  div.innerHTML =
+    `${msg.content}<br><small>${new Date(msg.timestamp).toLocaleTimeString()}</small>`;
 
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
 }
 
-async function loadMessages(id) {
+/* ============================================================
+   LOAD MESSAGES
+============================================================ */
+async function loadMessages(chatId) {
   try {
-    const res = await fetch(`${API}/chats/messages/${id}`);
+    const res = await fetch(`${API}/chats/messages/${chatId}`);
     const msgs = await res.json();
     const box = qs("chatMessages");
-
     if (!box) return;
 
     box.innerHTML = "";
@@ -94,7 +104,7 @@ async function loadMessages(id) {
 }
 
 /* ============================================================
-   CUSTOMER CHAT LOADING
+   LOAD LOGGED-IN CUSTOMER CHAT
 ============================================================ */
 async function loadCustomerChat(token, email) {
   try {
@@ -103,14 +113,14 @@ async function loadCustomerChat(token, email) {
     });
 
     const chat = await res.json();
-
     if (!chat?._id) return false;
 
     CURRENT_CHAT = { _id: chat._id, userEmail: email };
 
-    await loadMessages(chat._id);
-
     qs("chatButton")?.classList.remove("hidden");
+    qs("chatWindow")?.classList.remove("hidden");
+
+    await loadMessages(chat._id);
     startSSE(chat._id);
 
     return true;
@@ -120,7 +130,7 @@ async function loadCustomerChat(token, email) {
 }
 
 /* ============================================================
-   ADMIN CHAT LIST
+   LOAD ADMIN CHAT LIST
 ============================================================ */
 async function loadAdminChats() {
   try {
@@ -172,7 +182,7 @@ async function openAdminChat(chatId) {
 }
 
 /* ============================================================
-   SEND MESSAGE  (NO MORE DUPLICATES)
+   SEND MESSAGE (NO DUPLICATES)
 ============================================================ */
 async function sendMessage() {
   const input = qs("chatInput");
@@ -180,12 +190,9 @@ async function sendMessage() {
 
   const text = input.value.trim();
   input.value = "";
-
   if (!text || !CURRENT_CHAT) return;
 
-  // ❗ REMOVED appendMessage() — prevents duplicated messages
-  // SSE will append the message when backend broadcasts it
-
+  // DO NOT append locally — SSE will show it
   try {
     const token = localStorage.getItem("authToken");
 
@@ -195,18 +202,20 @@ async function sendMessage() {
         "Content-Type": "application/json",
         Authorization: token ? "Bearer " + token : ""
       },
-      body: JSON.stringify({ chatId: CURRENT_CHAT._id, content: text })
+      body: JSON.stringify({
+        chatId: CURRENT_CHAT._id,
+        content: text
+      })
     });
   } catch {}
 }
 
 /* ============================================================
-   ADMIN PANEL TOGGLE
+   ADMIN TOGGLE
 ============================================================ */
 function bindAdminToggle() {
   waitForElement("adminChatBtn", (btn) => {
     btn.classList.remove("hidden");
-
     btn.onclick = async () => {
       const panel = qs("adminChatPanel");
       if (!panel) return;
@@ -224,7 +233,7 @@ function bindAdminToggle() {
 }
 
 /* ============================================================
-   CHAT WINDOW TOGGLE
+   CHAT BUTTON
 ============================================================ */
 function bindChatButton() {
   waitForElement("chatButton", (btn) => {
@@ -235,26 +244,71 @@ function bindChatButton() {
 }
 
 /* ============================================================
-   MAIN INIT — FIXED SEND BUTTON + NO DUPLICATES
+   UNIVERSAL CHAT LOADER (LOGGED-IN OR GUEST)
+============================================================ */
+async function universalChatLoad() {
+  const params = new URLSearchParams(window.location.search);
+  const sessionId = params.get("session_id");
+  const chatOpen = params.get("chat");
+
+  // 1️⃣ After Stripe checkout
+  if (chatOpen === "open" && sessionId) {
+    try {
+      const res = await fetch(`${API}/pay/session-info/${sessionId}`);
+      const data = await res.json();
+
+      if (data.chatId) {
+        CURRENT_CHAT = { _id: data.chatId, userEmail: "customer" };
+
+        qs("chatButton")?.classList.remove("hidden");
+        qs("chatWindow")?.classList.remove("hidden");
+
+        await loadMessages(data.chatId);
+        startSSE(data.chatId);
+        return;
+      }
+    } catch (err) {
+      console.error("Stripe chat load failed", err);
+    }
+  }
+
+  // 2️⃣ Logged-in users
+  const token = localStorage.getItem("authToken");
+  if (token) {
+    const session = await loadSession();
+    if (session.loggedIn) {
+      const ok = await loadCustomerChat(token, session.email);
+      if (ok) return;
+    }
+  }
+
+  // 3️⃣ Guests → no auto-load (they only get chat after purchase)
+}
+
+/* ============================================================
+   MAIN INIT
 ============================================================ */
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // ⭐ FIX — Send button NOW sends messages
+  // Send button
   waitForElement("chatSend", (btn) => {
     btn.onclick = () => sendMessage();
   });
 
+  // Load chat for ANY USER who purchased
+  await universalChatLoad();
+
+  // Admin logic
   const session = await loadSession();
-  if (!session.loggedIn) return;
 
-  IS_ADMIN = session.admin;
+  if (session.loggedIn) {
+    IS_ADMIN = session.admin;
 
-  bindChatButton();
+    bindChatButton();
 
-  if (IS_ADMIN) {
-    bindAdminToggle();
-    return;
+    if (IS_ADMIN) {
+      bindAdminToggle();
+      return;
+    }
   }
-
-  await loadCustomerChat(localStorage.getItem("authToken"), session.email);
 });
