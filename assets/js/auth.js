@@ -6,7 +6,6 @@ window.API = window.API || "https://website-5eml.onrender.com";
 
 /* ============================================================
    SAFE FALLBACKS (Fix Option A)
-   Prevents "openModal is not defined" errors
 ============================================================ */
 if (!window.openModal) {
   window.openModal = function (id) {
@@ -24,7 +23,6 @@ if (!window.closeModal) {
 
 /* ============================================================
    WAIT FOR NAVBAR BEFORE BINDING BUTTONS
-   (PATCHED TO CHECK ALL REQUIRED BUTTONS)
 ============================================================ */
 function waitForNavbar(callback) {
   const ready =
@@ -89,10 +87,9 @@ async function loginUser() {
     return;
   }
 
-  // ⭐ Auto-login
   localStorage.setItem("authToken", data.token);
-
   closeModal("loginModal");
+
   location.reload();
 }
 
@@ -126,7 +123,7 @@ async function signupUser() {
     return;
   }
 
-  // ⭐ Auto-login FIXED (backend never returned token → we fetch one now)
+  // ⭐ Fetch login token after signup
   const loginReq = await fetch(`${API}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -134,7 +131,6 @@ async function signupUser() {
   });
 
   const loginData = await loginReq.json();
-
   if (loginData.success && loginData.token) {
     localStorage.setItem("authToken", loginData.token);
   }
@@ -163,31 +159,50 @@ async function applyLoggedInUI() {
     headers: { Authorization: "Bearer " + token }
   });
 
-  if (!res.ok) return; // token expired or invalid
+  if (!res.ok) return;
   const user = await res.json();
 
-  // ⭐ Display username
-  const accountBtn = document.createElement("button");
-  accountBtn.className = "nav-rect-btn";
-  accountBtn.innerText = `👤 ${user.username}`;
-  navRight.appendChild(accountBtn);
+  /* ============================================================
+     PROFILE BUTTON (LUCIDE USER-PEN — NO EMOJI)
+  ============================================================ */
+  const profileBtn = document.createElement("button");
+  profileBtn.className = "nav-rect-btn";
+  profileBtn.id = "profileBtn";
 
-  // ⭐ Logout button
+  profileBtn.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+      viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="lucide lucide-user-pen">
+      <path d="M11.5 15H7a4 4 0 0 0-4 4v2"/>
+      <path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>
+      <circle cx="10" cy="7" r="4"/>
+    </svg>
+    <span>${user.username}</span>
+  `;
+
+  navRight.appendChild(profileBtn);
+
+  /* ============================================================
+     LOGOUT BUTTON
+  ============================================================ */
   const logoutBtn = document.createElement("button");
   logoutBtn.className = "nav-rect-btn nav-accent-btn";
   logoutBtn.innerText = "Logout";
   logoutBtn.onclick = logoutUser;
   navRight.appendChild(logoutBtn);
 
-  // ⭐ Admin Chat Button (PATCHED)
+  /* ============================================================
+     ADMIN CHAT BUTTON
+  ============================================================ */
   const adminBtn = document.getElementById("adminChatBtn");
+
   if (user.admin === true && adminBtn) {
     adminBtn.style.display = "flex";
 
-    // ⭐ PATCH: Open admin chat panel AND refresh chat list
     adminBtn.onclick = async () => {
       const panel = document.getElementById("adminChatPanel");
-      panel.classList.toggle("hidden");
+      if (panel) panel.classList.toggle("hidden");
 
       const token = localStorage.getItem("authToken");
       if (typeof loadAdminChats === "function") {
