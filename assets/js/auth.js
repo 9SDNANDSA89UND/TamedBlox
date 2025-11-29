@@ -1,5 +1,5 @@
 /* ============================================================
-   TamedBlox — AUTH SYSTEM (FINAL PATCHED VERSION)
+   TamedBlox — AUTH SYSTEM (FINAL PATCHED VERSION + DROPDOWN)
 ============================================================ */
 
 window.API = window.API || "https://website-5eml.onrender.com";
@@ -163,34 +163,32 @@ async function applyLoggedInUI() {
   const user = await res.json();
 
   /* ============================================================
-     PROFILE BUTTON (LUCIDE USER-PEN — NO EMOJI)
+     PROFILE BUTTON
   ============================================================ */
-  const profileBtn = document.createElement("button");
-  profileBtn.className = "nav-rect-btn";
-  profileBtn.id = "profileBtn";
+  const profileBtn = document.getElementById("profileBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-  profileBtn.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-      viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="lucide lucide-user-pen">
-      <path d="M11.5 15H7a4 4 0 0 0-4 4v2"/>
-      <path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/>
-      <circle cx="10" cy="7" r="4"/>
-    </svg>
-    <span>${user.username}</span>
-  `;
+  if (profileBtn) profileBtn.style.display = "flex";
+  if (logoutBtn) logoutBtn.style.display = "flex";
 
-  navRight.appendChild(profileBtn);
+  document.getElementById("usernameDisplay").innerText = `${user.username} ▼`;
 
   /* ============================================================
-     LOGOUT BUTTON
+     PROFILE DROPDOWN: TOGGLE LOGIC
   ============================================================ */
-  const logoutBtn = document.createElement("button");
-  logoutBtn.className = "nav-rect-btn nav-accent-btn";
-  logoutBtn.innerText = "Logout";
-  logoutBtn.onclick = logoutUser;
-  navRight.appendChild(logoutBtn);
+  profileBtn.onclick = () => {
+    const dropdown = document.getElementById("profileDropdown");
+    dropdown.classList.toggle("hidden");
+  };
+
+  /* ============================================================
+     ADMIN — SHOW CREATOR DASHBOARD BUTTON
+  ============================================================ */
+  if (user.admin === true) {
+    const creatorBtn = document.getElementById("creatorDashboardBtn");
+    creatorBtn.style.display = "block";
+    creatorBtn.onclick = () => location.href = "/dashboard.html";
+  }
 
   /* ============================================================
      ADMIN CHAT BUTTON
