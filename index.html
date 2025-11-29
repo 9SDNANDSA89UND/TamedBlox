@@ -6,7 +6,7 @@
   <title>TamedBlox — Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- ⭐ Save referral code -->
+  <!-- Save referral -->
   <script>
     const params = new URLSearchParams(window.location.search);
     const ref = params.get("ref");
@@ -19,8 +19,6 @@
   <link rel="icon" sizes="192x192" href="https://i.postimg.cc/y6pL3tKq/Tamed-Blox.png">
   <link rel="icon" sizes="512x512" href="https://i.postimg.cc/y6pL3tKq/Tamed-Blox.png">
   <link rel="mask-icon" href="https://i.postimg.cc/y6pL3tKq/Tamed-Blox.png" color="#4ef58a">
-  <meta name="msapplication-TileImage" content="https://i.postimg.cc/y6pL3tKq/Tamed-Blox.png">
-  <meta name="msapplication-TileColor" content="#0b0f14">
 
   <!-- CSS -->
   <link rel="stylesheet" href="assets/css/main.css" />
@@ -29,20 +27,19 @@
   <link rel="stylesheet" href="assets/css/modal.css" />
   <link rel="stylesheet" href="assets/css/reviews.css" />
   <link rel="stylesheet" href="assets/css/chat.css" />
+  <link rel="stylesheet" href="assets/css/search.css" /> <!-- ⭐ NEW -->
 
-  <!-- Component Loader -->
   <script>
     async function loadComponent(selector, file) {
       const el = document.querySelector(selector);
       if (el) el.innerHTML = await fetch(file).then((r) => r.text());
     }
   </script>
-
 </head>
 
 <body>
 
-  <!-- NAVBAR + MODALS -->
+  <!-- NAVBAR / MODALS -->
   <div id="navbar"></div>
   <div id="modals"></div>
 
@@ -56,57 +53,32 @@
     <h1 style="font-size: 32px; font-weight: 900">Featured Products</h1>
     <p style="margin-top: 10px; color: #b7bec9;">Best-selling items from TamedBlox.</p>
 
-    <!-- ⭐ SEARCH BAR WITH ICON -->
-    <div style="
-      margin-top: 20px;
-      max-width: 480px;
-      width: 100%;
-      display: flex;
-      gap: 10px;
-    ">
+    <!-- ⭐ SEARCH BAR (ICON INSIDE) -->
+    <div class="search-container">
       <input
         id="searchInput"
         placeholder="Search products..."
-        class="modern-input"
-        style="flex: 1;"
+        class="search-input"
       />
 
-      <button id="searchButton" style="
-        background: #1aff71;
-        border: none;
-        padding: 8px 10px;
-        border-radius: 8px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: 0.2s;
-      ">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-          viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="m21 21-4.34-4.34"/>
-          <circle cx="11" cy="11" r="8"/>
-        </svg>
-      </button>
+      <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+        viewBox="0 0 24 24" fill="none" stroke="#7bffb1" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="m21 21-4.34-4.34" />
+        <circle cx="11" cy="11" r="8" />
+      </svg>
     </div>
 
-    <!-- ICON JS: triggers search -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const input = document.getElementById("searchInput");
-        const btn = document.getElementById("searchButton");
-
-        if (btn) {
-          btn.onclick = () => {
-            input.dispatchEvent(
-              new KeyboardEvent("keypress", { key: "Enter" })
-            );
-          };
-        }
+        input.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            input.dispatchEvent(new KeyboardEvent("keyup", { key: "Enter" }));
+          }
+        });
       });
     </script>
-
   </section>
 
   <!-- PRODUCT GRID -->
@@ -116,7 +88,6 @@
   <section class="reviews-section">
     <h2 class="reviews-title">Customer Reviews</h2>
     <div class="reviews-grid">
-
       <div class="review-card">
         <div class="review-header">
           <img src="https://dummyimage.com/50x50/222/fff.png&text=+" class="review-pfp" />
@@ -125,7 +96,7 @@
             <div class="review-rating">★★★★★</div>
           </div>
         </div>
-        <div class="review-body">Instant delivery. Exactly what I paid for, 10/10.</div>
+        <div class="review-body">Instant delivery. Exactly what I paid for.</div>
       </div>
 
       <div class="review-card">
@@ -136,9 +107,8 @@
             <div class="review-rating">★★★★★</div>
           </div>
         </div>
-        <div class="review-body">Quick service and amazing prices.</div>
+        <div class="review-body">Quick service and great support.</div>
       </div>
-
     </div>
   </section>
 
@@ -162,9 +132,7 @@
 
   <!-- FOOTER -->
   <div id="footer"></div>
-  <script>
-    loadComponent("#footer", "components/footer.html");
-  </script>
+  <script>loadComponent("#footer", "components/footer.html");</script>
 
   <!-- ADMIN CHAT PANEL -->
   <div id="adminChatPanel" class="admin-panel hidden">
@@ -187,7 +155,6 @@
         font-weight: bold;
         cursor: pointer;
         color: white;
-        display:block;
       ">
       Delete Ticket
     </button>
@@ -200,20 +167,19 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
           viewBox="0 0 24 24" fill="none" stroke="currentColor"
           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path
-            d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" />
+          <path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" />
           <path d="M6 12h16" />
         </svg>
       </button>
     </div>
   </div>
 
-  <!-- CHAT BUTTON -->
+  <!-- FLOATING CHAT BUTTON -->
   <div id="chatButton" class="chat-circle hidden">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor"
-      fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path
-        d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+      stroke="currentColor" fill="none" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
     </svg>
   </div>
 
