@@ -1,8 +1,5 @@
 /* =============================================================
-   TamedBlox — ULTRA PREMIUM CARD SYSTEM (HYPER SHINE TAGS)
-   ✔ Shine every 0.9s
-   ✔ Brighter neon tags
-   ✔ Strong glow + fast sweep
+   TamedBlox — PREMIUM CARD SYSTEM (Perfect Shine Edition)
 ============================================================= */
 
 .product-grid {
@@ -21,6 +18,7 @@
   background: rgba(15, 20, 26, 0.82);
   border-radius: 22px;
   padding: 20px 20px 26px;
+
   border: 1px solid rgba(78, 245, 138, 0.45);
 
   box-shadow:
@@ -39,6 +37,7 @@
 .card:hover {
   transform: translateY(-8px) scale(1.02);
   border-color: rgba(78, 245, 138, 0.85);
+
   box-shadow:
     0 0 34px rgba(78,245,138,0.55),
     0 0 18px rgba(78,245,138,0.38),
@@ -52,6 +51,7 @@
   width: 100%;
   height: 250px;
   border-radius: 14px;
+
   object-fit: contain;
   background: rgba(255,255,255,0.06);
 
@@ -84,7 +84,7 @@
 }
 
 /* =============================================================
-   TAG BASE (shared)
+   TAG BASE — shared
 ============================================================= */
 .tag-secret,
 .tag-god,
@@ -92,17 +92,16 @@
 .discount-tag {
   position: relative;
   overflow: hidden;
-
   border-radius: 40px;
   padding: 8px 20px;
 
   font-size: 13px;
   font-weight: 900;
 
-  /* Bigger glow */
+  /* Outer glow */
   box-shadow:
-    0 0 26px currentColor,
-    inset 0 0 14px rgba(255,255,255,0.28);
+    0 0 22px currentColor,
+    inset 0 0 12px rgba(255,255,255,0.22);
 }
 
 /* =============================================================
@@ -127,13 +126,14 @@
 .discount-tag {
   background: #4ef58a;
   color: #001d0b;
+
   display: inline-flex;
   align-items: center;
   gap: 8px;
 
   box-shadow:
-    0 0 26px rgba(78,245,138,1),
-    inset 0 0 14px rgba(255,255,255,0.25);
+    0 0 22px rgba(78,245,138,1),
+    inset 0 0 12px rgba(255,255,255,0.2);
 }
 
 .discount-tag svg {
@@ -142,9 +142,8 @@
 }
 
 /* =============================================================
-   HYPER SHINE (0.9s frequency)
+   SHINE EFFECT — TAGS ONLY (Perfect 1.6s speed)
 ============================================================= */
-
 .tag-secret::after,
 .tag-god::after,
 .tag-og::after,
@@ -152,29 +151,28 @@
   content: "";
   position: absolute;
   top: 0;
-  left: -170%;
-  width: 150%;
+  left: -160%;
+  width: 140%;
   height: 100%;
 
-  /* Thicker + brighter streak */
   background: linear-gradient(
     120deg,
     transparent 0%,
-    rgba(255,255,255,0.9) 50%,
+    rgba(255,255,255,0.85) 50%,
     transparent 100%
   );
 
-  filter: blur(5px);
+  filter: blur(4px);
   transform: skewX(-25deg);
-  opacity: 1;
+  opacity: 0.9;
 
-  animation: tagShine 0.9s ease-in-out infinite;
+  animation: tagShine 1.6s ease-in-out infinite;
 }
 
 @keyframes tagShine {
-  0% { left: -170%; }
-  50% { left: 170%; }
-  100% { left: 170%; }
+  0%   { left: -160%; }
+  50%  { left: 160%; }
+  100% { left: 160%; }
 }
 
 /* =============================================================
@@ -188,7 +186,7 @@
 
   text-shadow:
     0 0 6px rgba(78,245,138,0.32),
-    0 0 3px rgba(78,245,138,0.15);
+    0 0 2px rgba(78,245,138,0.15);
 
   white-space: nowrap;
   overflow: hidden;
