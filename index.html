@@ -6,21 +6,18 @@
   <title>TamedBlox — Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Save referral if present -->
   <script>
     const params = new URLSearchParams(window.location.search);
     const ref = params.get("ref");
     if (ref) localStorage.setItem("tamed_ref", ref);
   </script>
 
-  <!-- ICONS -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/y6pL3tKq/Tamed-Blox.png">
   <link rel="apple-touch-icon" href="https://i.postimg.cc/y6pL3tKq/Tamed-Blox.png">
   <link rel="icon" sizes="192x192" href="https://i.postimg.cc/y6pL3tKq/Tamed-Blox.png">
   <link rel="icon" sizes="512x512" href="https://i.postimg.cc/y6pL3tKq/Tamed-Blox.png">
   <link rel="mask-icon" href="https://i.postimg.cc/y6pL3tKq/Tamed-Blox.png" color="#4ef58a">
 
-  <!-- CSS -->
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="assets/css/navbar-align.css" />
   <link rel="stylesheet" href="assets/css/cards.css" />
@@ -29,10 +26,9 @@
   <link rel="stylesheet" href="assets/css/chat.css" />
   <link rel="stylesheet" href="assets/css/search.css" />
 
-  <!-- Component Loader -->
   <script>
-    async function loadComponent(selector, file) {
-      const el = document.querySelector(selector);
+    async function loadComponent(sel, file) {
+      const el = document.querySelector(sel);
       if (el) el.innerHTML = await fetch(file).then(r => r.text());
     }
   </script>
@@ -40,7 +36,6 @@
 
 <body>
 
-  <!-- NAVBAR / AUTH MODALS -->
   <div id="navbar"></div>
   <div id="modals"></div>
 
@@ -49,21 +44,14 @@
     loadComponent("#modals", "components/modals.html");
   </script>
 
-  <!-- HERO -->
   <section class="container" style="margin-top: 40px">
     <h1 style="font-size: 32px; font-weight: 900">Featured Products</h1>
     <p style="margin-top: 10px; color: #b7bec9;">Best-selling items from TamedBlox.</p>
 
-    <!-- SEARCH + SORT ROW -->
     <div class="search-sort-row">
 
-      <!-- SEARCH -->
       <div class="search-container">
-        <input
-          id="searchInput"
-          placeholder="Search products..."
-          class="search-input"
-        />
+        <input id="searchInput" placeholder="Search products..." class="search-input" />
         <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
           viewBox="0 0 24 24" fill="none" stroke="#38ff99" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
@@ -72,7 +60,6 @@
         </svg>
       </div>
 
-      <!-- SORT (small, right) -->
       <div class="sort-mini">
         <select id="sortSelect" class="sort-mini-select">
           <option value="default">A → Z</option>
@@ -95,71 +82,44 @@
 
     </div>
 
-    <!-- SEARCH + SORT JS -->
     <script>
       document.addEventListener("DOMContentLoaded", () => {
         const input = document.getElementById("searchInput");
+        input.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") input.blur();
+        });
+
         const sortSelect = document.getElementById("sortSelect");
+        const searchInput = document.getElementById("searchInput");
 
-        if (input) {
-          // Typing triggers built-in setupSearch() logic in app.js
-          // (which listens to "input" on #searchInput)
-          input.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") {
-              // optional: you can trigger a blur or nothing; search already reacts to typing
-              input.blur();
-            }
-          });
-        }
+        const wait = setInterval(() => {
+          if (window.products && typeof renderProducts === "function") {
+            clearInterval(wait);
 
-        if (sortSelect) {
-          sortSelect.addEventListener("change", () => {
-            // products & renderProducts are defined globally in app.js
-            if (!window.products || !Array.isArray(window.products) || typeof renderProducts !== "function") {
-              console.warn("Sort: products/renderProducts not ready");
-              return;
-            }
+            sortSelect.addEventListener("change", () => {
+              let list = [...window.products];
+              const q = searchInput.value.toLowerCase();
 
-            // Get current search query so sort + search work together
-            const qEl = document.getElementById("searchInput");
-            const q = qEl ? qEl.value.toLowerCase() : "";
+              if (q) list = list.filter(p => p.name.toLowerCase().includes(q));
 
-            // Start from full product list
-            let list = [...window.products];
+              const mode = sortSelect.value;
 
-            // Apply search filter first (same logic as setupSearch)
-            if (q) {
-              list = list.filter((p) =>
-                p.name.toLowerCase().includes(q)
-              );
-            }
+              if (mode === "az") list.sort((a, b) => a.name.localeCompare(b.name));
+              if (mode === "za") list.sort((a, b) => b.name.localeCompare(a.name));
+              if (mode === "low") list.sort((a, b) => Number(a.price) - Number(b.price));
+              if (mode === "high") list.sort((a, b) => Number(b.price) - Number(a.price));
 
-            // Apply chosen sort
-            const mode = sortSelect.value;
-
-            if (mode === "az") {
-              list.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
-            } else if (mode === "za") {
-              list.sort((a, b) => b.name.toLowerCase().localeCompare(a.name.toLowerCase()));
-            } else if (mode === "low") {
-              list.sort((a, b) => Number(a.price) - Number(b.price));
-            } else if (mode === "high") {
-              list.sort((a, b) => Number(b.price) - Number(a.price));
-            }
-
-            // Re-render using the same function app.js uses
-            renderProducts(list);
-          });
-        }
+              renderProducts(list);
+            });
+          }
+        }, 100);
       });
     </script>
 
   </section>
 
-  <!-- PRODUCT GRID -->
   <div id="productGrid" class="product-grid"></div>
 
-  <!-- REVIEWS -->
   <section class="reviews-section">
     <h2 class="reviews-title">Customer Reviews</h2>
     <div class="reviews-grid">
@@ -189,7 +149,6 @@
     </div>
   </section>
 
-  <!-- CART DRAWER -->
   <div id="cartDrawer" class="cart-drawer">
     <div class="cart-header">
       <h2 class="cart-title">Cart</h2>
@@ -207,33 +166,21 @@
 
   <div id="cartOverlay" class="cart-overlay"></div>
 
-  <!-- FOOTER -->
   <div id="footer"></div>
   <script>
     loadComponent("#footer", "components/footer.html");
   </script>
 
-  <!-- ADMIN CHAT PANEL -->
   <div id="adminChatPanel" class="admin-panel hidden">
     <div class="admin-panel-header">Active Chats</div>
     <div id="adminChatList" class="admin-chat-list"></div>
   </div>
 
-  <!-- CHAT WINDOW -->
   <div id="chatWindow" class="chat-window hidden">
     <div id="chatOrderSummary" class="chat-order-summary"></div>
 
     <button id="deleteTicketBtn" class="delete-ticket-btn"
-      style="
-        width: 100%;
-        background:#ff3b3b;
-        border:none;
-        padding:10px;
-        margin-bottom:8px;
-        border-radius:8px;
-        font-weight:700;
-        color:white;
-      ">
+      style="width:100%;background:#ff3b3b;border:none;padding:10px;margin-bottom:8px;border-radius:8px;font-weight:700;color:white;">
       Delete Ticket
     </button>
 
@@ -243,17 +190,15 @@
       <input id="chatInput" placeholder="Type a message..." />
       <button id="chatSend" class="chat-send-btn">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-          viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path
-            d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" />
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" />
           <path d="M6 12h16" />
         </svg>
       </button>
     </div>
   </div>
 
-  <!-- FLOATING CHAT BUTTON -->
   <div id="chatButton" class="chat-circle hidden">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" stroke="currentColor"
       fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -262,7 +207,6 @@
     </svg>
   </div>
 
-  <!-- JS -->
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/app.js"></script>
   <script src="assets/js/drawer.js"></script>
