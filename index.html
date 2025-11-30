@@ -177,17 +177,48 @@
   <script>
     const slider = document.getElementById("reviewSlider");
     slider.innerHTML += slider.innerHTML;
-    let pos = 0;
-    function smoothScroll() {
-      pos += 0.4;
-      slider.scrollLeft = pos;
-      if (pos >= slider.scrollWidth / 2) {
-        pos = 0;
-        slider.scrollLeft = 0;
-      }
-      requestAnimationFrame(smoothScroll);
+
+    const cardWidth = 280;
+    let start = slider.scrollLeft;
+    let end = start + cardWidth;
+    let startTime = null;
+
+    function ease(t) {
+      return t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2;
     }
-    smoothScroll();
+
+    function tweenScroll(ts) {
+      if (!startTime) startTime = ts;
+
+      const elapsed = ts - startTime;
+      const dur = 1400;
+      const t = Math.min(elapsed / dur, 1);
+      const e = ease(t);
+
+      slider.scrollLeft = start + (end - start) * e;
+
+      if (t < 1) {
+        requestAnimationFrame(tweenScroll);
+      } else {
+        start = slider.scrollLeft;
+
+        if (start >= slider.scrollWidth / 2) {
+          start = 0;
+          slider.scrollLeft = 0;
+        }
+
+        end = start + cardWidth;
+
+        setTimeout(() => {
+          startTime = null;
+          requestAnimationFrame(tweenScroll);
+        }, 400);
+      }
+    }
+
+    requestAnimationFrame(tweenScroll);
   </script>
 
   <div id="cartDrawer" class="cart-drawer">
