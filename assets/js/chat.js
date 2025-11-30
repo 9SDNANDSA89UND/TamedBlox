@@ -2,18 +2,6 @@ let CURRENT_CHAT = null;
 let IS_ADMIN = false;
 
 const qs = (sel) => document.querySelector(sel);
-const waitForElement = (id, cb) => {
-  const el = document.getElementById(id);
-  if (el) return cb(el);
-  const obs = new MutationObserver(() => {
-    const found = document.getElementById(id);
-    if (found) {
-      cb(found);
-      obs.disconnect();
-    }
-  });
-  obs.observe(document.body, { childList: true, subtree: true });
-};
 
 async function api(path, method = "GET", body = null) {
   const headers = { "Content-Type": "application/json" };
@@ -29,9 +17,6 @@ async function api(path, method = "GET", body = null) {
   return await res.json();
 }
 
-/* ======================
-   LOAD SESSION
-====================== */
 async function loadSession() {
   try {
     const session = await api("/auth/me");
@@ -41,9 +26,6 @@ async function loadSession() {
   }
 }
 
-/* ======================
-   UNIVERSAL CHAT LOAD
-====================== */
 async function universalChatLoad() {
   waitForElement("chatButton", (btn) => {
     btn.classList.remove("hidden");
@@ -54,12 +36,9 @@ async function universalChatLoad() {
 function openUserChat() {
   const win = qs("#chatWindow");
   win.classList.remove("hidden");
-  document.getElementById("chatButton").classList.add("hidden");
+  qs("#chatButton").classList.add("hidden");
 }
 
-/* ======================
-   BIND USER CHAT BUTTON
-====================== */
 function bindChatButton() {
   waitForElement("chatButton", (btn) => {
     btn.onclick = () => {
@@ -70,9 +49,6 @@ function bindChatButton() {
   });
 }
 
-/* ======================
-   BIND ADMIN CHAT PANEL TOGGLE
-====================== */
 function bindAdminToggle() {
   waitForElement("adminChatBtn", (btn) => {
     btn.classList.remove("hidden");
@@ -91,9 +67,6 @@ function bindAdminToggle() {
   });
 }
 
-/* ======================
-   LOAD ALL ADMIN CHATS
-====================== */
 async function loadAdminChats() {
   const list = qs("#adminChatList");
   if (!list) return;
@@ -118,9 +91,6 @@ async function loadAdminChats() {
   });
 }
 
-/* ======================
-   OPEN TICKET AS ADMIN
-====================== */
 async function openAdminChat(chatId) {
   CURRENT_CHAT = chatId;
 
@@ -145,12 +115,9 @@ async function openAdminChat(chatId) {
   `;
 
   win.classList.remove("hidden");
-  document.getElementById("chatButton").classList.add("hidden");
+  qs("#chatButton").classList.add("hidden");
 }
 
-/* ======================
-   SEND MESSAGE
-====================== */
 async function sendMessage() {
   const input = qs("#chatInput");
   const text = input.value.trim();
@@ -173,9 +140,6 @@ async function sendMessage() {
   }
 }
 
-/* ======================
-   ADMIN DELETE TICKET
-====================== */
 function enableAdminDelete() {
   waitForElement("deleteTicketBtn", (btn) => {
     btn.onclick = async () => {
@@ -192,10 +156,6 @@ function enableAdminDelete() {
   });
 }
 
-
-/* ======================
-   ON PAGE LOAD
-====================== */
 document.addEventListener("DOMContentLoaded", async () => {
   waitForElement("chatSend", (btn) => {
     btn.onclick = () => sendMessage();
