@@ -15,11 +15,12 @@
   <meta property="og:image" content="https://i.postimg.cc/Vv2d3hxV/Tamed-Blox.png">
   <meta property="og:url" content="https://tamedblox.com">
   <meta name="twitter:card" content="summary_large_image">
+
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="assets/css/navbar-align.css" />
   <link rel="stylesheet" href="assets/css/cards.css" />
   <link rel="stylesheet" href="assets/css/modal.css" />
-  <link rel="stylesheet" href="assets/css/reviews.css?v=9999" />
+  <link rel="stylesheet" href="assets/css/reviews.css" />
   <link rel="stylesheet" href="assets/css/chat.css" />
   <link rel="stylesheet" href="assets/css/search.css" />
 
@@ -193,23 +194,6 @@
   </div>
 
   <div id="cartOverlay" class="cart-overlay"></div>
-
-  <div id="adminChatPanel" class="admin-panel hidden">
-    <div class="admin-panel-header">Active Tickets</div>
-    <div id="adminChatList" class="admin-chat-list"></div>
-  </div>
-
-  <div id="chatWindow" class="chat-window hidden">
-    <div id="chatOrderSummary" class="chat-order-summary"></div>
-    <button id="deleteTicketBtn" class="delete-ticket-btn">Delete Ticket</button>
-    <div id="chatMessages" class="chat-messages"></div>
-    <div class="chat-input-row">
-      <input id="chatInput" placeholder="Type a message..." />
-      <button id="chatSend" class="chat-send-btn">Send</button>
-    </div>
-  </div>
-
-  <div id="chatButton" class="chat-circle hidden">💬</div>
 
   <div id="footer"></div>
   <script>loadComponent("#footer", "components/footer.html");</script>
