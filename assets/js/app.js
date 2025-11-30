@@ -68,6 +68,8 @@ function renderProducts(list) {
           ${p.oldPrice ? `<span class="old-price">${formatUSD(p.oldPrice)}</span>` : ""}
         </div>
 
+        <div class="card-spacer"></div>
+
         <div class="card-actions">
           <button class="add-cart-btn" data-name="${p.name}">Add to Cart</button>
           <button class="buy-now-btn" data-name="${p.name}">Buy Now</button>
@@ -109,12 +111,18 @@ function bindBuyNowButtons() {
       const product = products.find(p => p.name === name);
       if (!product) return;
 
-      const query = new URLSearchParams({
-        product: name,
-        price: product.price
-      });
+      const fixedProduct = {
+        ...product,
+        price: Number(product.price),
+        oldPrice: product.oldPrice ? Number(product.oldPrice) : null
+      };
 
-      window.location.href = "/checkout.html?" + query.toString();
+      const imgElement = btn.closest(".card").querySelector(".product-img");
+      window.Cart.addItem(fixedProduct, imgElement);
+
+      setTimeout(() => {
+        window.location.href = "/checkout.html";
+      }, 200);
     };
   });
 }
