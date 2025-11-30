@@ -21,7 +21,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   height: 300px;
 }
 
@@ -80,6 +80,7 @@
 .tag-secret { background: #00eaff; color: #00171d; }
 .tag-god { background: #ff37ff; color: #1d001d; }
 .tag-og { background: #ffc65a; color: #2d1d00; }
+
 .discount-tag {
   background: #4ef58a;
   color: #001d0b;
@@ -138,7 +139,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 6px 0 10px;
+  margin: 6px 0 2px;
 }
 
 .price {
@@ -156,11 +157,15 @@
   text-decoration: line-through;
 }
 
+.card-spacer {
+  flex-grow: 1;
+}
+
 .card-actions {
   display: flex;
   justify-content: space-between;
   gap: 6px;
-  margin-top: auto;
+  margin-top: 4px;
 }
 
 .add-cart-btn,
