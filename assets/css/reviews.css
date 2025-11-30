@@ -11,7 +11,7 @@
   text-align: center;
 }
 
-.review-slider {
+#reviewSlider {
   display: flex;
   gap: 20px;
   overflow-x: auto;
@@ -19,28 +19,26 @@
   padding: 0;
   margin-top: 10px;
   scroll-behavior: smooth;
-  scrollbar-width: thin;
 }
 
-.review-slider::-webkit-scrollbar {
-  height: 6px;
+#reviewSlider::-webkit-scrollbar {
+  height: 6px !important;
 }
 
-.review-slider::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  margin: 0 30px;
+#reviewSlider::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 10px !important;
 }
 
-.review-slider::-webkit-scrollbar-thumb {
-  background: #4ef58a;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #4ef58a;
+#reviewSlider::-webkit-scrollbar-thumb {
+  background: #4ef58a !important;
+  border-radius: 10px !important;
+  box-shadow: 0 0 10px #4ef58a !important;
 }
 
-.review-slider::-webkit-scrollbar-thumb:hover {
-  background: #6affae;
-  box-shadow: 0 0 14px #6affae;
+#reviewSlider::-webkit-scrollbar-thumb:hover {
+  background: #6affae !important;
+  box-shadow: 0 0 14px #6affae !important;
 }
 
 .review-card {
