@@ -36,9 +36,9 @@
 
 .product-img {
   width: 100%;
-  height: 150px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
   border-radius: 10px;
-  object-fit: contain;
   background: rgba(255,255,255,0.05);
   padding: 8px;
   margin-bottom: 12px;
@@ -80,6 +80,7 @@
 .tag-secret { background: #00eaff; color: #00171d; }
 .tag-god { background: #ff37ff; color: #1d001d; }
 .tag-og { background: #ffc65a; color: #2d1d00; }
+
 .discount-tag {
   background: #4ef58a;
   color: #001d0b;
@@ -154,6 +155,32 @@
   font-size: 11px;
   opacity: 0.7;
   text-decoration: line-through;
+}
+
+.secure-checkout {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  padding: 6px 10px;
+  margin-top: -4px;
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #4ef58a;
+  background: rgba(78,245,138,0.12);
+  border: 1px solid rgba(78,245,138,0.35);
+  border-radius: 10px;
+  box-shadow:
+    0 0 10px rgba(78,245,138,0.35),
+    inset 0 0 6px rgba(78,245,138,0.2);
+}
+
+.secure-checkout .shield-icon {
+  width: 14px;
+  height: 14px;
+  stroke: #4ef58a;
+  filter: drop-shadow(0 0 4px rgba(78,245,138,0.6));
 }
 
 .card-actions {
