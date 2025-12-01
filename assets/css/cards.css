@@ -1,120 +1,3 @@
-.product-grid {
-  max-width: 1380px;
-  margin: 40px auto;
-  padding: 0 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: 22px;
-}
-
-.card {
-  background: rgba(15, 20, 26, 0.82);
-  border-radius: 18px;
-  padding: 14px 14px 18px;
-  border: 1px solid rgba(78, 245, 138, 0.45);
-  box-shadow:
-    0 0 16px rgba(78,245,138,0.28),
-    0 0 8px rgba(78,245,138,0.18),
-    inset 0 0 8px rgba(255,255,255,0.05);
-  backdrop-filter: blur(16px);
-  transition: 0.25s ease;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 350px;
-}
-
-.card:hover {
-  transform: translateY(-5px) scale(1.015);
-  border-color: rgba(78, 245, 138, 0.85);
-  box-shadow:
-    0 0 24px rgba(78,245,138,0.55),
-    0 0 10px rgba(78,245,138,0.38),
-    inset 0 0 12px rgba(255,255,255,0.08);
-}
-
-.product-img {
-  width: 100%;
-  height: 150px;
-  border-radius: 10px;
-  object-fit: contain;
-  background: rgba(255,255,255,0.05);
-  padding: 8px;
-  margin-bottom: 12px;
-  box-shadow:
-    inset 0 0 20px rgba(78,245,138,0.35),
-    0 0 18px rgba(78,245,138,0.18);
-  transition: transform 0.25s ease;
-}
-
-.card:hover .product-img {
-  transform: scale(1.04);
-}
-
-.card-badges {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  right: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.tag-secret,
-.tag-god,
-.tag-og,
-.discount-tag {
-  position: relative;
-  overflow: hidden;
-  border-radius: 40px;
-  padding: 5px 12px;
-  font-size: 10px;
-  font-weight: 900;
-  box-shadow:
-    0 0 14px currentColor,
-    inset 0 0 8px rgba(255,255,255,0.22);
-}
-
-.tag-secret { background: #00eaff; color: #00171d; }
-.tag-god { background: #ff37ff; color: #1d001d; }
-.tag-og { background: #ffc65a; color: #2d1d00; }
-.discount-tag {
-  background: #4ef58a;
-  color: #001d0b;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.discount-tag svg {
-  width: 10px;
-  height: 10px;
-}
-
-.tag-secret::after,
-.tag-god::after,
-.tag-og::after,
-.discount-tag::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -120%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255,255,255,0.65) 50%,
-    transparent 100%
-  );
-  filter: blur(3px);
-  transform: skewX(-25deg);
-  opacity: 0.85;
-  animation: tagShine 1.8s ease-in-out infinite;
-}
-
 @keyframes tagShine {
   0% { left: -120%; }
   50% { left: 120%; }
@@ -194,4 +77,94 @@
 .add-cart-btn:active,
 .buy-now-btn:active {
   transform: scale(0.96);
+}
+
+.card:hover .product-img {
+  transform: scale(1.04);
+}
+
+.card-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tag-secret,
+.tag-god,
+.tag-og,
+.discount-tag {
+  position: relative;
+  overflow: hidden;
+  border-radius: 40px;
+  padding: 5px 12px;
+  font-size: 10px;
+  font-weight: 900;
+  box-shadow:
+    0 0 14px currentColor,
+    inset 0 0 8px rgba(255,255,255,0.22);
+}
+
+.tag-secret { background: #00eaff; color: #00171d; }
+.tag-god { background: #ff37ff; color: #1d001d; }
+.tag-og { background: #ffc65a; color: #2d1d00; }
+.discount-tag {
+  background: #4ef58a;
+  color: #001d0b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.discount-tag svg {
+  width: 10px;
+  height: 10px;
+}
+
+.tag-secret::after,
+.tag-god::after,
+.tag-og::after,
+.discount-tag::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.65) 50%,
+    transparent 100%
+  );
+  filter: blur(3px);
+  transform: skewX(-25deg);
+  opacity: 0.85;
+  animation: tagShine 1.8s ease-in-out infinite;
+}
+
+.secure-checkout {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  width: fit-content;
+  background: rgba(78,245,138,0.08);
+  border: 1px solid rgba(78,245,138,0.22);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4ef58a;
+  text-shadow: 0 0 4px rgba(78,245,138,0.4);
+  margin-top: -4px;
+  margin-bottom: 12px;
+}
+
+.secure-checkout .shield-icon {
+  stroke: #4ef58a;
+  width: 14px;
+  height: 14px;
 }
