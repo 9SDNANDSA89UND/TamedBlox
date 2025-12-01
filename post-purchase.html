@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Order Complete — Enter Roblox Username</title>
-<link rel="stylesheet" href="assets/css/main.css">
+
 <style>
 body {
   margin: 0;
@@ -143,7 +143,6 @@ button:active {
 const params = new URLSearchParams(window.location.search);
 const sessionId = params.get("session_id");
 
-// Optional: Roblox avatar preview
 async function loadAvatar(username) {
   try {
     const res = await fetch(
@@ -164,18 +163,24 @@ document.getElementById("rbxUser").addEventListener("input", (e) => {
 
 document.getElementById("continueBtn").onclick = async () => {
   const user = document.getElementById("rbxUser").value.trim();
+
   if (!user) {
     document.getElementById("error").style.display = "block";
     return;
   }
 
+  localStorage.setItem("postPurchaseRobloxUser", user);
+
   await fetch("https://website-5eml.onrender.com/pay/save-roblox-user", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ sessionId, robloxUser: user })
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({
+      sessionId,
+      robloxUser: user
+    })
   });
 
-  window.location.href = `/index.html?chat=open&session_id=${sessionId}`;
+  window.location.href = `/create-account.html?session_id=${sessionId}`;
 };
 </script>
 
