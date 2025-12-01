@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Confirmation</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+<div class="post-box">
+  <h2>Thank you for your purchase!</h2>
+  <p>Please enter your Roblox username so we can deliver your order:</p>
+
+  <input id="rbxUser" type="text" placeholder="Roblox Username">
+  <button id="continueBtn">Continue</button>
+
+  <p id="error" style="color:#f55; display:none;">Please enter a valid username.</p>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const sessionId = params.get("session_id");
+
+document.getElementById("continueBtn").onclick = async () => {
+  const user = document.getElementById("rbxUser").value.trim();
+
+  if (!user) {
+    document.getElementById("error").style.display = "block";
+    return;
+  }
+
+  await fetch("https://website-5eml.onrender.com/pay/save-roblox-user", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ sessionId, robloxUser: user })
+  });
+
+  window.location.href = `/index.html?chat=open&session_id=${sessionId}`;
+};
+</script>
+
+<style>
+.post-box {
+  max-width: 380px;
+  margin: 80px auto;
+  padding: 24px;
+  background: #0f141a;
+  border-radius: 16px;
+  border: 1px solid rgba(78,245,138,0.35);
+  color: white;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(78,245,138,0.25);
+}
+
+#rbxUser {
+  width: 90%;
+  padding: 12px;
+  margin: 14px 0;
+  border-radius: 8px;
+  border: 1px solid rgba(78,245,138,0.45);
+  background: #131a21;
+  color: white;
+}
+
+#continueBtn {
+  padding: 12px 20px;
+  background: #4ef58a;
+  border: none;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+}
+</style>
+
+</body>
+</html>
