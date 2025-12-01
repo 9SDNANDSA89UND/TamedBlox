@@ -23,6 +23,14 @@
   flex-direction: column;
   justify-content: space-between;
   height: 350px;
+
+  /* 🔥 Force card to be a top-level stacking context */
+  z-index: 999999999;
+}
+
+.card * {
+  position: relative;
+  z-index: 999999999 !important; /* 🔥 ABSOLUTE HIGHEST PRIORITY */
 }
 
 .card:hover {
@@ -34,7 +42,9 @@
     inset 0 0 12px rgba(255,255,255,0.08);
 }
 
-.product-img {
+/* 🔥 Lower z-index on image to avoid covering text */
+.product-img,
+.product-img img {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
@@ -46,6 +56,8 @@
     inset 0 0 20px rgba(78,245,138,0.35),
     0 0 18px rgba(78,245,138,0.18);
   transition: transform 0.25s ease;
+
+  z-index: 1 !important; /* 🔥 Image now ALWAYS stays under text */
 }
 
 .card:hover .product-img {
