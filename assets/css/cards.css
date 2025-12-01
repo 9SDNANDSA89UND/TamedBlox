@@ -1,34 +1,55 @@
+.product-grid {
+  max-width: 1380px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 22px;
+}
+
 .card {
+  background: rgba(15, 20, 26, 0.82);
+  border-radius: 18px;
+  padding: 14px 14px 18px;
+  border: 1px solid rgba(78, 245, 138, 0.45);
+  box-shadow:
+    0 0 16px rgba(78,245,138,0.28),
+    0 0 8px rgba(78,245,138,0.18),
+    inset 0 0 8px rgba(255,255,255,0.05);
+  backdrop-filter: blur(16px);
+  transition: 0.25s ease;
   position: relative;
-  background: #0f141a;
-  border: 1px solid rgba(78,245,138,0.18);
-  border-radius: 16px;
-  padding: 16px;
   display: flex;
   flex-direction: column;
-  transition: 0.25s ease;
+  justify-content: space-between;
+  height: 350px;
 }
 
 .card:hover {
-  border-color: #4ef58a;
-  box-shadow: 0 0 16px rgba(78,245,138,0.25);
+  transform: translateY(-5px) scale(1.015);
+  border-color: rgba(78, 245, 138, 0.85);
+  box-shadow:
+    0 0 24px rgba(78,245,138,0.55),
+    0 0 10px rgba(78,245,138,0.38),
+    inset 0 0 12px rgba(255,255,255,0.08);
 }
 
 .product-img {
   width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 12px;
-  transition: 0.25s ease;
-  background: #0a0d10;
+  height: 150px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: rgba(255,255,255,0.05);
+  padding: 8px;
+  margin-bottom: 12px;
+  box-shadow:
+    inset 0 0 20px rgba(78,245,138,0.35),
+    0 0 18px rgba(78,245,138,0.18);
+  transition: transform 0.25s ease;
 }
 
 .card:hover .product-img {
   transform: scale(1.04);
-}
-
-.card-spacer {
-  flex-grow: 1;
 }
 
 .card-badges {
@@ -39,7 +60,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  pointer-events: none;
 }
 
 .tag-secret,
@@ -55,13 +75,11 @@
   box-shadow:
     0 0 14px currentColor,
     inset 0 0 8px rgba(255,255,255,0.22);
-  pointer-events: all;
 }
 
 .tag-secret { background: #00eaff; color: #00171d; }
 .tag-god { background: #ff37ff; color: #1d001d; }
 .tag-og { background: #ffc65a; color: #2d1d00; }
-
 .discount-tag {
   background: #4ef58a;
   color: #001d0b;
@@ -73,12 +91,6 @@
 .discount-tag svg {
   width: 10px;
   height: 10px;
-}
-
-@keyframes tagShine {
-  0% { left: -120%; }
-  50% { left: 120%; }
-  100% { left: 120%; }
 }
 
 .tag-secret::after,
@@ -103,9 +115,15 @@
   animation: tagShine 1.8s ease-in-out infinite;
 }
 
+@keyframes tagShine {
+  0% { left: -120%; }
+  50% { left: 120%; }
+  100% { left: 120%; }
+}
+
 .card h3 {
-  margin-top: 10px;
-  font-size: 15px;
+  margin-top: 6px;
+  font-size: 14px;
   font-weight: 800;
   color: #f8fff6;
   text-shadow:
@@ -120,7 +138,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 10px 0 10px;
+  margin: 10px 0 14px;
 }
 
 .price {
@@ -136,29 +154,6 @@
   font-size: 11px;
   opacity: 0.7;
   text-decoration: line-through;
-}
-
-.secure-checkout {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  width: fit-content;
-  background: rgba(78,245,138,0.08);
-  border: 1px solid rgba(78,245,138,0.22);
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #4ef58a;
-  text-shadow: 0 0 4px rgba(78,245,138,0.4);
-  margin-top: -2px;
-  margin-bottom: 10px;
-}
-
-.secure-checkout .shield-icon {
-  stroke: #4ef58a;
-  width: 14px;
-  height: 14px;
 }
 
 .card-actions {
