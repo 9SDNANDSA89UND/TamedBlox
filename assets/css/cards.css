@@ -1,12 +1,110 @@
+.card {
+  position: relative;
+  background: #0f141a;
+  border: 1px solid rgba(78,245,138,0.18);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  transition: 0.25s ease;
+}
+
+.card:hover {
+  border-color: #4ef58a;
+  box-shadow: 0 0 16px rgba(78,245,138,0.25);
+}
+
+.product-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 12px;
+  transition: 0.2s ease;
+}
+
+.card:hover .product-img {
+  transform: scale(1.04);
+}
+
+.card-spacer {
+  flex-grow: 1;
+}
+
+.card-badges {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.tag-secret,
+.tag-god,
+.tag-og,
+.discount-tag {
+  position: relative;
+  overflow: hidden;
+  border-radius: 40px;
+  padding: 5px 12px;
+  font-size: 10px;
+  font-weight: 900;
+  box-shadow:
+    0 0 14px currentColor,
+    inset 0 0 8px rgba(255,255,255,0.22);
+  pointer-events: all;
+}
+
+.tag-secret { background: #00eaff; color: #00171d; }
+.tag-god { background: #ff37ff; color: #1d001d; }
+.tag-og { background: #ffc65a; color: #2d1d00; }
+
+.discount-tag {
+  background: #4ef58a;
+  color: #001d0b;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.discount-tag svg {
+  width: 10px;
+  height: 10px;
+}
+
 @keyframes tagShine {
   0% { left: -120%; }
   50% { left: 120%; }
   100% { left: 120%; }
 }
 
+.tag-secret::after,
+.tag-god::after,
+.tag-og::after,
+.discount-tag::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(255,255,255,0.65) 50%,
+    transparent 100%
+  );
+  filter: blur(3px);
+  transform: skewX(-25deg);
+  opacity: 0.85;
+  animation: tagShine 1.8s ease-in-out infinite;
+}
+
 .card h3 {
-  margin-top: 6px;
-  font-size: 14px;
+  margin-top: 10px;
+  font-size: 15px;
   font-weight: 800;
   color: #f8fff6;
   text-shadow:
@@ -21,7 +119,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 10px 0 14px;
+  margin: 10px 0 10px;
 }
 
 .price {
@@ -37,6 +135,29 @@
   font-size: 11px;
   opacity: 0.7;
   text-decoration: line-through;
+}
+
+.secure-checkout {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  width: fit-content;
+  background: rgba(78,245,138,0.08);
+  border: 1px solid rgba(78,245,138,0.22);
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #4ef58a;
+  text-shadow: 0 0 4px rgba(78,245,138,0.4);
+  margin-top: -2px;
+  margin-bottom: 10px;
+}
+
+.secure-checkout .shield-icon {
+  stroke: #4ef58a;
+  width: 14px;
+  height: 14px;
 }
 
 .card-actions {
@@ -77,94 +198,4 @@
 .add-cart-btn:active,
 .buy-now-btn:active {
   transform: scale(0.96);
-}
-
-.card:hover .product-img {
-  transform: scale(1.04);
-}
-
-.card-badges {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  right: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.tag-secret,
-.tag-god,
-.tag-og,
-.discount-tag {
-  position: relative;
-  overflow: hidden;
-  border-radius: 40px;
-  padding: 5px 12px;
-  font-size: 10px;
-  font-weight: 900;
-  box-shadow:
-    0 0 14px currentColor,
-    inset 0 0 8px rgba(255,255,255,0.22);
-}
-
-.tag-secret { background: #00eaff; color: #00171d; }
-.tag-god { background: #ff37ff; color: #1d001d; }
-.tag-og { background: #ffc65a; color: #2d1d00; }
-.discount-tag {
-  background: #4ef58a;
-  color: #001d0b;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.discount-tag svg {
-  width: 10px;
-  height: 10px;
-}
-
-.tag-secret::after,
-.tag-god::after,
-.tag-og::after,
-.discount-tag::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -120%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 0%,
-    rgba(255,255,255,0.65) 50%,
-    transparent 100%
-  );
-  filter: blur(3px);
-  transform: skewX(-25deg);
-  opacity: 0.85;
-  animation: tagShine 1.8s ease-in-out infinite;
-}
-
-.secure-checkout {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  width: fit-content;
-  background: rgba(78,245,138,0.08);
-  border: 1px solid rgba(78,245,138,0.22);
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #4ef58a;
-  text-shadow: 0 0 4px rgba(78,245,138,0.4);
-  margin-top: -4px;
-  margin-bottom: 12px;
-}
-
-.secure-checkout .shield-icon {
-  stroke: #4ef58a;
-  width: 14px;
-  height: 14px;
 }
